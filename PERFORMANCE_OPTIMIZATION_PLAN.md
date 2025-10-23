@@ -1,4 +1,4 @@
-# Performance & Optimization Plan - Ganjoor Modern Web App
+# Performance & Optimization Plan - دفتر گنج (Defter Ganj)
 
 ## 🎯 Current Status Analysis
 
@@ -295,7 +295,7 @@ import { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://ganjoor-modern.vercel.app',
+      url: 'https://ganj.directory/',
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,

@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://ganjoor-modern.vercel.app';
+  const baseUrl = 'https://www.ganj.directory';
   
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [

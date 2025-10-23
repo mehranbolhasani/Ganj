@@ -49,7 +49,7 @@ export default function Header() {
       {/* Right side - Logo */}
       <div className="flex items-center gap-1 flex-row-reverse">
         <Link href="/" className="flex items-center gap-1 flex-row-reverse">
-          <span className="font-doran text-xl font-bold text-stone-900 dark:text-white">زرنور</span>
+          <span className="font-doran text-xl font-bold text-stone-900 dark:text-white">دفتر گنج</span>
           <div className="w-8 h-8 grid items-center justify-center">
             <BookOpenCheck className="w-6 h-6 text-stone-900 mx-auto" />
           </div>

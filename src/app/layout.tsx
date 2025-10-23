@@ -5,43 +5,43 @@ import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: {
-    default: 'گنجور مدرن',
-    template: '%s | گنجور مدرن',
+    default: 'دفتر گنج',
+    template: '%s | دفتر گنج',
   },
-  description: 'وب‌سایت مدرن و ساده برای خواندن اشعار فارسی',
-  keywords: ['شعر فارسی', 'ادبیات فارسی', 'شاعران ایرانی', 'گنجور', 'حافظ', 'سعدی', 'مولانا'],
-  authors: [{ name: 'Ganjoor Modern' }],
-  creator: 'Ganjoor Modern',
-  publisher: 'Ganjoor Modern',
+  description: 'دفتر گنج - مجموعه‌ای از بهترین اشعار فارسی',
+  keywords: ['شعر فارسی', 'ادبیات فارسی', 'شاعران ایرانی', 'دفتر گنج', 'حافظ', 'سعدی', 'مولانا'],
+  authors: [{ name: 'Mehran Bolhasani' }],
+  creator: 'Mehran Bolhasani',
+  publisher: 'Mehran Bolhasani',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://ganjoor-modern.vercel.app'),
+  metadataBase: new URL('https://ganj.directory/'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'fa_IR',
-    url: 'https://ganjoor-modern.vercel.app',
-    siteName: 'گنجور مدرن',
-    title: 'گنجور مدرن',
-    description: 'وب‌سایت مدرن و ساده برای خواندن اشعار فارسی',
+    url: 'https://ganj.directory/',
+    siteName: 'دفتر گنج',
+    title: 'دفتر گنج',
+    description: 'دفتر گنج - مجموعه‌ای از بهترین اشعار فارسی',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'گنجور مدرن',
+        alt: 'دفتر گنج',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'گنجور مدرن',
-    description: 'وب‌سایت مدرن و ساده برای خواندن اشعار فارسی',
+    title: 'دفتر گنج',
+    description: 'دفتر گنج - مجموعه‌ای از بهترین اشعار فارسی',
     images: ['/og-image.jpg'],
   },
   robots: {

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/_next/'],
     },
-    sitemap: 'https://ganjoor-modern.vercel.app/sitemap.xml',
+    sitemap: 'https://www.ganj.directory/sitemap.xml',
   };
 }

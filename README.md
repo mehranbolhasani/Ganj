@@ -1,4 +1,23 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# دفتر گنج (Defter Ganj)
+
+A modern, minimal web application for reading Persian poetry, built with Next.js 14 and TypeScript.
+
+## Features
+
+- **Modern Design**: Clean, minimal interface with RTL support
+- **Persian Typography**: Beautiful Estedad and DoranFaNum fonts
+- **Dark/Light Mode**: Smooth theme switching
+- **Performance Optimized**: API caching, lazy loading, and Core Web Vitals monitoring
+- **SEO Ready**: Comprehensive meta tags, sitemap, and structured data
+- **Responsive**: Mobile-first design approach
+
+## Tech Stack
+
+- **Next.js 14** with App Router
+- **TypeScript** for type safety
+- **Tailwind CSS v4** for styling
+- **next-themes** for dark/light mode
+- **Ganjoor API** for Persian poetry data
 
 ## Getting Started
 
@@ -16,21 +35,22 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Live Demo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Visit [https://www.ganj.directory](https://www.ganj.directory) to see the live application.
 
-## Learn More
+## Performance Features
 
-To learn more about Next.js, take a look at the following resources:
+- **API Caching**: Smart caching with TTL and request deduplication
+- **Error Handling**: Exponential backoff retry logic
+- **Canvas Optimization**: Performance-optimized particle backgrounds
+- **Bundle Optimization**: Tree shaking and lazy loading
+- **SEO Optimization**: Dynamic sitemap generation and meta tags
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application is deployed on Vercel and automatically updates on push to the main branch.
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is open source and contributions are welcome!
