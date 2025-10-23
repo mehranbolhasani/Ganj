@@ -12,7 +12,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-dark transition-colors duration-300 relative">
+    <div className="min-h-screen bg-stone-100 dark:bg-stone-900 transition-colors duration-300 relative">
       {/* Animated Backgrounds - Full screen */}
       <ParticleBackground />
       <BackgroundToggle />

@@ -41,15 +41,15 @@ export default async function CategoryPoemsPage({ params }: CategoryPoemsPagePro
     return (
       <Layout>
         <div className="text-center py-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">
             خطا در بارگذاری
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-stone-600 dark:text-stone-300 mb-4">
             {error}
           </p>
           <Link 
             href={`/poet/${poetId}`}
-            className="inline-block px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
           >
             بازگشت به شاعر
           </Link>
@@ -66,9 +66,9 @@ export default async function CategoryPoemsPage({ params }: CategoryPoemsPagePro
       ]} />
       
        <div className="">
-         <h1 className="text-3xl font-bold text-stone-900 dark:text-white text-right flex items-center justify-between">
+         <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-300 text-right flex items-center justify-between">
            <span>{categoryTitle}</span>
-           <span className="text-stone-600 dark:text-gray-500">
+           <span className="text-stone-600 dark:text-stone-300">
              {poems.length}
            </span>
          </h1>
@@ -76,7 +76,7 @@ export default async function CategoryPoemsPage({ params }: CategoryPoemsPagePro
 
       {poems.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-stone-500 dark:text-gray-400 text-right">
+          <p className="text-stone-500 dark:text-stone-300 text-right">
             هیچ شعری یافت نشد
           </p>
         </div>
@@ -86,12 +86,12 @@ export default async function CategoryPoemsPage({ params }: CategoryPoemsPagePro
             <Link
               key={poem.id}
               href={`/poem/${poem.id}`}
-              className="block p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-gray-800/50 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+              className="block p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600"
             >
-              <h3 className="text-lg font-semibold text-stone-900 dark:text-white mb-2 text-right">
+              <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-300 mb-2 text-right">
                 {poem.title}
               </h3>
-              <p className="text-stone-600 dark:text-gray-400 text-sm text-right">
+              <p className="text-stone-600 dark:text-stone-300 text-sm text-right">
                 {poem.poetName}
               </p>
             </Link>

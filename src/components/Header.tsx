@@ -28,9 +28,9 @@ export default function Header() {
           className="w-4 h-4 flex items-center justify-center"
         >
           {theme === 'dark' ? (
-            <Moon className="w-6 h-6 text-stone-900" />
+            <Moon className="w-6 h-6 text-stone-900 dark:text-stone-300" />
           ) : (
-            <Sun className="w-6 h-6 text-stone-900" />
+            <Sun className="w-6 h-6 text-stone-900 dark:text-stone-300" />
           )}
         </button>
 
@@ -38,7 +38,7 @@ export default function Header() {
         <nav className="flex items-center gap-1 flex-row-reverse">
           <Link
             href="/about"
-            className="px-4 py-2 rounded-md text-md font-normal text-stone-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="px-4 py-2 rounded-md text-md font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
           >
             درباره
           </Link>
@@ -49,9 +49,9 @@ export default function Header() {
       {/* Right side - Logo */}
       <div className="flex items-center gap-1 flex-row-reverse">
         <Link href="/" className="flex items-center gap-1 flex-row-reverse">
-          <span className="font-doran text-xl font-bold text-stone-900 dark:text-white">دفتر گنج</span>
+          <span className="font-doran text-xl font-bold text-stone-900 dark:text-stone-300">دفتر گنج</span>
           <div className="w-8 h-8 grid items-center justify-center">
-            <BookOpenCheck className="w-6 h-6 text-stone-900 mx-auto" />
+            <BookOpenCheck className="w-6 h-6 text-stone-900 mx-auto dark:text-stone-300" />
           </div>
         </Link>
       </div>

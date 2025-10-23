@@ -33,15 +33,15 @@ export default async function Home() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-stone-100 dark:bg-gray-900 relative">
+      <div className="min-h-screen bg-stone-100 dark:bg-stone-900 relative">
         <ParticleBackground />
         <div className="relative z-10">
           <Header />
           <div className="text-center py-8 pt-32">
-            <h1 className="text-2xl font-bold text-stone-900 dark:text-white mb-4">
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-4">
               خطا در بارگذاری
             </h1>
-            <p className="text-stone-600 dark:text-gray-400">
+            <p className="text-stone-600 dark:text-stone-200">
               {error}
             </p>
           </div>
@@ -52,7 +52,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-gray-900 relative">
+    <div className="min-h-screen bg-stone-100 dark:bg-stone-900 relative">
       {/* Animated Backgrounds - Full screen */}
       <ParticleBackground />
       

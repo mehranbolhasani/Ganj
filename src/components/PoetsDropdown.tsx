@@ -51,7 +51,7 @@ export default function PoetsDropdown() {
       {/* Dropdown Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-4 py-2 rounded-md text-md font-normal text-stone-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="flex items-center gap-1 px-4 py-2 rounded-md text-md font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
       >
         <span>شاعرها</span>
         <ChevronDown 
@@ -63,12 +63,12 @@ export default function PoetsDropdown() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-0 w-64 bg-white dark:bg-gray-800 rounded-b-lg shadow-lg border border-stone-200 dark:border-gray-700 border-t-0 z-50 overflow-hidden">
+        <div className="absolute top-full left-0 mt-0 w-64 bg-white dark:bg-stone-800 rounded-b-lg shadow-lg border border-stone-200 dark:border-stone-700 border-t-0 z-50 overflow-hidden">
           {/* Visual connection line */}
-          <div className="h-px bg-stone-200 dark:bg-gray-700"></div>
+          <div className="h-px bg-stone-200 dark:bg-stone-700"></div>
           <div className="py-1">
             {loading ? (
-              <div className="px-4 py-2 text-sm text-stone-600 dark:text-gray-400">
+              <div className="px-4 py-2 text-sm text-stone-600 dark:text-stone-300">
                 در حال بارگذاری...
               </div>
             ) : poets.length > 0 ? (
@@ -76,13 +76,13 @@ export default function PoetsDropdown() {
                 <Link
                   key={poet.id}
                   href={`/poet/${poet.id}`}
-                  className="block px-4 py-2 text-sm text-stone-900 dark:text-white hover:bg-stone-100 dark:hover:bg-gray-700 transition-colors border-b border-stone-100 dark:border-gray-700 last:border-b-0"
+                  className="block px-4 py-2 text-sm text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors border-b border-stone-100 dark:border-stone-700 last:border-b-0"
                   onClick={() => setIsOpen(false)}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{poet.name}</span>
                     {(poet.birthYear || poet.deathYear) && (
-                      <span className="text-xs text-stone-500 dark:text-gray-400">
+                      <span className="text-xs text-stone-500 dark:text-stone-300">
                         {poet.birthYear && poet.deathYear
                           ? `${poet.birthYear} - ${poet.deathYear}`
                           : poet.birthYear || poet.deathYear
@@ -93,7 +93,7 @@ export default function PoetsDropdown() {
                 </Link>
               ))
             ) : (
-              <div className="px-4 py-2 text-sm text-stone-600 dark:text-gray-400">
+              <div className="px-4 py-2 text-sm text-stone-600 dark:text-stone-300">
                 هیچ شاعری یافت نشد
               </div>
             )}

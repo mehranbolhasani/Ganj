@@ -5,34 +5,34 @@ export default function Footer() {
     <footer className="relative w-full max-w-[640px] flex items-center justify-between px-4 py-4">
       {/* Left side - Version */}
       <div className="px-4 py-2 rounded-md">
-        <span className="text-sm text-[#21201c] dark:text-white">نسخه ۰/۱</span>
+        <span className="text-sm text-stone-900 dark:text-stone-300">نسخه ۰/۱</span>
       </div>
 
       {/* Right side - Navigation */}
       <nav className="flex items-center gap-1">
         <Link
           href="/roadmap"
-          className="px-4 py-2 rounded-md text-sm text-[#21201c] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="px-4 py-2 rounded-md text-sm text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
         >
           نقشه راه
         </Link>
         
-        <div className="w-2 h-px bg-[#cfceca] mx-1"></div>
+        <div className="w-2 h-px bg-stone-400 dark:bg-stone-600 mx-1"></div>
         
         <Link
           href="/contact"
-          className="px-4 py-2 rounded-md text-sm text-[#21201c] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="px-4 py-2 rounded-md text-sm text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
         >
           تماس با من
         </Link>
         
-        <div className="w-2 h-px bg-[#cfceca] mx-1"></div>
+        <div className="w-2 h-px bg-stone-400 dark:bg-stone-600 mx-1"></div>
         
         <Link
           href="https://ganjoor.net"
           target="_blank"
           rel="noopener noreferrer"
-          className="px-4 py-2 rounded-md text-sm text-[#21201c] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="px-4 py-2 rounded-md text-sm text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
         >
           سایت گنجور
         </Link>

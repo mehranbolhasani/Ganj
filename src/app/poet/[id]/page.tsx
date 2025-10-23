@@ -38,15 +38,15 @@ export default async function PoetPage({ params }: PoetPageProps) {
     return (
       <Layout>
         <div className="text-center py-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">
             خطا در بارگذاری
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-stone-600 dark:text-stone-300 mb-4">
             {error}
           </p>
           <Link 
             href="/"
-            className="inline-block px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
           >
             بازگشت به صفحه اصلی
           </Link>
@@ -59,15 +59,15 @@ export default async function PoetPage({ params }: PoetPageProps) {
     <Layout>
       <Breadcrumbs items={[{ label: poet.name }]} />
       
-       <div className="mb-16 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-gray-800/50 dark:border-gray-700 overflow-hidden backdrop-blur-md">
+       <div className="mb-16 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 overflow-hidden backdrop-blur-md">
          <div className="text-right">
-           <div className="flex gap-4 items-center justify-between p-16 bg-stone-200/50">
-             <h1 className="font-doran text-4xl font-black text-stone-900 dark:text-white">
+           <div className="flex gap-4 items-center justify-between p-16 bg-stone-200/50 dark:bg-stone-700/50">
+             <h1 className="font-doran text-4xl font-black text-stone-900 dark:text-stone-300">
                {poet.name}
              </h1>
  
              {(poet.birthYear || poet.deathYear) && (
-             <p className="text-stone-600 dark:text-gray-500 text-2xl font-normal">
+             <p className="text-stone-600 dark:text-stone-300 text-2xl font-normal">
               {poet.birthYear && poet.deathYear 
                 ? `${poet.birthYear} - ${poet.deathYear}`
                 : poet.birthYear || poet.deathYear
@@ -77,7 +77,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
           </div>
           
            {poet.description && (
-             <p className="text-md text-stone-700 dark:text-gray-400 max-w-3xl mx-auto p-8 leading-relaxed">
+             <p className="text-md text-stone-700 dark:text-stone-300 max-w-3xl mx-auto p-8 leading-relaxed">
                {poet.description}
              </p>
            )}
@@ -85,7 +85,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
       </div>
 
       <div>
-        <h2 className="text-2xl font-semibold text-stone-900 dark:text-white mb-6 text-center">
+        <h2 className="text-2xl font-semibold text-stone-900 dark:text-stone-300 mb-6 text-center">
           مجموعه‌ها
         </h2>
         <CategoryList categories={categories} poetId={poetId} />
