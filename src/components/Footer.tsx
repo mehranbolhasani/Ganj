@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="relative w-full max-w-[640px] flex items-center justify-between px-4 py-4">
+    <footer className="container-responsive flex items-center justify-between px-4 py-4">
       {/* Left side - Version */}
       <div className="px-4 py-2 rounded-md">
         <span className="text-sm text-stone-900 dark:text-stone-300">نسخه ۰/۱</span>

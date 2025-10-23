@@ -26,7 +26,7 @@ export default function HeroSection() {
 
   if (loading) {
     return (
-      <div className="bg-white/50 border border-white rounded-2xl h-48 w-full max-w-[640px] mx-auto mt-16 flex items-center justify-center dark:bg-stone-800/50 dark:border-stone-700/50">
+      <div className="bg-white/50 border border-white rounded-2xl h-48 w-full mt-16 flex items-center justify-center dark:bg-stone-800/50 dark:border-stone-700/50">
         <div className="text-stone-600 dark:text-stone-300">در حال بارگذاری...</div>
       </div>
     );
@@ -37,7 +37,7 @@ export default function HeroSection() {
   }
 
   return (
-    <div className="backdrop-blur-md bg-white/50 border border-white rounded-2xl h-64 w-full max-w-[640px] mx-auto relative overflow-hidden shadow-md dark:bg-stone-800/50 dark:border-stone-700/50">
+    <div className="backdrop-blur-md bg-white/50 border border-white rounded-2xl h-64 w-full relative overflow-hidden shadow-md dark:bg-stone-800/50 dark:border-stone-700/50">
       {/* Background decoration */}
       <div className="absolute right-1/2 top-2 transform translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-orange-500 rounded-full opacity-10 blur-3xl"></div>
       

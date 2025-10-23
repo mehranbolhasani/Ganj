@@ -19,7 +19,7 @@ export default function Header() {
   }
 
   return (
-    <header className="top-0 transform w-full max-w-[640px] min-h-[128px] h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
+    <header className="container-responsive min-h-[128px] h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
       {/* Left side - Navigation */}
       <div className="flex items-center gap-4 flex-row-reverse">
         {/* Moon icon for theme toggle */}

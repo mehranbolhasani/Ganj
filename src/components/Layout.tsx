@@ -17,10 +17,10 @@ export default function Layout({ children }: LayoutProps) {
       <ParticleBackground />
       <BackgroundToggle />
       
-      {/* Content Container */}
-      <div className="relative z-10 flex flex-col items-center mx-w-[640px] h-full gap-8 min-h-dvh">
+      {/* Content Container - 90% width on mobile, max-width on larger screens */}
+      <div className="relative z-10 flex flex-col items-center container-responsive min-h-dvh gap-8">
         <Header />
-        <main className="max-w-[640px] mx-auto relative w-full flex flex-col gap-8">
+        <main className="w-full flex flex-col gap-8">
           {children}
         </main>
         <Footer />

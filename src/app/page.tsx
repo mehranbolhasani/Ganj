@@ -56,15 +56,15 @@ export default async function Home() {
       {/* Animated Backgrounds - Full screen */}
       <ParticleBackground />
       
-      {/* Content Container */}
-      <div className="relative z-10 flex flex-col items-center mx-w-[640px] h-full gap-8 min-h-dvh">
+      {/* Content Container - 90% width on mobile, max-width on larger screens */}
+      <div className="relative z-10 flex flex-col items-center container-responsive min-h-dvh gap-8">
         <Header />
         
         {/* Hero Section */}
         <HeroSection />
         
         {/* Poets Grid */}
-        <div className="relative w-full max-w-[640px]">
+        <div className="relative w-full">
           <div className="flex flex-wrap gap-4 justify-end">
             {poets.map((poet) => (
               <PoetCard key={poet.id} poet={poet} />
