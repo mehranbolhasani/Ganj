@@ -1,0 +1,30 @@
+import Header from './Header';
+import Footer from './Footer';
+import AuroraBackground from './AuroraBackground';
+import ParticleBackground from './ParticleBackground';
+import TestBackground from './TestBackground';
+import SimpleBackground from './SimpleBackground';
+import BackgroundToggle from './BackgroundToggle';
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export default function Layout({ children }: LayoutProps) {
+  return (
+    <div className="min-h-screen bg-stone-100 dark:bg-dark transition-colors duration-300 relative">
+      {/* Animated Backgrounds - Full screen */}
+      <ParticleBackground />
+      <BackgroundToggle />
+      
+      {/* Content Container */}
+      <div className="relative z-10 flex flex-col items-center mx-w-[640px] h-full gap-8 min-h-dvh">
+        <Header />
+        <main className="max-w-[640px] mx-auto relative w-full flex flex-col gap-8">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </div>
+  );
+}
