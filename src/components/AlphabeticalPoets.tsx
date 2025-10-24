@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Poet } from '@/lib/types';
 import PoetCard from './PoetCard';
 
@@ -37,13 +37,15 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
     return groups;
   }, {} as { [key: string]: Poet[] });
 
-  // Sort groups by Persian alphabet order
-  const sortedGroups = Object.keys(groupedPoets)
-    .sort((a, b) => {
-      const aIndex = PERSIAN_LETTERS.indexOf(a);
-      const bIndex = PERSIAN_LETTERS.indexOf(b);
-      return aIndex - bIndex;
-    });
+  // Memoize sortedGroups to prevent infinite re-renders
+  const sortedGroups = useMemo(() => {
+    return Object.keys(groupedPoets)
+      .sort((a, b) => {
+        const aIndex = PERSIAN_LETTERS.indexOf(a);
+        const bIndex = PERSIAN_LETTERS.indexOf(b);
+        return aIndex - bIndex;
+      });
+  }, [groupedPoets]);
 
   // Notify parent about available letters
   useEffect(() => {

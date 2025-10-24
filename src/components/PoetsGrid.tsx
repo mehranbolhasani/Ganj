@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { simpleApi } from '@/lib/simple-api';
 import { Poet } from '@/lib/types';
 import FamousPoets from './FamousPoets';
@@ -55,9 +55,9 @@ export default function PoetsGrid() {
     }
   };
 
-  const handleAvailableLettersChange = (letters: string[]) => {
+  const handleAvailableLettersChange = useCallback((letters: string[]) => {
     setAvailableLetters(letters);
-  };
+  }, []);
 
   if (loading) {
     return (
