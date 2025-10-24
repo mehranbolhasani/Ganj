@@ -1,12 +1,41 @@
 import Header from '@/components/Header';
-import TestComponent from '@/components/TestComponent';
+import PoetCard from '@/components/PoetCard';
 import Footer from '@/components/Footer';
 import ParticleBackground from '@/components/ParticleBackground';
+import { ganjoorApi } from '@/lib/ganjoor-api';
 import { Poet } from '@/lib/types';
 
-export default function Home() {
-  // Temporarily remove API calls to test React refresh
-  const poets: Poet[] = [];
+export default async function Home() {
+  let poets: Poet[] = [];
+  let error: string | null = null;
+
+  try {
+    // Get all poets from the API - this is efficient due to caching
+    poets = await ganjoorApi.getPoets();
+    console.log(`Loaded ${poets.length} poets from Ganjoor API`);
+  } catch (err) {
+    error = err instanceof Error ? err.message : 'خطا در بارگذاری شاعران';
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-stone-100 dark:bg-stone-900 relative">
+        <ParticleBackground />
+        <div className="relative z-10">
+          <Header />
+          <div className="text-center py-8 pt-32">
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+              خطا در بارگذاری
+            </h1>
+            <p className="text-stone-600 dark:text-stone-200">
+              {error}
+            </p>
+          </div>
+          <Footer />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-stone-100 dark:bg-stone-900 relative">
@@ -17,13 +46,12 @@ export default function Home() {
       <div className="relative z-10 flex flex-col items-center container-responsive min-h-dvh gap-8">
         <Header />
         
-                {/* Test Component */}
-                <TestComponent />
-        
-        {/* Poets Grid - Temporarily disabled */}
+        {/* Poets Grid */}
         <div className="relative w-full">
-          <div className="text-center py-8">
-            <p className="text-stone-600 dark:text-stone-300">Poets grid temporarily disabled for testing</p>
+          <div className="flex flex-wrap gap-4 justify-end">
+            {poets.map((poet) => (
+              <PoetCard key={poet.id} poet={poet} />
+            ))}
           </div>
         </div>
         
