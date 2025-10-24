@@ -7,14 +7,14 @@ import FamousPoets from './FamousPoets';
 import AlphabeticalPoets from './AlphabeticalPoets';
 import AlphabeticalNav from './AlphabeticalNav';
 
-// Define the 6 most famous poets by their slugs
+// Define the 6 most famous poets by their slugs (from Ganjoor website)
 const FAMOUS_POET_SLUGS = [
   'hafez',
   'saadi', 
-  'ferdowsi',
-  'molavi',
+  'moulavi',
+  'ferdousi',
   'attar',
-  'nizami'
+  'nezami'
 ];
 
 export default function PoetsGrid() {

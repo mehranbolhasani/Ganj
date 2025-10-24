@@ -6,14 +6,14 @@ interface FamousPoetsProps {
   poets: Poet[];
 }
 
-// Define the 6 most famous poets by their slugs
+// Define the 6 most famous poets by their slugs (from Ganjoor website)
 const FAMOUS_POET_SLUGS = [
   'hafez',
   'saadi', 
-  'ferdowsi',
-  'molavi',
+  'moulavi',
+  'ferdousi',
   'attar',
-  'nizami'
+  'nezami'
 ];
 
 export default function FamousPoets({ poets }: FamousPoetsProps) {
