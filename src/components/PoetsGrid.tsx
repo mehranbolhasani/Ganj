@@ -22,6 +22,7 @@ export default function PoetsGrid() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeLetter, setActiveLetter] = useState<string>('');
+  const [availableLetters, setAvailableLetters] = useState<string[]>([]);
 
   console.log('PoetsGrid component rendered');
 
@@ -54,6 +55,10 @@ export default function PoetsGrid() {
     }
   };
 
+  const handleAvailableLettersChange = (letters: string[]) => {
+    setAvailableLetters(letters);
+  };
+
   if (loading) {
     return (
       <div className="relative w-full">
@@ -83,12 +88,17 @@ export default function PoetsGrid() {
       <FamousPoets poets={poets} />
       
       {/* Alphabetical Poets Section */}
-      <AlphabeticalPoets poets={poets} famousPoetSlugs={FAMOUS_POET_SLUGS} />
+      <AlphabeticalPoets 
+        poets={poets} 
+        famousPoetSlugs={FAMOUS_POET_SLUGS}
+        onAvailableLettersChange={handleAvailableLettersChange}
+      />
       
       {/* Sticky Alphabetical Navigation */}
       <AlphabeticalNav 
         onLetterClick={handleLetterClick}
         activeLetter={activeLetter}
+        availableLetters={availableLetters}
       />
     </div>
   );

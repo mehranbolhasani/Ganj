@@ -7,6 +7,7 @@ import PoetCard from './PoetCard';
 interface AlphabeticalPoetsProps {
   poets: Poet[];
   famousPoetSlugs: string[];
+  onAvailableLettersChange?: (letters: string[]) => void;
 }
 
 // Persian alphabet letters
@@ -14,7 +15,7 @@ const PERSIAN_LETTERS = [
   'الف', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ک', 'گ', 'ل', 'م', 'ن', 'و', 'ه', 'ی'
 ];
 
-export default function AlphabeticalPoets({ poets, famousPoetSlugs }: AlphabeticalPoetsProps) {
+export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableLettersChange }: AlphabeticalPoetsProps) {
   const [activeLetter, setActiveLetter] = useState<string>('');
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -43,6 +44,13 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs }: Alphabetic
       const bIndex = PERSIAN_LETTERS.indexOf(b);
       return aIndex - bIndex;
     });
+
+  // Notify parent about available letters
+  useEffect(() => {
+    if (onAvailableLettersChange) {
+      onAvailableLettersChange(sortedGroups);
+    }
+  }, [sortedGroups, onAvailableLettersChange]);
 
   const handleLetterClick = (letter: string) => {
     setActiveLetter(letter);

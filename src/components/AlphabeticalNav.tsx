@@ -10,16 +10,17 @@ const PERSIAN_LETTERS = [
 interface AlphabeticalNavProps {
   onLetterClick: (letter: string) => void;
   activeLetter?: string;
+  availableLetters?: string[];
 }
 
-export default function AlphabeticalNav({ onLetterClick, activeLetter }: AlphabeticalNavProps) {
-  const [isVisible, setIsVisible] = useState(true); // Always visible for testing
+export default function AlphabeticalNav({ onLetterClick, activeLetter, availableLetters = [] }: AlphabeticalNavProps) {
+  const [isVisible, setIsVisible] = useState(false); // Hidden initially
 
   useEffect(() => {
     const handleScroll = () => {
       // Show nav when user scrolls past the famous poets section
       const scrollY = window.scrollY;
-      setIsVisible(scrollY > 200); // Lower threshold for better visibility
+      setIsVisible(scrollY > 300); // Show after scrolling past famous poets
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -32,7 +33,7 @@ export default function AlphabeticalNav({ onLetterClick, activeLetter }: Alphabe
     }`}>
       <div className="alphabetical-nav bg-white dark:bg-stone-800 rounded-lg shadow-lg p-2 border border-stone-200 dark:border-stone-700">
         <div className="flex flex-col space-y-1 max-h-96 overflow-y-auto">
-          {PERSIAN_LETTERS.map((letter) => (
+          {availableLetters.map((letter) => (
             <button
               key={letter}
               onClick={() => onLetterClick(letter)}
