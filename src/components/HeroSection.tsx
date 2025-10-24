@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 import { Poem } from '@/lib/types';
 
@@ -46,27 +47,37 @@ export default function HeroSection() {
         <span className="text-xs text-stone-600 dark:text-stone-300">شعر تصادفی</span>
       </div>
 
-      {/* Poem content - Single line */}
-      <div className="relative top-1/2 transform -translate-y-1/2 flex items-center justify-center px-8">
-        <p className="text-xl font-bold text-stone-900 text-center tracking-tight font-doran dark:text-stone-300 leading-relaxed">
+      {/* Poem content - One beyt (couplet) */}
+      <div className="relative top-1/2 transform -translate-y-1/2 flex flex-col items-center justify-center px-8 gap-2">
+        <p className="text-lg font-bold text-stone-900 text-center tracking-tight font-doran dark:text-stone-300 leading-relaxed">
           {randomPoem.verses[0] || 'صبا به لُطف بگو آن غزالِ رَعنا را'}
         </p>
+        {randomPoem.verses[1] && (
+          <p className="text-lg font-bold text-stone-900 text-center tracking-tight font-doran dark:text-stone-300 leading-relaxed">
+            {randomPoem.verses[1]}
+          </p>
+        )}
       </div>
 
-      {/* Poet name */}
+      {/* Poet name - Clickable link */}
       <div className="absolute bottom-4 left-4 flex items-center gap-1 flex-row-reverse">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180 text-stone-600 dark:text-stone-300">
-          <path
-            d="M6 4L10 8L6 12"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <span className="text-xs text-stone-600 dark:text-stone-300 font-normal tracking-tight">
-          {randomPoem.poetName || 'حافظ'}
-        </span>
+        <Link 
+          href={`/poet/${randomPoem.poetId}`}
+          className="flex items-center gap-1 flex-row-reverse hover:bg-stone-200 dark:hover:bg-stone-700 px-2 py-1 rounded-md transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180 text-stone-600 dark:text-stone-300">
+            <path
+              d="M6 4L10 8L6 12"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="text-xs text-stone-600 dark:text-stone-300 font-normal tracking-tight hover:text-stone-900 dark:hover:text-stone-100">
+            {randomPoem.poetName || 'حافظ'}
+          </span>
+        </Link>
       </div>
     </div>
   );
