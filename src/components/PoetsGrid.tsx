@@ -47,6 +47,11 @@ export default function PoetsGrid() {
 
   const handleLetterClick = (letter: string) => {
     setActiveLetter(letter);
+    // Find the section with this letter and scroll to it
+    const element = document.querySelector(`[data-letter="${letter}"]`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   if (loading) {

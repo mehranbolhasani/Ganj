@@ -75,7 +75,7 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs }: Alphabetic
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-8 text-center">
+      <h2 className="font-doran text-xl font-bold text-stone-900 dark:text-stone-100 mb-8 text-right">
         شاعرهای دیگر
       </h2>
       
@@ -86,6 +86,7 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs }: Alphabetic
             ref={(el) => {
               sectionRefs.current[letter] = el;
             }}
+            data-letter={letter}
             className="scroll-mt-20"
           >
             <div className="flex items-center mb-4">
@@ -95,7 +96,7 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs }: Alphabetic
               <div className="flex-1 h-px bg-stone-200 dark:bg-stone-700 mr-4"></div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {groupedPoets[letter].map((poet) => (
                 <PoetCard key={poet.id} poet={poet} />
               ))}

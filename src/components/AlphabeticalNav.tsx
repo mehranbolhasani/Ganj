@@ -27,16 +27,16 @@ export default function AlphabeticalNav({ onLetterClick, activeLetter }: Alphabe
   }, []);
 
   return (
-    <div className={`fixed right-4 top-1/2 transform -translate-y-1/2 z-50 transition-all duration-300 ${
+    <div className={`fixed right-4 top-1/2 transform -translate-y-1/2 z-50 transition-translate transition-opacity duration-300 ${
       isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
     }`}>
-      <div className="bg-white dark:bg-stone-800 rounded-lg shadow-lg p-2 border border-stone-200 dark:border-stone-700">
+      <div className="alphabetical-nav bg-white dark:bg-stone-800 rounded-lg shadow-lg p-2 border border-stone-200 dark:border-stone-700">
         <div className="flex flex-col space-y-1 max-h-96 overflow-y-auto">
           {PERSIAN_LETTERS.map((letter) => (
             <button
               key={letter}
               onClick={() => onLetterClick(letter)}
-              className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
+              className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
                 activeLetter === letter
                   ? 'bg-stone-100 dark:bg-stone-700 text-stone-900 dark:text-stone-100'
                   : 'text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 hover:text-stone-900 dark:hover:text-stone-100'
