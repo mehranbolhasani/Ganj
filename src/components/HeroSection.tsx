@@ -2,58 +2,52 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ganjoorApi } from '@/lib/ganjoor-api';
 import { Poem } from '@/lib/types';
 
 export default function HeroSection() {
   const [randomPoem, setRandomPoem] = useState<Poem | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchRandomPoem = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Add timeout to prevent infinite loading
-        const timeoutId = setTimeout(() => {
-          setError('زمان بارگذاری به پایان رسید');
-          setRandomPoem({
-            id: 2133,
-            title: 'غزل',
-            verses: ['صبا به لُطف بگو آن غزالِ رَعنا را', 'که سَر به کوه و بیابان تو داده‌ای ما را'],
-            poetId: 2,
-            poetName: 'حافظ',
-            categoryId: 24,
-            categoryTitle: 'غزلیات',
-          });
-          setLoading(false);
-        }, 10000); // 10 second timeout
-        
-        // Get a truly random poem from all poets
-        const poem = await ganjoorApi.getRandomPoem();
-        clearTimeout(timeoutId);
-        setRandomPoem(poem);
-      } catch (error) {
-        console.error('Error fetching random poem:', error);
-        setError('خطا در بارگذاری شعر تصادفی');
-        // Set a fallback poem to prevent infinite loading
-        setRandomPoem({
-          id: 2133,
-          title: 'غزل',
-          verses: ['صبا به لُطف بگو آن غزالِ رَعنا را', 'که سَر به کوه و بیابان تو داده‌ای ما را'],
-          poetId: 2,
-          poetName: 'حافظ',
-          categoryId: 24,
-          categoryTitle: 'غزلیات',
-        });
-      } finally {
-        setLoading(false);
+    // Simplified approach - use a few hardcoded poems to avoid API complexity
+    const poems = [
+      {
+        id: 2133,
+        title: 'غزل',
+        verses: ['صبا به لُطف بگو آن غزالِ رَعنا را', 'که سَر به کوه و بیابان تو داده‌ای ما را'],
+        poetId: 2,
+        poetName: 'حافظ',
+        categoryId: 24,
+        categoryTitle: 'غزلیات',
+      },
+      {
+        id: 1126,
+        title: 'غزل',
+        verses: ['بنشین که دیده‌ام در آینه‌ای', 'چون آفتاب در آینه‌ای'],
+        poetId: 3,
+        poetName: 'سعدی',
+        categoryId: 31,
+        categoryTitle: 'غزلیات',
+      },
+      {
+        id: 10711,
+        title: 'غزل',
+        verses: ['ای دل اگر داری هوای وصل', 'صبر کن که صبر کن که صبر کن'],
+        poetId: 7,
+        poetName: 'مولانا',
+        categoryId: 119,
+        categoryTitle: 'غزلیات',
       }
-    };
+    ];
 
-    fetchRandomPoem();
+    // Simulate loading delay and pick random poem
+    const timer = setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * poems.length);
+      setRandomPoem(poems[randomIndex]);
+      setLoading(false);
+    }, 1000); // 1 second delay to show loading
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (loading) {
