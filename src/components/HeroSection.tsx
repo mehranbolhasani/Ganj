@@ -3,52 +3,166 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Poem } from '@/lib/types';
+import { ganjoorApi } from '@/lib/ganjoor-api';
+
+// Cache for poems with 4-hour expiration
+const POEM_CACHE_KEY = 'hero-poems-cache';
+const CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+
+interface CachedPoems {
+  poems: Poem[];
+  timestamp: number;
+}
 
 export default function HeroSection() {
   const [randomPoem, setRandomPoem] = useState<Poem | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simplified approach - use a few hardcoded poems to avoid API complexity
-    const poems = [
-      {
-        id: 2133,
-        title: 'غزل',
-        verses: ['صبا به لُطف بگو آن غزالِ رَعنا را', 'که سَر به کوه و بیابان تو داده‌ای ما را'],
-        poetId: 2,
-        poetName: 'حافظ',
-        categoryId: 24,
-        categoryTitle: 'غزلیات',
-      },
-      {
-        id: 1126,
-        title: 'غزل',
-        verses: ['بنشین که دیده‌ام در آینه‌ای', 'چون آفتاب در آینه‌ای'],
-        poetId: 3,
-        poetName: 'سعدی',
-        categoryId: 31,
-        categoryTitle: 'غزلیات',
-      },
-      {
-        id: 10711,
-        title: 'غزل',
-        verses: ['ای دل اگر داری هوای وصل', 'صبر کن که صبر کن که صبر کن'],
-        poetId: 7,
-        poetName: 'مولانا',
-        categoryId: 119,
-        categoryTitle: 'غزلیات',
+    const loadRandomPoem = async () => {
+      try {
+        setLoading(true);
+        
+        // Check if we have valid cached poems
+        const cached = getCachedPoems();
+        if (cached && cached.length > 0) {
+          // Use cached poems
+          const randomIndex = Math.floor(Math.random() * cached.length);
+          setRandomPoem(cached[randomIndex]);
+          setLoading(false);
+          
+          // Refresh cache in background if needed
+          refreshCacheIfNeeded();
+        } else {
+          // No cache, load fresh poems
+          await loadAndCachePoems();
+        }
+      } catch (error) {
+        console.error('Error loading poems:', error);
+        // Fallback to hardcoded poems
+        setRandomPoem(getFallbackPoem());
+        setLoading(false);
       }
-    ];
+    };
 
-    // Simulate loading delay and pick random poem
-    const timer = setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * poems.length);
-      setRandomPoem(poems[randomIndex]);
-      setLoading(false);
-    }, 1000); // 1 second delay to show loading
-
-    return () => clearTimeout(timer);
+    loadRandomPoem();
   }, []);
+
+  const getCachedPoems = (): Poem[] | null => {
+    try {
+      const cached = localStorage.getItem(POEM_CACHE_KEY);
+      if (!cached) return null;
+      
+      const data: CachedPoems = JSON.parse(cached);
+      const now = Date.now();
+      
+      // Check if cache is still valid (4 hours)
+      if (now - data.timestamp > CACHE_DURATION) {
+        localStorage.removeItem(POEM_CACHE_KEY);
+        return null;
+      }
+      
+      return data.poems;
+    } catch (error) {
+      console.error('Error reading cache:', error);
+      return null;
+    }
+  };
+
+  const saveCachedPoems = (poems: Poem[]) => {
+    try {
+      const data: CachedPoems = {
+        poems,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(POEM_CACHE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving cache:', error);
+    }
+  };
+
+  const loadAndCachePoems = async () => {
+    try {
+      // Load 30-50 poems from API
+      const poets = await ganjoorApi.getPoets();
+      const poems: Poem[] = [];
+      
+      // Get poems from top poets (first 10 poets for performance)
+      const topPoets = poets.slice(0, 10);
+      
+      for (const poet of topPoets) {
+        try {
+          const { categories } = await ganjoorApi.getPoet(poet.id);
+          if (categories.length > 0) {
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const categoryPoems = await ganjoorApi.getCategoryPoems(poet.id, randomCategory.id);
+            
+            if (categoryPoems.length > 0) {
+              // Take 3-5 random poems from this category
+              const randomPoems = categoryPoems
+                .sort(() => 0.5 - Math.random())
+                .slice(0, Math.min(5, categoryPoems.length));
+              
+              for (const poem of randomPoems) {
+                const fullPoem = await ganjoorApi.getPoem(poem.id);
+                poems.push({
+                  ...fullPoem,
+                  poetId: poet.id,
+                  poetName: poet.name,
+                });
+              }
+            }
+          }
+          
+          // Stop when we have enough poems (30-50)
+          if (poems.length >= 30) break;
+        } catch (error) {
+          console.error(`Error loading poems for poet ${poet.name}:`, error);
+        }
+      }
+      
+      // Save to cache
+      if (poems.length > 0) {
+        saveCachedPoems(poems);
+        const randomIndex = Math.floor(Math.random() * poems.length);
+        setRandomPoem(poems[randomIndex]);
+      } else {
+        setRandomPoem(getFallbackPoem());
+      }
+    } catch (error) {
+      console.error('Error loading poems:', error);
+      setRandomPoem(getFallbackPoem());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refreshCacheIfNeeded = async () => {
+    try {
+      const cached = localStorage.getItem(POEM_CACHE_KEY);
+      if (!cached) return;
+      
+      const data: CachedPoems = JSON.parse(cached);
+      const now = Date.now();
+      
+      // Refresh if cache is older than 3 hours
+      if (now - data.timestamp > 3 * 60 * 60 * 1000) {
+        await loadAndCachePoems();
+      }
+    } catch (error) {
+      console.error('Error refreshing cache:', error);
+    }
+  };
+
+  const getFallbackPoem = (): Poem => ({
+    id: 2133,
+    title: 'غزل',
+    verses: ['صبا به لُطف بگو آن غزالِ رَعنا را', 'که سَر به کوه و بیابان تو داده‌ای ما را'],
+    poetId: 2,
+    poetName: 'حافظ',
+    categoryId: 24,
+    categoryTitle: 'غزلیات',
+  });
 
   if (loading) {
     return (
