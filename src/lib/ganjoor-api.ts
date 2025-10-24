@@ -143,7 +143,12 @@ export const ganjoorApi = {
         
         if (categories.length === 0) {
           // Fallback to a known poem if no categories
-          return await this.getPoem(2133); // Hafez poem as fallback
+          const fallbackPoem = await this.getPoem(2133); // Hafez poem as fallback
+          return {
+            ...fallbackPoem,
+            poetId: randomPoet.id,
+            poetName: randomPoet.name,
+          };
         }
         
         // Pick a random category
@@ -154,18 +159,44 @@ export const ganjoorApi = {
         
         if (poems.length === 0) {
           // Fallback to a known poem if no poems in category
-          return await this.getPoem(2133);
+          const fallbackPoem = await this.getPoem(2133);
+          return {
+            ...fallbackPoem,
+            poetId: randomPoet.id,
+            poetName: randomPoet.name,
+          };
         }
         
         // Pick a random poem
         const randomPoem = poems[Math.floor(Math.random() * poems.length)];
         
         // Get the full poem details
-        return await this.getPoem(randomPoem.id);
+        const fullPoem = await this.getPoem(randomPoem.id);
+        
+        // Ensure poet information is set correctly
+        const result = {
+          ...fullPoem,
+          poetId: randomPoet.id,
+          poetName: randomPoet.name,
+        };
+        
+        console.log('Random poem selected:', {
+          poetId: result.poetId,
+          poetName: result.poetName,
+          poemTitle: result.title,
+          verses: result.verses.length
+        });
+        
+        return result;
       } catch (error) {
         console.error('Error getting random poem:', error);
-        // Fallback to a known poem
-        return await this.getPoem(2133);
+        // Fallback to a known poem with proper poet info
+        const fallbackPoem = await this.getPoem(2133);
+        return {
+          ...fallbackPoem,
+          poetId: 2, // Hafez ID
+          poetName: 'حافظ',
+        };
       }
     }, 5 * 60 * 1000); // Cache for 5 minutes
   },
