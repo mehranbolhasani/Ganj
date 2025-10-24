@@ -10,23 +10,10 @@ export default async function Home() {
   let poets: Poet[] = [];
   let error: string | null = null;
 
-  // Phase 1: Limit to specific poets from Ganjoor main website
-  const targetPoets = [
-    'hafez',      // حافظ
-    'saadi',      // سعدی
-    'moulavi',    // مولانا
-    'ferdousi',   // فردوسی
-    'khayyam',    // خیام
-    'saeb',       // صائب
-    'attar',      // عطار
-    'iraj',       // ایرج میرزا
-    'nezami',     // نظامی
-    'shahriar'    // شهریار
-  ];
-
   try {
-    const allPoets = await ganjoorApi.getPoets();
-    poets = allPoets.filter(poet => poet.slug && targetPoets.includes(poet.slug));
+    // Get all poets from the API - this is efficient due to caching
+    poets = await ganjoorApi.getPoets();
+    console.log(`Loaded ${poets.length} poets from Ganjoor API`);
   } catch (err) {
     error = err instanceof Error ? err.message : 'خطا در بارگذاری شاعران';
   }

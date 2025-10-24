@@ -11,8 +11,8 @@ export default function HeroSection() {
   useEffect(() => {
     const fetchRandomPoem = async () => {
       try {
-        // For now, we'll use a hardcoded poem ID. In the future, we can implement a random poem API
-        const poem = await ganjoorApi.getPoem(2133); // Using Hafez poem ID as example
+        // Get a truly random poem from all poets
+        const poem = await ganjoorApi.getRandomPoem();
         setRandomPoem(poem);
       } catch (error) {
         console.error('Error fetching random poem:', error);
@@ -46,17 +46,10 @@ export default function HeroSection() {
         <span className="text-xs text-stone-600 dark:text-stone-300">شعر تصادفی</span>
       </div>
 
-      {/* Poem content */}
-      <div className="relative top-1/2 transform -translate-y-1/2 flex items-center gap-6 justify-center">
-        <p className="text-lg font-bold text-stone-900 text-right tracking-tight font-doran dark:text-stone-300">
+      {/* Poem content - Single line */}
+      <div className="relative top-1/2 transform -translate-y-1/2 flex items-center justify-center px-8">
+        <p className="text-xl font-bold text-stone-900 text-center tracking-tight font-doran dark:text-stone-300 leading-relaxed">
           {randomPoem.verses[0] || 'صبا به لُطف بگو آن غزالِ رَعنا را'}
-        </p>
-        
-        {/* Decorative line */}
-        <div className="w-6 h-px bg-stone-600 dark:bg-stone-400"></div>
-        
-        <p className="text-lg font-bold text-stone-900 text-right tracking-tight font-doran dark:text-stone-300">
-          {randomPoem.verses[1] || 'که سَر به کوه و بیابان تو داده‌ای ما را'}
         </p>
       </div>
 

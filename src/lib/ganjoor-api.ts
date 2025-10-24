@@ -127,4 +127,46 @@ export const ganjoorApi = {
       };
     });
   },
+
+  // Get a random poem from all poets
+  async getRandomPoem(): Promise<Poem> {
+    return withCache('/random-poem', async () => {
+      try {
+        // Get all poets first
+        const poets = await this.getPoets();
+        
+        // Pick a random poet
+        const randomPoet = poets[Math.floor(Math.random() * poets.length)];
+        
+        // Get poet's categories
+        const { categories } = await this.getPoet(randomPoet.id);
+        
+        if (categories.length === 0) {
+          // Fallback to a known poem if no categories
+          return await this.getPoem(2133); // Hafez poem as fallback
+        }
+        
+        // Pick a random category
+        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+        
+        // Get poems from that category
+        const poems = await this.getCategoryPoems(randomPoet.id, randomCategory.id);
+        
+        if (poems.length === 0) {
+          // Fallback to a known poem if no poems in category
+          return await this.getPoem(2133);
+        }
+        
+        // Pick a random poem
+        const randomPoem = poems[Math.floor(Math.random() * poems.length)];
+        
+        // Get the full poem details
+        return await this.getPoem(randomPoem.id);
+      } catch (error) {
+        console.error('Error getting random poem:', error);
+        // Fallback to a known poem
+        return await this.getPoem(2133);
+      }
+    }, 5 * 60 * 1000); // Cache for 5 minutes
+  },
 };

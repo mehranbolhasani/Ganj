@@ -25,12 +25,12 @@ export default function Header() {
         {/* Moon icon for theme toggle */}
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="w-4 h-4 flex items-center justify-center"
+          className="w-4 h-4 flex items-center justify-center p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
         >
           {theme === 'dark' ? (
-            <Moon className="w-6 h-6 text-stone-900 dark:text-stone-300" />
-          ) : (
             <Sun className="w-6 h-6 text-stone-900 dark:text-stone-300" />
+          ) : (
+            <Moon className="w-6 h-6 text-stone-900 dark:text-stone-300" />
           )}
         </button>
 
