@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['next-themes'],
   },
+  // Disable React refresh to avoid syntax errors
+  reactStrictMode: false,
   // Add caching headers for better performance
   async headers() {
     return [
