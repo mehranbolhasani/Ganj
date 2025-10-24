@@ -126,23 +126,41 @@
 
 /* Removed @media (prefers-color-scheme: dark) to prevent conflicts with explicit theme classes */
 
-.dark {
-  --background: #1c1917;
-  --foreground: #f5f5f4;
+/* Force light mode when .light class is present */
+.light {
+  --background: #f5f5f4 !important;
+  --foreground: #1c1917 !important;
 }
 
-.light {
+/* Dark mode only when .dark class is explicitly present */
+.dark {
+  --background: #1c1917 !important;
+  --foreground: #f5f5f4 !important;
+}
+
+/* Default to light mode */
+:root {
   --background: #f5f5f4;
   --foreground: #1c1917;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--background) !important;
+  color: var(--foreground) !important;
   font-family: 'Estedad', 'DoranFaNum', 'Vazirmatn', 'Vazir', 'Tahoma', 'Arial', sans-serif;
   direction: rtl;
   text-align: right;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Force light mode on html when .light class is present */
+html.light {
+  color-scheme: light !important;
+}
+
+/* Force dark mode on html when .dark class is present */
+html.dark {
+  color-scheme: dark !important;
 }
 
 html {

@@ -12,7 +12,9 @@ export default function Header() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    // Debug: Log the current theme
+    console.log('Current theme:', theme);
+  }, [theme]);
 
   // Render the header structure immediately to prevent layout shift
   // but use light theme until mounted
