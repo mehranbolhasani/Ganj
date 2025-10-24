@@ -23,11 +23,15 @@ export default function PoetsGrid() {
   const [error, setError] = useState<string | null>(null);
   const [activeLetter, setActiveLetter] = useState<string>('');
 
+  console.log('PoetsGrid component rendered');
+
   useEffect(() => {
     const loadPoets = async () => {
       try {
+        console.log('Starting to load poets...');
         setLoading(true);
         const poetsData = await simpleApi.getPoets();
+        console.log('API response:', poetsData.slice(0, 3)); // Log first 3 poets
         setPoets(poetsData);
         console.log(`Loaded ${poetsData.length} poets from Ganjoor API`);
       } catch (err) {

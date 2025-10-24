@@ -17,6 +17,8 @@ const FAMOUS_POET_SLUGS = [
 ];
 
 export default function FamousPoets({ poets }: FamousPoetsProps) {
+  console.log('FamousPoets component rendered with', poets.length, 'poets');
+  
   // Debug: Log all poet slugs to see what's available
   console.log('All poet slugs:', poets.map(p => p.slug).slice(0, 10));
   
