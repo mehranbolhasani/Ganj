@@ -124,7 +124,11 @@
   --font-estedad: 'Estedad', sans-serif;
 }
 
-/* Removed @media (prefers-color-scheme: dark) to prevent conflicts with explicit theme classes */
+/* Default to light mode */
+:root {
+  --background: #f5f5f4;
+  --foreground: #1c1917;
+}
 
 /* Light mode when .light class is present */
 .light {
@@ -136,12 +140,6 @@
 .dark {
   --background: #1c1917;
   --foreground: #f5f5f4;
-}
-
-/* Default to light mode */
-:root {
-  --background: #f5f5f4;
-  --foreground: #1c1917;
 }
 
 body {

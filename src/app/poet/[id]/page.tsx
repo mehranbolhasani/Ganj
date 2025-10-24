@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import Layout from '@/components/Layout';
 import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -6,7 +7,18 @@ import { ganjoorApi } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poet, Category } from '@/lib/types';
 
-
+// Helper function to get poet image based on slug
+const getPoetImage = (slug: string) => {
+  const imageMap: { [key: string]: string } = {
+    'hafez': 'hafez@2x.webp',
+    'saadi': 'saadi@2x.webp',
+    'moulavi': 'molana@2x.webp',
+    'ferdousi': 'ferdowsi@2x.webp',
+    'attar': 'attar@2x.webp',
+    'nezami': 'nezami@2x.webp'
+  };
+  return imageMap[slug?.toLowerCase() || ''] || null;
+};
 
 interface PoetPageProps {
   params: {
@@ -60,21 +72,40 @@ export default async function PoetPage({ params }: PoetPageProps) {
       <Breadcrumbs items={[{ label: poet.name }]} />
       
        <div className="mb-16 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 overflow-hidden backdrop-blur-md">
+       
          <div className="text-right">
            <div className="flex gap-4 items-center justify-between p-16 bg-stone-200/50 dark:bg-stone-700/50">
-             <h1 className="font-doran text-4xl font-black text-stone-900 dark:text-stone-300">
-               {poet.name}
-             </h1>
- 
-             {(poet.birthYear || poet.deathYear) && (
-             <p className="text-stone-600 dark:text-stone-300 text-2xl font-normal">
-              {poet.birthYear && poet.deathYear 
-                ? `${poet.birthYear} - ${poet.deathYear}`
-                : poet.birthYear || poet.deathYear
-              }
-            </p>
-            )}
-          </div>
+             <div className="flex items-center gap-6 flex-row-reverse">
+               {/* Poet Image - only for famous poets */}
+               {getPoetImage(poet.slug || '') && (
+                 <div className="w-24 h-24 rounded-full overflow-hidden bg-stone-300 dark:bg-stone-600 flex-shrink-0">
+                   <Image
+                     src={`/images/${getPoetImage(poet.slug || '')}`}
+                     alt={`تصویر ${poet.name}`}
+                     width={96}
+                     height={96}
+                     className="w-full h-full object-cover"
+                     priority
+                   />
+                 </div>
+               )}
+               
+               <div className="flex flex-col gap-2">
+                 <h1 className="font-doran text-4xl font-black text-stone-900 dark:text-stone-300">
+                   {poet.name}
+                 </h1>
+                 
+                 {(poet.birthYear || poet.deathYear) && (
+                   <p className="text-stone-600 dark:text-stone-300 text-2xl font-normal">
+                     {poet.birthYear && poet.deathYear 
+                       ? `${poet.birthYear} - ${poet.deathYear}`
+                       : poet.birthYear || poet.deathYear
+                     }
+                   </p>
+                 )}
+               </div>
+             </div>
+           </div>
           
            {poet.description && (
              <p className="text-md text-stone-700 dark:text-stone-300 max-w-3xl mx-auto p-8 leading-relaxed">

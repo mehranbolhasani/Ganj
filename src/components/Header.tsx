@@ -16,6 +16,14 @@ export default function Header() {
     console.log('Current theme:', theme);
     console.log('HTML classes:', document.documentElement.className);
     console.log('HTML element:', document.documentElement);
+    
+    // Force apply the theme class to HTML element
+    if (theme) {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+      console.log('Applied theme class:', theme, 'to HTML element');
+      console.log('HTML classes after:', document.documentElement.className);
+    }
   }, [theme]);
 
   // Render the header structure immediately to prevent layout shift
