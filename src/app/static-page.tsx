@@ -2,7 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ParticleBackground from '@/components/ParticleBackground';
 
-export default function Home() {
+export default function StaticPage() {
   return (
     <div className="min-h-screen bg-stone-100 dark:bg-stone-900 relative">
       {/* Animated Backgrounds - Full screen */}
@@ -12,7 +12,7 @@ export default function Home() {
       <div className="relative z-10 flex flex-col items-center container-responsive min-h-dvh gap-8">
         <Header />
         
-        {/* Static Content - No API calls */}
+        {/* Static Content */}
         <div className="relative w-full">
           <div className="text-center py-8">
             <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-4">
