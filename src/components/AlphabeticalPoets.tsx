@@ -19,23 +19,27 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
   const [activeLetter, setActiveLetter] = useState<string>('');
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  // Filter out famous poets
-  const otherPoets = poets.filter(poet => 
-    !famousPoetSlugs.includes(poet.slug?.toLowerCase() || '')
-  );
+  // Filter out famous poets - memoized
+  const otherPoets = useMemo(() => {
+    return poets.filter(poet => 
+      !famousPoetSlugs.includes(poet.slug?.toLowerCase() || '')
+    );
+  }, [poets, famousPoetSlugs]);
 
-  // Group poets by first letter of their name
-  const groupedPoets = otherPoets.reduce((groups, poet) => {
-    const firstLetter = poet.name.charAt(0);
-    const letterKey = firstLetter;
-    
-    if (!groups[letterKey]) {
-      groups[letterKey] = [];
-    }
-    groups[letterKey].push(poet);
-    
-    return groups;
-  }, {} as { [key: string]: Poet[] });
+  // Group poets by first letter of their name - memoized
+  const groupedPoets = useMemo(() => {
+    return otherPoets.reduce((groups, poet) => {
+      const firstLetter = poet.name.charAt(0);
+      const letterKey = firstLetter;
+      
+      if (!groups[letterKey]) {
+        groups[letterKey] = [];
+      }
+      groups[letterKey].push(poet);
+      
+      return groups;
+    }, {} as { [key: string]: Poet[] });
+  }, [otherPoets]);
 
   // Memoize sortedGroups to prevent infinite re-renders
   const sortedGroups = useMemo(() => {
