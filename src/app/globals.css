@@ -170,8 +170,12 @@ html {
   max-width: 640px;
 }
 
-/* Smooth transitions for theme changes */
-* {
+/* Smooth transitions for theme changes - only for specific elements */
+body, 
+html,
+[class*="bg-"], 
+[class*="text-"], 
+[class*="border-"] {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
