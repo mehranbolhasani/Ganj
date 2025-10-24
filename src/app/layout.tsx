@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import ThemeManager from "@/components/ThemeManager";
 
 
 export const metadata: Metadata = {
@@ -66,15 +67,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
+    <html lang="fa" dir="rtl" suppressHydrationWarning className="light">
               <body className="antialiased" style={{ fontFamily: 'Estedad, DoranFaNum, Vazirmatn, Vazir, Tahoma, Arial, sans-serif' }}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange={false}
-          forcedTheme="light"
         >
+          <ThemeManager />
           {children}
         </ThemeProvider>
       </body>

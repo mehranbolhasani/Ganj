@@ -12,8 +12,10 @@ export default function Header() {
 
   useEffect(() => {
     setMounted(true);
-    // Debug: Log the current theme
+    // Debug: Log the current theme and HTML classes
     console.log('Current theme:', theme);
+    console.log('HTML classes:', document.documentElement.className);
+    console.log('HTML element:', document.documentElement);
   }, [theme]);
 
   // Render the header structure immediately to prevent layout shift
