@@ -1,6 +1,7 @@
 'use client';
 
 import { Poet } from '@/lib/types';
+import Link from 'next/link';
 
 interface FamousPoetsProps {
   poets: Poet[];
@@ -37,7 +38,11 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
         {famousPoets.map((poet) => (
-          <div key={poet.id} className="flex flex-col items-center group cursor-pointer">
+          <Link 
+            key={poet.id} 
+            href={`/poet/${poet.id}`}
+            className="flex flex-col items-center group cursor-pointer"
+          >
             {/* Image Placeholder */}
             <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-stone-200 dark:bg-stone-700 mb-3 flex items-center justify-center group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
               <div className="text-stone-500 dark:text-stone-400 text-xs text-center">
@@ -51,7 +56,7 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
                 {poet.name}
               </h3>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
