@@ -28,7 +28,7 @@ export default function AlphabeticalNav({ onLetterClick, activeLetter, available
   }, []);
 
   return (
-    <div className={`fixed right-4 top-1/2 transform -translate-y-1/2 z-50 transition-translate transition-opacity duration-300 ${
+    <div className={`fixed right-0 md:right-4 top-1/2 transform -translate-y-1/2 z-50 transition-translate transition-opacity duration-300 ${
       isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
     }`}>
       <div className="alphabetical-nav bg-white dark:bg-stone-800 rounded-lg shadow-lg p-2 border border-stone-200 dark:border-stone-700">
