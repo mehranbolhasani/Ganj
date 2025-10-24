@@ -2,6 +2,7 @@
 
 import { Poet } from '@/lib/types';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface FamousPoetsProps {
   poets: Poet[];
@@ -16,6 +17,19 @@ const FAMOUS_POET_SLUGS = [
   'attar',
   'nezami'
 ];
+
+// Map poet slugs to their image filenames
+const getPoetImage = (slug: string) => {
+  const imageMap: { [key: string]: string } = {
+    'hafez': 'hafez@2x.webp',
+    'saadi': 'saadi@2x.webp',
+    'moulavi': 'molana@2x.webp',
+    'ferdousi': 'ferdowsi@2x.webp',
+    'attar': 'attar@2x.webp',
+    'nezami': 'nezami@2x.webp'
+  };
+  return imageMap[slug] || 'hafez@2x.webp'; // fallback to hafez image
+};
 
 export default function FamousPoets({ poets }: FamousPoetsProps) {
   console.log('FamousPoets component rendered with', poets.length, 'poets');
@@ -43,11 +57,16 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
             href={`/poet/${poet.id}`}
             className="flex flex-col items-center group cursor-pointer w-full bg-white/50 dark:bg-stone-800/50 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 min-h-[230px] gap-1"
           >
-            {/* Image Placeholder */}
-            <div className="w-full h-full rounded-xl bg-stone-200 dark:bg-stone-700 flex items-center justify-center group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
-              <div className="text-stone-500 dark:text-stone-400 text-xs text-center">
-                تصویر<br />شاعر
-              </div>
+            {/* Poet Image */}
+            <div className="w-full h-full rounded-xl overflow-hidden bg-stone-200 dark:bg-stone-700 group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
+              <Image
+                src={`/images/${getPoetImage(poet.slug || '')}`}
+                alt={`تصویر ${poet.name}`}
+                width={200}
+                height={200}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                priority
+              />
             </div>
             
             {/* Poet Name */}
