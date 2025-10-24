@@ -8,15 +8,46 @@ import { Poem } from '@/lib/types';
 export default function HeroSection() {
   const [randomPoem, setRandomPoem] = useState<Poem | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRandomPoem = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
+        // Add timeout to prevent infinite loading
+        const timeoutId = setTimeout(() => {
+          setError('زمان بارگذاری به پایان رسید');
+          setRandomPoem({
+            id: 2133,
+            title: 'غزل',
+            verses: ['صبا به لُطف بگو آن غزالِ رَعنا را', 'که سَر به کوه و بیابان تو داده‌ای ما را'],
+            poetId: 2,
+            poetName: 'حافظ',
+            categoryId: 24,
+            categoryTitle: 'غزلیات',
+          });
+          setLoading(false);
+        }, 10000); // 10 second timeout
+        
         // Get a truly random poem from all poets
         const poem = await ganjoorApi.getRandomPoem();
+        clearTimeout(timeoutId);
         setRandomPoem(poem);
       } catch (error) {
         console.error('Error fetching random poem:', error);
+        setError('خطا در بارگذاری شعر تصادفی');
+        // Set a fallback poem to prevent infinite loading
+        setRandomPoem({
+          id: 2133,
+          title: 'غزل',
+          verses: ['صبا به لُطف بگو آن غزالِ رَعنا را', 'که سَر به کوه و بیابان تو داده‌ای ما را'],
+          poetId: 2,
+          poetName: 'حافظ',
+          categoryId: 24,
+          categoryTitle: 'غزلیات',
+        });
       } finally {
         setLoading(false);
       }
@@ -34,7 +65,11 @@ export default function HeroSection() {
   }
 
   if (!randomPoem) {
-    return null;
+    return (
+      <div className="bg-white/50 border border-white rounded-2xl h-48 w-full mt-16 flex items-center justify-center dark:bg-stone-800/50 dark:border-stone-700/50">
+        <div className="text-stone-600 dark:text-stone-300">خطا در بارگذاری شعر</div>
+      </div>
+    );
   }
 
   return (

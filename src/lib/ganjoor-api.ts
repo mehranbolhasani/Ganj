@@ -174,20 +174,11 @@ export const ganjoorApi = {
         const fullPoem = await this.getPoem(randomPoem.id);
         
         // Ensure poet information is set correctly
-        const result = {
+        return {
           ...fullPoem,
           poetId: randomPoet.id,
           poetName: randomPoet.name,
         };
-        
-        console.log('Random poem selected:', {
-          poetId: result.poetId,
-          poetName: result.poetName,
-          poemTitle: result.title,
-          verses: result.verses.length
-        });
-        
-        return result;
       } catch (error) {
         console.error('Error getting random poem:', error);
         // Fallback to a known poem with proper poet info

@@ -14,9 +14,9 @@ export default function Header() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
+  // Render the header structure immediately to prevent layout shift
+  // but use system theme until mounted
+  const currentTheme = mounted ? theme : 'light';
 
   return (
     <header className="container-responsive min-h-[128px] h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
@@ -24,10 +24,10 @@ export default function Header() {
       <div className="flex items-center gap-4 flex-row-reverse">
         {/* Moon icon for theme toggle */}
         <button
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          onClick={() => setTheme(currentTheme === 'dark' ? 'light' : 'dark')}
           className="w-4 h-4 flex items-center justify-center p-2 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
         >
-          {theme === 'dark' ? (
+          {currentTheme === 'dark' ? (
             <Sun className="w-6 h-6 text-stone-900 dark:text-stone-300" />
           ) : (
             <Moon className="w-6 h-6 text-stone-900 dark:text-stone-300" />
