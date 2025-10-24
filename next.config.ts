@@ -27,8 +27,8 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Turbopack configuration
-  turbopack: {},
+  // Disable Turbopack to use regular webpack
+  // turbopack: {},
 };
 
 export default nextConfig;
