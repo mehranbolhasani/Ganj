@@ -1,14 +1,27 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import PoetCard from './PoetCard';
 import { simpleApi } from '@/lib/simple-api';
 import { Poet } from '@/lib/types';
+import FamousPoets from './FamousPoets';
+import AlphabeticalPoets from './AlphabeticalPoets';
+import AlphabeticalNav from './AlphabeticalNav';
+
+// Define the 6 most famous poets by their slugs
+const FAMOUS_POET_SLUGS = [
+  'hafez',
+  'saadi', 
+  'ferdowsi',
+  'molavi',
+  'attar',
+  'nizami'
+];
 
 export default function PoetsGrid() {
   const [poets, setPoets] = useState<Poet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeLetter, setActiveLetter] = useState<string>('');
 
   useEffect(() => {
     const loadPoets = async () => {
@@ -27,6 +40,10 @@ export default function PoetsGrid() {
 
     loadPoets();
   }, []);
+
+  const handleLetterClick = (letter: string) => {
+    setActiveLetter(letter);
+  };
 
   if (loading) {
     return (
@@ -53,11 +70,17 @@ export default function PoetsGrid() {
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-wrap gap-4 justify-end">
-        {poets.map((poet) => (
-          <PoetCard key={poet.id} poet={poet} />
-        ))}
-      </div>
+      {/* Famous Poets Section */}
+      <FamousPoets poets={poets} />
+      
+      {/* Alphabetical Poets Section */}
+      <AlphabeticalPoets poets={poets} famousPoetSlugs={FAMOUS_POET_SLUGS} />
+      
+      {/* Sticky Alphabetical Navigation */}
+      <AlphabeticalNav 
+        onLetterClick={handleLetterClick}
+        activeLetter={activeLetter}
+      />
     </div>
   );
 }
