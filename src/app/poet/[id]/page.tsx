@@ -20,6 +20,12 @@ const getPoetImage = (slug: string) => {
   return imageMap[slug?.toLowerCase() || ''] || null;
 };
 
+// Helper function to check if poet is famous
+const isFamousPoet = (slug: string) => {
+  const famousSlugs = ['hafez', 'saadi', 'moulavi', 'ferdousi', 'attar', 'nezami'];
+  return famousSlugs.includes(slug?.toLowerCase() || '');
+};
+
 interface PoetPageProps {
   params: {
     id: string;
@@ -67,48 +73,83 @@ export default async function PoetPage({ params }: PoetPageProps) {
     );
   }
 
+  const isFamous = isFamousPoet(poet.slug || '');
+
   return (
     <Layout>
       <Breadcrumbs items={[{ label: poet.name }]} />
       
-       <div className="mb-16 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 overflow-hidden backdrop-blur-md">
+       <div className={`mb-16 border rounded-2xl shadow-lg/5 backdrop-blur-md ${
+         isFamous 
+           ? 'bg-gradient-to-br from-amber-50/80 to-orange-50/80 border-amber-200/50 dark:from-amber-900/20 dark:to-orange-900/20 dark:border-amber-700/50' 
+           : 'bg-white/50 border-white dark:bg-stone-800/50 dark:border-stone-700'
+       }`}>
        
          <div className="text-right">
-           <div className="flex gap-4 items-center justify-between p-16 bg-stone-200/50 dark:bg-stone-700/50">
-             <div className="flex items-center gap-6 flex-row-reverse">
-               {/* Poet Image - only for famous poets */}
-               {getPoetImage(poet.slug || '') && (
-                 <div className="w-24 h-24 rounded-full overflow-hidden bg-stone-300 dark:bg-stone-600 flex-shrink-0">
+            <div className={`flex gap-4 items-center justify-between p-16 relative ${
+              isFamous 
+                ? 'bg-gradient-to-r from-amber-100/60 to-orange-100/60 dark:from-amber-800/30 dark:to-orange-800/30' 
+                : 'bg-stone-200/50 dark:bg-stone-700/50'
+            }`}>
+            {/* Poet Image - only for famous poets */}
+             {getPoetImage(poet.slug || '') && (
+                 <div className={`absolute -right-16 top-[50%] translate-y-[-50%] w-[160px] h-[160px] rounded-2xl overflow-hidden shadow-lg ${
+                   isFamous 
+                     ? 'bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-700 dark:to-orange-700 ring-4 ring-amber-200/50 dark:ring-amber-600/50' 
+                     : 'bg-stone-300 dark:bg-stone-600'
+                 }`}>
                    <Image
                      src={`/images/${getPoetImage(poet.slug || '')}`}
                      alt={`تصویر ${poet.name}`}
-                     width={96}
-                     height={96}
+                     width={160}
+                     height={160}
                      className="w-full h-full object-cover"
                      priority
                    />
                  </div>
                )}
-               
-               <div className="flex flex-col gap-2">
-                 <h1 className="font-doran text-4xl font-black text-stone-900 dark:text-stone-300">
-                   {poet.name}
-                 </h1>
-                 
-                 {(poet.birthYear || poet.deathYear) && (
-                   <p className="text-stone-600 dark:text-stone-300 text-2xl font-normal">
-                     {poet.birthYear && poet.deathYear 
-                       ? `${poet.birthYear} - ${poet.deathYear}`
-                       : poet.birthYear || poet.deathYear
-                     }
-                   </p>
-                 )}
-               </div>
-             </div>
-           </div>
+              <div className="flex items-center gap-6 flex-row-reverse">
+                <div className="flex flex-col gap-2">
+                  <h1 className={`font-doran text-4xl font-black ${
+                    isFamous 
+                      ? 'text-amber-900 dark:text-amber-100' 
+                      : 'text-stone-900 dark:text-stone-300'
+                  }`}>
+                    {poet.name}
+                  </h1>
+                  
+                  {(poet.birthYear || poet.deathYear) && (
+                    <p className={`text-2xl font-normal ${
+                      isFamous 
+                        ? 'text-amber-700 dark:text-amber-300' 
+                        : 'text-stone-600 dark:text-stone-300'
+                    }`}>
+                      {poet.birthYear && poet.deathYear 
+                        ? `${poet.birthYear} - ${poet.deathYear}`
+                        : poet.birthYear || poet.deathYear
+                      }
+                    </p>
+                  )}
+                  
+                  {/* Special badge for famous poets */}
+                  {isFamous && (
+                    <div className="inline-flex items-center gap-2 mt-2">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-medium text-amber-700 dark:text-amber-300 bg-amber-100/50 dark:bg-amber-800/30 px-3 py-1 rounded-full">
+                        شاعر برجسته
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           
            {poet.description && (
-             <p className="text-md text-stone-700 dark:text-stone-300 max-w-3xl mx-auto p-8 leading-relaxed">
+             <p className={`text-md max-w-3xl mx-auto p-8 leading-relaxed ${
+               isFamous 
+                 ? 'text-amber-800 dark:text-amber-200' 
+                 : 'text-stone-700 dark:text-stone-300'
+             }`}>
                {poet.description}
              </p>
            )}
@@ -116,10 +157,14 @@ export default async function PoetPage({ params }: PoetPageProps) {
       </div>
 
       <div>
-        <h2 className="text-2xl font-semibold text-stone-900 dark:text-stone-300 mb-6 text-center">
+        <h2 className={`text-2xl font-semibold mb-6 text-center ${
+          isFamous 
+            ? 'text-amber-900 dark:text-amber-100' 
+            : 'text-stone-900 dark:text-stone-300'
+        }`}>
           مجموعه‌ها
         </h2>
-        <CategoryList categories={categories} poetId={poetId} />
+        <CategoryList categories={categories} poetId={poetId} isFamous={isFamous} />
       </div>
     </Layout>
   );
