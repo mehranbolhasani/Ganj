@@ -1,5 +1,5 @@
 import Header from '@/components/Header';
-import HeroSection from '@/components/HeroSection';
+import SimpleHero from '@/components/SimpleHero';
 import PoetCard from '@/components/PoetCard';
 import Footer from '@/components/Footer';
 import ParticleBackground from '@/components/ParticleBackground';
@@ -47,8 +47,8 @@ export default async function Home() {
       <div className="relative z-10 flex flex-col items-center container-responsive min-h-dvh gap-8">
         <Header />
         
-        {/* Hero Section */}
-        <HeroSection />
+                {/* Hero Section */}
+                <SimpleHero />
         
         {/* Poets Grid */}
         <div className="relative w-full">
