@@ -5,7 +5,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-stone-900 relative">
+    <div className="min-h-screen bg-stone-200 dark:bg-stone-900/90 relative">
       {/* Animated Backgrounds - Full screen */}
       <ParticleBackground />
       
