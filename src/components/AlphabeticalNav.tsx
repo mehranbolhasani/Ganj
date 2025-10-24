@@ -13,13 +13,13 @@ interface AlphabeticalNavProps {
 }
 
 export default function AlphabeticalNav({ onLetterClick, activeLetter }: AlphabeticalNavProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true); // Always visible for testing
 
   useEffect(() => {
     const handleScroll = () => {
       // Show nav when user scrolls past the famous poets section
       const scrollY = window.scrollY;
-      setIsVisible(scrollY > 400);
+      setIsVisible(scrollY > 200); // Lower threshold for better visibility
     };
 
     window.addEventListener('scroll', handleScroll);

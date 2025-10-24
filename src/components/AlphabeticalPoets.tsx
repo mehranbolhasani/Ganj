@@ -95,7 +95,7 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs }: Alphabetic
               <div className="flex-1 h-px bg-stone-200 dark:bg-stone-700 mr-4"></div>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {groupedPoets[letter].map((poet) => (
                 <PoetCard key={poet.id} poet={poet} />
               ))}

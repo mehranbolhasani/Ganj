@@ -17,10 +17,15 @@ const FAMOUS_POET_SLUGS = [
 ];
 
 export default function FamousPoets({ poets }: FamousPoetsProps) {
+  // Debug: Log all poet slugs to see what's available
+  console.log('All poet slugs:', poets.map(p => p.slug).slice(0, 10));
+  
   // Filter to get only the famous poets
   const famousPoets = poets.filter(poet => 
     FAMOUS_POET_SLUGS.includes(poet.slug?.toLowerCase() || '')
   );
+  
+  console.log('Found famous poets:', famousPoets.length, famousPoets.map(p => p.name));
 
   return (
     <div className="w-full mb-12">
