@@ -29,9 +29,24 @@ export default function Home() {
             `,
             backgroundSize: "20px 30px",
             WebkitMaskImage:
-              "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+              "radial-gradient(ellipse 50% 80% at 50% 0%, #000 60%, transparent 100%)",
             maskImage:
-              "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+              "radial-gradient(ellipse 50% 80% at 50% 0%, #000 60%, transparent 100%)",
+          }}
+        />
+        {/* Dark mode grid overlay */}
+        <div
+          className="absolute inset-0 z-0 dark:block hidden"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, #292524 1px, transparent 1px),
+              linear-gradient(to bottom, #292524 1px, transparent 1px)
+            `,
+            backgroundSize: "20px 30px",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 100% 80% at 50% 0%, #000 60%, transparent 100%)",
+            maskImage:
+              "radial-gradient(ellipse 100% 80% at 50% 0%, #000 60%, transparent 100%)",
           }}
         />
           {/* Your Content/Components */}
