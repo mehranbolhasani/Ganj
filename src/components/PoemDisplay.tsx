@@ -12,6 +12,12 @@ interface PoemDisplayProps {
 
 export default function PoemDisplay({ poem }: PoemDisplayProps) {
   const { poemClasses } = useFontSize();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Prevent hydration mismatch by only rendering after hydration
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
   return (
     <div className="max-w-4xl mx-auto w-full">
       <div className="text-center mb-8">

@@ -147,7 +147,7 @@ export default function ParticleBackground() {
 
     resizeCanvas();
     createParticles();
-    animate(0);
+    animate();
 
     const handleResize = () => {
       resizeCanvas();
