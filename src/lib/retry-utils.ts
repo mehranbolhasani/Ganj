@@ -8,7 +8,7 @@ export interface RetryOptions {
   baseDelay?: number;
   maxDelay?: number;
   backoffMultiplier?: number;
-  retryCondition?: (error: any) => boolean;
+  retryCondition?: (error: Error & {status?: number}) => boolean;
 }
 
 const defaultOptions: Required<RetryOptions> = {
@@ -19,7 +19,7 @@ const defaultOptions: Required<RetryOptions> = {
   retryCondition: (error) => {
     // Retry on network errors, 5xx errors, and rate limiting
     if (error.name === 'TypeError' && error.message.includes('fetch')) return true;
-    if (error.status >= 500) return true;
+    if (error.status && error.status >= 500) return true;
     if (error.status === 429) return true; // Rate limiting
     return false;
   },
@@ -33,16 +33,16 @@ export async function withRetry<T>(
   options: RetryOptions = {}
 ): Promise<T> {
   const opts = { ...defaultOptions, ...options };
-  let lastError: any;
+  let lastError: Error & {status?: number} | undefined;
 
   for (let attempt = 0; attempt <= opts.maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
-      lastError = error;
+      lastError = error as Error & {status?: number};
       
       // Don't retry if condition is not met
-      if (!opts.retryCondition(error)) {
+      if (!opts.retryCondition(lastError!)) {
         throw error;
       }
       
@@ -67,7 +67,7 @@ export async function withRetry<T>(
     }
   }
   
-  throw lastError;
+  throw lastError!;
 }
 
 /**
@@ -75,7 +75,7 @@ export async function withRetry<T>(
  */
 export async function withRetryConditional<T>(
   fn: () => Promise<T>,
-  retryCondition: (error: any) => boolean,
+  retryCondition: (error: Error & {status?: number}) => boolean,
   options: Omit<RetryOptions, 'retryCondition'> = {}
 ): Promise<T> {
   return withRetry(fn, { ...options, retryCondition });

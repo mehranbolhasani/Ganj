@@ -1,6 +1,6 @@
-import { Poet, Category, Poem, ApiResponse } from './types';
+import { Poet, Category, Poem } from './types';
 import { withCache } from './api-cache';
-import { withRetry, withNetworkRetry } from './retry-utils';
+import { withRetry } from './retry-utils';
 
 const API_BASE_URL = 'https://api.ganjoor.net/api/ganjoor';
 
@@ -12,7 +12,7 @@ class GanjoorApiError extends Error {
 }
 
 async function fetchApi<T>(endpoint: string): Promise<T> {
-  const fetchWithRetry = () => withNetworkRetry(async () => {
+  const fetchWithRetry = () => withRetry(async () => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
         'Accept': 'application/json',
@@ -45,7 +45,14 @@ export const ganjoorApi = {
   // Get all poets
   async getPoets(): Promise<Poet[]> {
     return withCache('/poets', async () => {
-      const data = await fetchApi<any[]>(`/poets`);
+      const data = await fetchApi<Array<{
+        id: number;
+        name: string;
+        fullUrl?: string;
+        description?: string;
+        birthYearInLHijri?: number;
+        deathYearInLHijri?: number;
+      }>>(`/poets`);
       return data.map(poet => ({
         id: poet.id,
         name: poet.name,
@@ -60,7 +67,24 @@ export const ganjoorApi = {
   // Get poet details and categories
   async getPoet(id: number): Promise<{ poet: Poet; categories: Category[] }> {
     return withCache(`/poet/${id}`, async () => {
-      const poetResponse = await fetchApi<any>(`/poet/${id}`);
+      const poetResponse = await fetchApi<{
+        poet: {
+          id: number;
+          name: string;
+          fullUrl?: string;
+          description?: string;
+          birthYearInLHijri?: number;
+          deathYearInLHijri?: number;
+        };
+        cat: {
+          children?: Array<{
+            id: number;
+            title: string;
+            urlSlug: string;
+            description?: string;
+          }>;
+        };
+      }>(`/poet/${id}`);
       
       // The API returns {poet: {...}, cat: {...}} structure
       const poetData = poetResponse.poet;
@@ -76,11 +100,11 @@ export const ganjoorApi = {
       };
 
       // Get categories from the cat.children array
-      const categories: Category[] = catData.children?.map((category: any) => {
+      const categories: Category[] = catData.children?.map((category) => {
         return {
           id: category.id,
           title: category.title,
-          description: category.description,
+          description: category.description || '',
           poetId: id,
           // The API doesn't provide poem count, so we'll fetch it separately
           poemCount: undefined, // Will be populated later
@@ -92,7 +116,7 @@ export const ganjoorApi = {
         categories.map(async (category) => {
           try {
             // Use the correct API endpoint structure for getting category poems
-            const response = await fetchApi<any>(`/cat/${category.id}`);
+            const response = await fetchApi<{cat: {poems: Array<{id: number; title: string}>}}>(`/cat/${category.id}`);
             const poemCount = response.cat?.poems?.length || 0;
             
             return {
@@ -116,15 +140,25 @@ export const ganjoorApi = {
   // Get poems from a category
   async getCategoryPoems(poetId: number, categoryId: number): Promise<Poem[]> {
     return withCache(`/cat/${categoryId}`, async () => {
-      const data = await fetchApi<any>(`/cat/${categoryId}`);
+      const data = await fetchApi<{
+        poet: {name: string};
+        cat: {
+          title: string;
+          poems: Array<{
+            id: number;
+            title: string;
+            verses?: Array<{text: string}>;
+          }>;
+        };
+      }>(`/cat/${categoryId}`);
       
       // The API returns {poet: {...}, cat: {...}} structure
       const catData = data.cat;
       
-      return catData.poems?.map((poem: any) => ({
+      return catData.poems?.map((poem) => ({
         id: poem.id,
         title: poem.title,
-        verses: poem.verses || [],
+        verses: poem.verses?.map(verse => verse.text) || [],
         poetId: poetId,
         poetName: data.poet.name || '',
         categoryId: categoryId,
@@ -136,10 +170,10 @@ export const ganjoorApi = {
   // Get individual poem
   async getPoem(id: number): Promise<Poem> {
     return withCache(`/poem/${id}`, async () => {
-      const data = await fetchApi<any>(`/poem/${id}`);
+      const data = await fetchApi<{id: number; title: string; verses: {text: string}[]; poetId: number; poetName: string; categoryId: number; categoryTitle: string}>(`/poem/${id}`);
       
       // Extract verses text from the complex structure
-      const verses = data.verses?.map((verse: any) => verse.text).filter((text: string) => text) || [];
+      const verses = data.verses?.map((verse: {text: string}) => verse.text).filter((text: string) => text) || [];
       
       return {
         id: data.id,

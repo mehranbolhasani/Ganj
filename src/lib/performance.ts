@@ -11,13 +11,6 @@ interface PerformanceMetric {
   navigationType: string;
 }
 
-interface PerformanceEntry {
-  name: string;
-  value: number;
-  delta: number;
-  id: string;
-  navigationType: string;
-}
 
 /**
  * Track Core Web Vitals
@@ -114,7 +107,7 @@ export function trackComponentRender(componentName: string, duration: number) {
 /**
  * Track user interactions
  */
-export function trackUserInteraction(action: string, target: string) {
+export function trackUserInteraction(action: string) {
   trackCustomMetric(`interaction-${action}`, 1, 1);
 }
 
@@ -141,7 +134,7 @@ export function getPerformanceInfo() {
 export function getMemoryInfo() {
   if (typeof window === 'undefined') return null;
   
-  const memory = (performance as any).memory;
+  const memory = (performance as Performance & {memory?: {usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number}}).memory;
   if (!memory) return null;
 
   return {

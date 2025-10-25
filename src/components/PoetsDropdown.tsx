@@ -40,7 +40,7 @@ export default function PoetsDropdown() {
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = () => {
       if (isOpen) {
         setIsOpen(false);
       }
@@ -56,7 +56,7 @@ export default function PoetsDropdown() {
   }, [isOpen]);
 
   // Famous poets for quick access
-  const famousPoets = [
+  const famousPoets = useMemo(() => [
     'hafez',      // حافظ
     'saadi',      // سعدی
     'moulavi',    // مولانا
@@ -66,7 +66,7 @@ export default function PoetsDropdown() {
     'attar',      // عطار
     'nezami',     // نظامی
     'shahriar'    // شهریار
-  ];
+  ], []);
 
   useEffect(() => {
     const fetchPoets = async () => {
@@ -283,7 +283,7 @@ export default function PoetsDropdown() {
                   </div>
                 ) : searchQuery ? (
                   <div className="px-4 py-3 text-sm text-stone-600 dark:text-stone-300 text-center">
-                    هیچ شاعری با "{searchQuery}" یافت نشد
+                    هیچ شاعری با &quot;{searchQuery}&quot; یافت نشد
                   </div>
                 ) : null}
               </>

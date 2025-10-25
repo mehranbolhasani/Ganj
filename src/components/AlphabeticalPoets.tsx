@@ -16,7 +16,7 @@ const PERSIAN_LETTERS = [
 ];
 
 export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableLettersChange }: AlphabeticalPoetsProps) {
-  const [activeLetter, setActiveLetter] = useState<string>('');
+  const [, setActiveLetter] = useState<string>('');
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   // Filter out famous poets - memoized
@@ -58,7 +58,7 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
     }
   }, [sortedGroups, onAvailableLettersChange]);
 
-  const handleLetterClick = (letter: string) => {
+  const _handleLetterClick = (letter: string) => {
     setActiveLetter(letter);
     const element = sectionRefs.current[letter];
     if (element) {
@@ -69,7 +69,7 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
   // Update active letter based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      const _scrollY = window.scrollY;
       
       for (const letter of sortedGroups) {
         const element = sectionRefs.current[letter];

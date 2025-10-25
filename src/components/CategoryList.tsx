@@ -19,7 +19,7 @@ interface CategoryListProps {
 
 // Function to get the appropriate icon for each category
 const getCategoryIcon = (title: string) => {
-  const iconMap: { [key: string]: any } = {
+  const iconMap: { [key: string]: React.ComponentType<{className?: string}> } = {
     'غزلیات': Heart,        // Ghazals - Heart for love poetry
     'قطعات': FileText,      // Qata'at - FileText for short pieces
     'رباعیات': Star,        // Rubaiyat - Star for quatrains

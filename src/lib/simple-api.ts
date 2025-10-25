@@ -31,8 +31,15 @@ export const simpleApi = {
   // Get all poets - simplified without caching
   async getPoets(): Promise<Poet[]> {
     try {
-      const data = await fetchApi<any[]>(`/poets`);
-      return data.map(poet => ({
+      const data = await fetchApi<Array<{
+        id: number;
+        name: string;
+        fullUrl?: string;
+        description?: string;
+        birthYearInLHijri?: number;
+        deathYearInLHijri?: number;
+      }>>(`/poets`);
+      return data.map((poet) => ({
         id: poet.id,
         name: poet.name,
         slug: poet.fullUrl?.replace('/', '') || '',

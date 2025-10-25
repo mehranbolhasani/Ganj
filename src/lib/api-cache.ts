@@ -10,8 +10,8 @@ interface CacheEntry<T> {
 }
 
 class ApiCache {
-  private cache = new Map<string, CacheEntry<any>>();
-  private pendingRequests = new Map<string, Promise<any>>();
+  private cache = new Map<string, CacheEntry<unknown>>();
+  private pendingRequests = new Map<string, Promise<unknown>>();
   
   // Default TTL: 5 minutes for poets, 1 hour for poems
   private defaultTTL = {
@@ -27,7 +27,7 @@ class ApiCache {
   async get<T>(key: string, fetcher: () => Promise<T>, ttl?: number): Promise<T> {
     // Check if request is already pending
     if (this.pendingRequests.has(key)) {
-      return this.pendingRequests.get(key)!;
+      return this.pendingRequests.get(key)! as Promise<T>;
     }
 
     // Check cache first
@@ -61,7 +61,7 @@ class ApiCache {
       return null;
     }
 
-    return entry.data;
+    return entry.data as T;
   }
 
   /**
