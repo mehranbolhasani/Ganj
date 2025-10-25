@@ -38,9 +38,9 @@ export default function Layout({ children }: LayoutProps) {
             `,
             backgroundSize: "20px 30px",
             WebkitMaskImage:
-              "radial-gradient(ellipse 100% 80% at 50% 0%, #000 60%, transparent 100%)",
+              "radial-gradient(ellipse 100% 100% at 50% 0%, #000 90%, transparent 100%)",
             maskImage:
-              "radial-gradient(ellipse 100% 80% at 50% 0%, #000 60%, transparent 100%)",
+              "radial-gradient(ellipse 100% 100% at 50% 0%, #000 90%, transparent 100%)",
           }}
         />
           {/* Your Content/Components */}

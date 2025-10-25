@@ -11,6 +11,18 @@ A modern, minimal web application for reading Persian poetry, built with Next.js
 - **Performance Optimized**: API caching, lazy loading, and Core Web Vitals monitoring
 - **SEO Ready**: Comprehensive meta tags, sitemap, and structured data
 - **Enhanced UX**: Expandable descriptions, category icons, and improved mobile experience
+- **Client-Side Features**: View history, bookmarks, and font size control without user login
+- **Accessibility**: Font size controls, keyboard shortcuts, and ARIA labels
+- **Offline-Ready**: Local storage for user preferences and data persistence
+
+## Client-Side Features
+
+- **View History**: Automatically tracks recently viewed poems (last 50 items)
+- **Bookmarks**: Save favorite poems locally with search and filtering
+- **Font Size Control**: Adjustable text size for better accessibility
+- **User Preferences**: Persistent settings for theme, font size, and display options
+- **Performance Monitoring**: Real-time tracking of Core Web Vitals and custom metrics
+- **Offline Storage**: All user data stored locally using localStorage and IndexedDB
 
 ## Tech Stack
 
@@ -19,6 +31,8 @@ A modern, minimal web application for reading Persian poetry, built with Next.js
 - **Tailwind CSS v4** for styling
 - **next-themes** for dark/light mode
 - **Ganjoor API** for Persian poetry data
+- **IndexedDB** for view history storage
+- **localStorage** for user preferences and bookmarks
 
 ## Getting Started
 

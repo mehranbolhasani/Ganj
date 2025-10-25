@@ -1,19 +1,21 @@
 /**
  * API Caching and Request Deduplication
- * Prevents duplicate API calls and implements caching
+ * Prevents duplicate API calls and implements caching with stale-while-revalidate
  */
 
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
   ttl: number; // Time to live in milliseconds
+  staleTime: number; // Time when data becomes stale but is still usable
 }
 
 class ApiCache {
   private cache = new Map<string, CacheEntry<unknown>>();
   private pendingRequests = new Map<string, Promise<unknown>>();
+  private backgroundRefresh = new Map<string, Promise<unknown>>();
   
-  // Default TTL: 5 minutes for poets, 1 hour for poems
+  // Enhanced TTL with stale-while-revalidate
   private defaultTTL = {
     poets: 5 * 60 * 1000,      // 5 minutes
     poet: 10 * 60 * 1000,       // 10 minutes
@@ -21,8 +23,16 @@ class ApiCache {
     poem: 60 * 60 * 1000,       // 1 hour
   };
 
+  // Stale time (when to start background refresh)
+  private staleTime = {
+    poets: 3 * 60 * 1000,      // 3 minutes
+    poet: 7 * 60 * 1000,        // 7 minutes
+    category: 10 * 60 * 1000,   // 10 minutes
+    poem: 45 * 60 * 1000,       // 45 minutes
+  };
+
   /**
-   * Get data from cache or make request
+   * Get data from cache or make request with stale-while-revalidate
    */
   async get<T>(key: string, fetcher: () => Promise<T>, ttl?: number): Promise<T> {
     // Check if request is already pending
@@ -33,6 +43,11 @@ class ApiCache {
     // Check cache first
     const cached = this.getFromCache<T>(key);
     if (cached) {
+      // Check if data is stale and trigger background refresh
+      const entry = this.cache.get(key);
+      if (entry && this.isStale(entry)) {
+        this.triggerBackgroundRefresh(key, fetcher, ttl);
+      }
       return cached;
     }
 
@@ -74,10 +89,12 @@ class ApiCache {
   ): Promise<T> {
     try {
       const data = await fetcher();
+      const now = Date.now();
       const entry: CacheEntry<T> = {
         data,
-        timestamp: Date.now(),
+        timestamp: now,
         ttl: ttl || this.getDefaultTTL(key),
+        staleTime: now + this.getStaleTime(key),
       };
       
       this.cache.set(key, entry);
@@ -86,6 +103,48 @@ class ApiCache {
       // Don't cache errors
       throw error;
     }
+  }
+
+  /**
+   * Check if cache entry is stale
+   */
+  private isStale(entry: CacheEntry<unknown>): boolean {
+    return Date.now() - entry.timestamp > entry.staleTime;
+  }
+
+  /**
+   * Trigger background refresh for stale data
+   */
+  private triggerBackgroundRefresh<T>(
+    key: string, 
+    fetcher: () => Promise<T>, 
+    ttl?: number
+  ): void {
+    // Don't trigger if already refreshing
+    if (this.backgroundRefresh.has(key)) {
+      return;
+    }
+
+    const refreshPromise = this.fetchAndCache(key, fetcher, ttl)
+      .catch(error => {
+        console.warn(`Background refresh failed for ${key}:`, error);
+      })
+      .finally(() => {
+        this.backgroundRefresh.delete(key);
+      });
+
+    this.backgroundRefresh.set(key, refreshPromise);
+  }
+
+  /**
+   * Get stale time based on key pattern
+   */
+  private getStaleTime(key: string): number {
+    if (key.includes('/poets')) return this.staleTime.poets;
+    if (key.includes('/poet/')) return this.staleTime.poet;
+    if (key.includes('/cat/')) return this.staleTime.category;
+    if (key.includes('/poem/')) return this.staleTime.poem;
+    return 3 * 60 * 1000; // Default 3 minutes
   }
 
   /**
@@ -111,12 +170,44 @@ class ApiCache {
   }
 
   /**
+   * Warm cache with frequently accessed data
+   */
+  async warmCache<T>(
+    key: string, 
+    fetcher: () => Promise<T>, 
+    ttl?: number
+  ): Promise<void> {
+    try {
+      // Only warm if not already cached
+      if (!this.cache.has(key)) {
+        await this.fetchAndCache(key, fetcher, ttl);
+      }
+    } catch (error) {
+      console.warn(`Cache warming failed for ${key}:`, error);
+    }
+  }
+
+  /**
+   * Preload multiple items in parallel
+   */
+  async preload<T>(
+    items: Array<{ key: string; fetcher: () => Promise<T>; ttl?: number }>
+  ): Promise<void> {
+    const promises = items.map(item => 
+      this.warmCache(item.key, item.fetcher, item.ttl)
+    );
+    
+    await Promise.allSettled(promises);
+  }
+
+  /**
    * Get cache statistics
    */
   getStats() {
     return {
       size: this.cache.size,
       pendingRequests: this.pendingRequests.size,
+      backgroundRefresh: this.backgroundRefresh.size,
       keys: Array.from(this.cache.keys()),
     };
   }
@@ -146,4 +237,24 @@ export function clearCachePattern(pattern: string): void {
       apiCache.clear(key);
     }
   });
+}
+
+/**
+ * Warm cache with data
+ */
+export function warmCache<T>(
+  key: string, 
+  fetcher: () => Promise<T>, 
+  ttl?: number
+): Promise<void> {
+  return apiCache.warmCache(key, fetcher, ttl);
+}
+
+/**
+ * Preload multiple cache items
+ */
+export function preloadCache<T>(
+  items: Array<{ key: string; fetcher: () => Promise<T>; ttl?: number }>
+): Promise<void> {
+  return apiCache.preload(items);
 }

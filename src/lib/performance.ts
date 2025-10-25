@@ -112,6 +112,41 @@ export function trackUserInteraction(action: string) {
 }
 
 /**
+ * Track storage operations
+ */
+export function trackStorageOperation(operation: string, duration: number, size?: number) {
+  trackCustomMetric(`storage-${operation}`, duration, duration);
+  if (size) {
+    trackCustomMetric(`storage-${operation}-size`, size, size);
+  }
+}
+
+/**
+ * Track font size changes
+ */
+export function trackFontSizeChange(fromSize: string, toSize: string, duration: number) {
+  trackCustomMetric(`font-size-change`, duration, duration);
+  trackCustomMetric(`font-size-${fromSize}-to-${toSize}`, 1, 1);
+}
+
+/**
+ * Track bookmark operations
+ */
+export function trackBookmarkOperation(operation: 'add' | 'remove', duration: number) {
+  trackCustomMetric(`bookmark-${operation}`, duration, duration);
+}
+
+/**
+ * Track history operations
+ */
+export function trackHistoryOperation(operation: 'add' | 'get' | 'clear', duration: number, count?: number) {
+  trackCustomMetric(`history-${operation}`, duration, duration);
+  if (count) {
+    trackCustomMetric(`history-${operation}-count`, count, count);
+  }
+}
+
+/**
  * Get performance information
  */
 export function getPerformanceInfo() {

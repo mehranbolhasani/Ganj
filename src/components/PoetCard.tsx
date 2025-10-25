@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Poet } from '@/lib/types';
+import React from 'react';
 
 import { CalendarRange } from 'lucide-react';
 
@@ -7,7 +8,7 @@ interface PoetCardProps {
   poet: Poet;
 }
 
-export default function PoetCard({ poet }: PoetCardProps) {
+function PoetCard({ poet }: PoetCardProps) {
   // Format birth and death years
   const formatYear = (year?: number) => {
     if (!year) return '';
@@ -57,3 +58,6 @@ export default function PoetCard({ poet }: PoetCardProps) {
     </Link>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders
+export default React.memo(PoetCard);

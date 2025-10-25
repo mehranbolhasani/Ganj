@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Category } from '@/lib/types';
+import React from 'react';
 import { 
   BookOpen, 
   Scroll, 
@@ -33,7 +34,7 @@ const getCategoryIcon = (title: string) => {
   return iconMap[title] || BookOpen; // Default to BookOpen if not found
 };
 
-export default function CategoryList({ categories, poetId, isFamous = false }: CategoryListProps) {
+function CategoryList({ categories, poetId, isFamous = false }: CategoryListProps) {
   if (categories.length === 0) {
     return (
       <div className="text-center py-8">
@@ -90,3 +91,6 @@ export default function CategoryList({ categories, poetId, isFamous = false }: C
     </div>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders
+export default React.memo(CategoryList);

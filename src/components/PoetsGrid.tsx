@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { simpleApi } from '@/lib/simple-api';
 import { Poet } from '@/lib/types';
 import FamousPoets from './FamousPoets';
@@ -59,6 +59,16 @@ export default function PoetsGrid() {
     setAvailableLetters(letters);
   }, []);
 
+  // Memoize famous poets to prevent unnecessary recalculations
+  const famousPoets = useMemo(() => {
+    return poets.filter(poet => poet.slug && FAMOUS_POET_SLUGS.includes(poet.slug));
+  }, [poets]);
+
+  // Memoize other poets (non-famous)
+  const otherPoets = useMemo(() => {
+    return poets.filter(poet => !poet.slug || !FAMOUS_POET_SLUGS.includes(poet.slug));
+  }, [poets]);
+
   if (loading) {
     return (
       <div className="relative w-full">
@@ -85,11 +95,11 @@ export default function PoetsGrid() {
   return (
     <div className="relative w-full">
       {/* Famous Poets Section */}
-      <FamousPoets poets={poets} />
+      <FamousPoets poets={famousPoets} />
       
       {/* Alphabetical Poets Section */}
       <AlphabeticalPoets 
-        poets={poets} 
+        poets={otherPoets} 
         famousPoetSlugs={FAMOUS_POET_SLUGS}
         onAvailableLettersChange={handleAvailableLettersChange}
       />

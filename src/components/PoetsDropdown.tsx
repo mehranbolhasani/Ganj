@@ -130,7 +130,7 @@ export default function PoetsDropdown() {
       {/* Dropdown Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1 px-4 py-2 rounded-md text-md font-normal transition-colors z-2 relative ${
+        className={`flex items-center gap-1 px-4 py-2 rounded-md text-md font-normal transition-colors z-2 relative cursor-pointer ${
           isOpen 
             ? 'bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100' 
             : 'text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800'

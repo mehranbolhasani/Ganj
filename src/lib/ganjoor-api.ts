@@ -170,7 +170,21 @@ export const ganjoorApi = {
   // Get individual poem
   async getPoem(id: number): Promise<Poem> {
     return withCache(`/poem/${id}`, async () => {
-      const data = await fetchApi<{id: number; title: string; verses: {text: string}[]; poetId: number; poetName: string; categoryId: number; categoryTitle: string}>(`/poem/${id}`);
+      const data = await fetchApi<{
+        id: number;
+        title: string;
+        verses: {text: string}[];
+        category: {
+          poet: {
+            id: number;
+            name: string;
+          };
+          cat: {
+            id: number;
+            title: string;
+          };
+        };
+      }>(`/poem/${id}`);
       
       // Extract verses text from the complex structure
       const verses = data.verses?.map((verse: {text: string}) => verse.text).filter((text: string) => text) || [];
@@ -179,10 +193,10 @@ export const ganjoorApi = {
         id: data.id,
         title: data.title,
         verses: verses,
-        poetId: data.poetId,
-        poetName: data.poetName || '',
-        categoryId: data.categoryId,
-        categoryTitle: data.categoryTitle,
+        poetId: data.category.poet.id,
+        poetName: data.category.poet.name,
+        categoryId: data.category.cat.id,
+        categoryTitle: data.category.cat.title,
       };
     });
   },

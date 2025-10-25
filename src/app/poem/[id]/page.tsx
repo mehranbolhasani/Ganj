@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Layout from '@/components/Layout';
 import PoemDisplay from '@/components/PoemDisplay';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import HistoryTracker from '@/components/HistoryTracker';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
@@ -56,6 +57,8 @@ export default async function PoemPage({ params }: PoemPageProps) {
 
   return (
     <Layout>
+      <HistoryTracker poem={poem} />
+      
       <Breadcrumbs items={[
         { label: poetName, href: `/poet/${poem.poetId}` },
         { label: categoryTitle, href: poem.categoryId ? `/poet/${poem.poetId}/category/${poem.categoryId}` : undefined },

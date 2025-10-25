@@ -5,7 +5,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-stone-900/90 relative">
+    <div className="min-h-screen bg-stone-100 dark:bg-stone-900 relative">
       {/* Animated Backgrounds - Full screen */}
       <ParticleBackground />
 
@@ -44,9 +44,9 @@ export default function Home() {
             `,
             backgroundSize: "20px 30px",
             WebkitMaskImage:
-              "radial-gradient(ellipse 100% 80% at 50% 0%, #000 60%, transparent 100%)",
+              "radial-gradient(ellipse 100% 100% at 50% 0%, #000 100%, transparent 100%)",
             maskImage:
-              "radial-gradient(ellipse 100% 80% at 50% 0%, #000 60%, transparent 100%)",
+              "radial-gradient(ellipse 100% 100% at 50% 0%, #000 100%, transparent 100%)",
           }}
         />
           {/* Your Content/Components */}

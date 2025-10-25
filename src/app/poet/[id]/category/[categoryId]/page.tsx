@@ -86,7 +86,7 @@ export default async function CategoryPoemsPage({ params }: CategoryPoemsPagePro
             <Link
               key={poem.id}
               href={`/poem/${poem.id}`}
-              className="block p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600"
+              className="block p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/80 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600"
             >
               <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-300 mb-2 text-right">
                 {poem.title}
