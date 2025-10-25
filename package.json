@@ -3,10 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3000",
+    "dev:simple": "./dev-start.sh",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint --ignore-pattern 'scripts/**'",
+    "dev:setup": "node scripts/dev-setup.js",
+    "dev:clean": "rm -rf .next node_modules/.cache && npm install",
+    "dev:reset": "rm -rf .next node_modules package-lock.json && npm install",
+    "build:check": "node scripts/build-check.js",
+    "build:verify": "node scripts/build-check.js --check-only",
+    "type-check": "tsc --noEmit",
+    "lint:fix": "eslint . --fix",
+    "predev": "npm run type-check",
+    "prebuild": "npm run type-check && npm run lint"
   },
   "dependencies": {
     "lucide-react": "^0.546.0",

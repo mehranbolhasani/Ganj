@@ -1,51 +1,12 @@
-'use client';
-
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
-import { BookOpenCheck, Moon, Sun} from 'lucide-react';
 import PoetsDropdown from './PoetsDropdown';
 
 export default function Header() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    // Debug: Log the current theme and HTML classes
-    console.log('Current theme:', theme);
-    console.log('HTML classes:', document.documentElement.className);
-    console.log('HTML element:', document.documentElement);
-    
-    // Force apply the theme class to HTML element
-    if (theme) {
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(theme);
-      console.log('Applied theme class:', theme, 'to HTML element');
-      console.log('HTML classes after:', document.documentElement.className);
-    }
-  }, [theme]);
-
-  // Render the header structure immediately to prevent layout shift
-  // but use light theme until mounted
-  const currentTheme = mounted ? theme : 'light';
 
   return (
-    <header className="w-full sm:container-responsive min-h-[128px] h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
+    <header className="w-full sm:container-responsive min-h-[80px] h-[80px] md:min-h-[128px] md:h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
       {/* Left side - Navigation */}
       <div className="flex items-center gap-4 flex-row-reverse">
-        {/* Moon icon for theme toggle */}
-        <button
-          onClick={() => setTheme(currentTheme === 'dark' ? 'light' : 'dark')}
-          className="w-4 h-4 flex items-center justify-center rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
-        >
-          {currentTheme === 'dark' ? (
-            <Sun className="w-16 h-16 text-stone-900 dark:text-stone-300" />
-          ) : (
-            <Moon className="w-16 h-16 text-stone-900 dark:text-stone-300" />
-          )}
-        </button>
-
         {/* Navigation menu */}
         <nav className="flex items-center gap-1 flex-row-reverse">
           <Link
@@ -60,10 +21,10 @@ export default function Header() {
 
       {/* Right side - Logo */}
       <div className="flex items-center gap-1 flex-row-reverse">
-        <Link href="/" className="flex items-center gap-1 flex-row-reverse">
-          <span className="font-doran text-xl font-bold text-stone-900 dark:text-stone-300">دفتر گنج</span>
+        <Link href="/" className="flex items-center gap-2 flex-row-reverse">
+          <span className="text-lg font-bold text-stone-900 dark:text-stone-300 translate-y-0.5">دفتر گنج</span>
           <div className="w-8 h-8 grid items-center justify-center">
-            <BookOpenCheck className="w-6 h-6 text-stone-900 mx-auto dark:text-stone-300" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="#1C1917" fillRule="evenodd" d="M5.333 0A5.333 5.333 0 0 0 0 5.333v13.334A5.333 5.333 0 0 0 5.333 24h13.334A5.333 5.333 0 0 0 24 18.667V5.333A5.333 5.333 0 0 0 18.667 0H5.333Zm0 3.333a2 2 0 0 0-2 2v13.334a2 2 0 0 0 2 2H10a2 2 0 0 0 2-2V5.333a2 2 0 0 0-2-2H5.333Z" clipRule="evenodd"/></svg>
           </div>
         </Link>
       </div>

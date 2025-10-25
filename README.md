@@ -6,10 +6,11 @@ A modern, minimal web application for reading Persian poetry, built with Next.js
 
 - **Modern Design**: Clean, minimal interface with RTL support
 - **Persian Typography**: Beautiful Estedad and DoranFaNum fonts
-- **Dark/Light Mode**: Smooth theme switching
+- **Smart Navigation**: Search-enabled poets dropdown with famous poets section
+- **Mobile Optimized**: Responsive design with mobile-specific dropdown behavior
 - **Performance Optimized**: API caching, lazy loading, and Core Web Vitals monitoring
 - **SEO Ready**: Comprehensive meta tags, sitemap, and structured data
-- **Responsive**: Mobile-first design approach
+- **Enhanced UX**: Expandable descriptions, category icons, and improved mobile experience
 
 ## Tech Stack
 
@@ -21,16 +22,49 @@ A modern, minimal web application for reading Persian poetry, built with Next.js
 
 ## Getting Started
 
-First, run the development server:
+### Quick Start (Recommended)
+
+For the easiest development experience, use our automated setup:
 
 ```bash
+# One-click development setup
+npm run dev:setup
+
+# Or use the simple script
+./dev-start.sh
+```
+
+### Manual Setup
+
+If you prefer manual setup:
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+
+### Development Scripts
+
+We provide several development scripts for different scenarios:
+
+```bash
+# Automated setup with error handling
+npm run dev:setup
+
+# Simple development start
+npm run dev:simple
+
+# Clean and reset everything
+npm run dev:clean
+
+# Full reset (nuclear option)
+npm run dev:reset
+
+# Build verification
+npm run build:check
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

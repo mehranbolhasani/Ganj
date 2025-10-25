@@ -193,3 +193,13 @@ html,
 .alphabetical-nav * {
   transition: all 0.3s ease !important;
 }
+
+/* Hide scrollbar for mobile horizontal nav */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+

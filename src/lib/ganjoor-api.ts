@@ -76,15 +76,40 @@ export const ganjoorApi = {
       };
 
       // Get categories from the cat.children array
-      const categories: Category[] = catData.children?.map((category: any) => ({
-        id: category.id,
-        title: category.title,
-        description: category.description,
-        poetId: id,
-        poemCount: category.poemCount,
-      })) || [];
+      const categories: Category[] = catData.children?.map((category: any) => {
+        return {
+          id: category.id,
+          title: category.title,
+          description: category.description,
+          poetId: id,
+          // The API doesn't provide poem count, so we'll fetch it separately
+          poemCount: undefined, // Will be populated later
+        };
+      }) || [];
 
-      return { poet, categories };
+      // Fetch poem counts for each category (with caching)
+      const categoriesWithCounts = await Promise.all(
+        categories.map(async (category) => {
+          try {
+            // Use the correct API endpoint structure for getting category poems
+            const response = await fetchApi<any>(`/cat/${category.id}`);
+            const poemCount = response.cat?.poems?.length || 0;
+            
+            return {
+              ...category,
+              poemCount,
+            };
+          } catch (error) {
+            console.warn(`Failed to get poem count for category ${category.id}:`, error);
+            return {
+              ...category,
+              poemCount: 0,
+            };
+          }
+        })
+      );
+
+      return { poet, categories: categoriesWithCounts };
     });
   },
 
