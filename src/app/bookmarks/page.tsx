@@ -4,12 +4,12 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import { useBookmarks, removeBookmark } from '@/lib/bookmarks-manager';
-import { Search, Heart, Trash2, Filter, Calendar, List, X } from 'lucide-react';
+import { Search, Heart, Trash2, Calendar, List, X } from 'lucide-react';
 
 export default function BookmarksPage() {
   const { bookmarks, loading } = useBookmarks();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterBy, setFilterBy] = useState<'all' | 'poet' | 'category'>('all');
+  const [filterBy] = useState<'all' | 'poet' | 'category'>('all');
 
   // Filter bookmarks
   const filteredBookmarks = useMemo(() => {
@@ -245,7 +245,7 @@ export default function BookmarksPage() {
               </div>
               
               <p className="text-stone-700 dark:text-stone-300 mb-6">
-                آیا مطمئن هستید که می‌خواهید <span className="font-medium">"{removingBookmark.title}"</span> را از علاقه‌مندی‌هایتان حذف کنید؟
+                آیا مطمئن هستید که می‌خواهید <span className="font-medium">&quot;{removingBookmark.title}&quot;</span> را از علاقه‌مندی‌هایتان حذف کنید؟
               </p>
               
               <div className="flex gap-3 justify-end">

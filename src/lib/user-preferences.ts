@@ -177,7 +177,7 @@ class UserPreferencesManager {
    * Setup storage listener for cross-tab synchronization
    */
   private setupStorageListener(): void {
-    clientStorage.addStorageListener((key, newValue, oldValue) => {
+    clientStorage.addStorageListener((key, newValue) => {
       if (key === STORAGE_KEY && newValue) {
         this.preferences = { ...DEFAULT_PREFERENCES, ...newValue as UserPreferences };
         this.notifyListeners();

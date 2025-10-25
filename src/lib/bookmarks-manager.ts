@@ -272,7 +272,7 @@ class BookmarksManager {
    * Setup storage listener for cross-tab synchronization
    */
   private setupStorageListener(): void {
-    clientStorage.addStorageListener((key, newValue, oldValue) => {
+    clientStorage.addStorageListener((key, newValue) => {
       if (key === STORAGE_KEY && newValue) {
         this.notifyListeners();
       }

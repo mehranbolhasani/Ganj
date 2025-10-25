@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Particle {
   x: number;
@@ -106,7 +106,7 @@ export default function ParticleBackground() {
 
       // Use requestAnimationFrame timing for smooth animation
       const now = performance.now();
-      const deltaTime = now - lastFrameTimeRef.current;
+      // const deltaTime = now - lastFrameTimeRef.current;
       lastFrameTimeRef.current = now;
 
       particlesRef.current.forEach(particle => {
@@ -137,7 +137,7 @@ export default function ParticleBackground() {
       }
     };
 
-    const animate = (currentTime: number) => {
+    const animate = () => {
       if (!isPaused && isVisible) {
         updateParticles();
         drawParticles();

@@ -5,7 +5,7 @@
  * Handles automatic cleanup and cross-tab synchronization
  */
 
-import { clientStorage } from './client-storage';
+// import { clientStorage } from './client-storage';
 
 export interface HistoryItem {
   id: string;

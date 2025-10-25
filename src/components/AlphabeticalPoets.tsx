@@ -58,18 +58,18 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
     }
   }, [sortedGroups, onAvailableLettersChange]);
 
-  const _handleLetterClick = (letter: string) => {
-    setActiveLetter(letter);
-    const element = sectionRefs.current[letter];
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
+  // const _handleLetterClick = (letter: string) => {
+  //   setActiveLetter(letter);
+  //   const element = sectionRefs.current[letter];
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  //   }
+  // };
 
   // Update active letter based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      const _scrollY = window.scrollY;
+      // const _scrollY = window.scrollY;
       
       for (const letter of sortedGroups) {
         const element = sectionRefs.current[letter];

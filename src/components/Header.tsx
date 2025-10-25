@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import PoetsDropdown from './PoetsDropdown';
 import ViewHistory from './ViewHistory';
 import { useViewHistory } from '@/lib/history-manager';
@@ -15,7 +15,6 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileSearchQuery, setMobileSearchQuery] = useState('');
   const [poets, setPoets] = useState<Poet[]>([]);
-  const [mobileSearchResults, setMobileSearchResults] = useState<Poet[]>([]);
   const { items } = useViewHistory();
   const { bookmarks } = useBookmarks();
 
@@ -32,16 +31,15 @@ export default function Header() {
     loadPoets();
   }, []);
 
-  // Handle mobile search
-  useEffect(() => {
+  // Handle mobile search with useMemo
+  const mobileSearchResults = useMemo(() => {
     if (mobileSearchQuery.trim()) {
       const filtered = poets.filter(poet => 
         poet.name.toLowerCase().includes(mobileSearchQuery.toLowerCase())
       );
-      setMobileSearchResults(filtered.slice(0, 10)); // Limit to 10 results
-    } else {
-      setMobileSearchResults([]);
+      return filtered.slice(0, 10); // Limit to 10 results
     }
+    return [];
   }, [mobileSearchQuery, poets]);
 
   // Lock scroll when mobile menu is open
@@ -185,7 +183,7 @@ export default function Header() {
                           </div>
                         ) : (
                           <div className="px-3 py-2 text-sm text-stone-500 dark:text-stone-400">
-                            هیچ شاعری با "{mobileSearchQuery}" یافت نشد
+                            هیچ شاعری با &quot;{mobileSearchQuery}&quot; یافت نشد
                           </div>
                         )}
                       </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useFontSize, updatePreference } from '@/lib/user-preferences';
-import { Minus, Plus, Type } from 'lucide-react';
+import { Type } from 'lucide-react';
 
 interface FontSizeControlProps {
   className?: string;
@@ -13,9 +13,26 @@ export default function FontSizeControl({
   className = '', 
   showLabel = true 
 }: FontSizeControlProps) {
-  const { fontSize, classes } = useFontSize();
-  const [isVisible, setIsVisible] = useState(false);
+  const { fontSize } = useFontSize();
   const [isHydrated, setIsHydrated] = useState(false);
+
+  const increaseFontSize = () => {
+    const sizes = ['small', 'medium', 'large'] as const;
+    const currentIndex = sizes.indexOf(fontSize);
+    if (currentIndex < sizes.length - 1) {
+      const newSize = sizes[currentIndex + 1];
+      updatePreference('fontSize', newSize);
+    }
+  };
+
+  const decreaseFontSize = () => {
+    const sizes = ['small', 'medium', 'large'] as const;
+    const currentIndex = sizes.indexOf(fontSize);
+    if (currentIndex > 0) {
+      const newSize = sizes[currentIndex - 1];
+      updatePreference('fontSize', newSize);
+    }
+  };
 
   // Prevent hydration mismatch by only rendering after hydration
   useEffect(() => {
@@ -39,29 +56,7 @@ export default function FontSizeControl({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const increaseFontSize = () => {
-    const sizes = ['small', 'medium', 'large'] as const;
-    const currentIndex = sizes.indexOf(fontSize);
-    if (currentIndex < sizes.length - 1) {
-      const newSize = sizes[currentIndex + 1];
-      updatePreference('fontSize', newSize);
-    }
-  };
-
-  const decreaseFontSize = () => {
-    const sizes = ['small', 'medium', 'large'] as const;
-    const currentIndex = sizes.indexOf(fontSize);
-    if (currentIndex > 0) {
-      const newSize = sizes[currentIndex - 1];
-      updatePreference('fontSize', newSize);
-    }
-  };
-
-  const setFontSize = (size: 'small' | 'medium' | 'large') => {
-    updatePreference('fontSize', size);
-  };
+  }, [fontSize, increaseFontSize, decreaseFontSize]);
 
   const getSizeLabel = (size: string) => {
     switch (size) {

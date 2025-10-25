@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Heart } from 'lucide-react';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { addBookmark, removeBookmark } from '@/lib/bookmarks-manager';
@@ -27,12 +27,11 @@ export default function BookmarkButton({
   showLabel = false,
 }: BookmarkButtonProps) {
   const { bookmarks } = useBookmarks();
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   // Check if poem is bookmarked
-  useEffect(() => {
-    setIsBookmarked(bookmarks.some(bookmark => bookmark.poemId === poemId));
+  const isBookmarked = useMemo(() => {
+    return bookmarks.some(bookmark => bookmark.poemId === poemId);
   }, [bookmarks, poemId]);
 
   const handleToggle = async () => {
