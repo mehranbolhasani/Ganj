@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useFontSize, updatePreference } from '@/lib/user-preferences';
 import { Type } from 'lucide-react';
 
@@ -16,27 +16,28 @@ export default function FontSizeControl({
   const { fontSize } = useFontSize();
   const [isHydrated, setIsHydrated] = useState(false);
 
-  const increaseFontSize = () => {
+  const increaseFontSize = useCallback(() => {
     const sizes = ['small', 'medium', 'large'] as const;
     const currentIndex = sizes.indexOf(fontSize);
     if (currentIndex < sizes.length - 1) {
       const newSize = sizes[currentIndex + 1];
       updatePreference('fontSize', newSize);
     }
-  };
+  }, [fontSize]);
 
-  const decreaseFontSize = () => {
+  const decreaseFontSize = useCallback(() => {
     const sizes = ['small', 'medium', 'large'] as const;
     const currentIndex = sizes.indexOf(fontSize);
     if (currentIndex > 0) {
       const newSize = sizes[currentIndex - 1];
       updatePreference('fontSize', newSize);
     }
-  };
+  }, [fontSize]);
 
   // Prevent hydration mismatch by only rendering after hydration
   useEffect(() => {
-    setIsHydrated(true);
+    const timer = setTimeout(() => setIsHydrated(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Handle keyboard shortcuts
@@ -56,7 +57,7 @@ export default function FontSizeControl({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [fontSize, increaseFontSize, decreaseFontSize]);
+  }, [increaseFontSize, decreaseFontSize]);
 
   const getSizeLabel = (size: string) => {
     switch (size) {

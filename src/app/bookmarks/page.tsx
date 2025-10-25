@@ -9,7 +9,7 @@ import { Search, Heart, Trash2, Calendar, List, X } from 'lucide-react';
 export default function BookmarksPage() {
   const { bookmarks, loading } = useBookmarks();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterBy] = useState<'all' | 'poet' | 'category'>('all');
+  // const [filterBy] = useState<'all' | 'poet' | 'category'>('all'); // Removed unused variable
 
   // Filter bookmarks
   const filteredBookmarks = useMemo(() => {

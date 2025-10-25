@@ -16,7 +16,8 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
 
   // Prevent hydration mismatch by only rendering after hydration
   useEffect(() => {
-    setIsHydrated(true);
+    const timer = setTimeout(() => setIsHydrated(true), 0);
+    return () => clearTimeout(timer);
   }, []);
   return (
     <div className="max-w-4xl mx-auto w-full">
