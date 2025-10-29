@@ -30,11 +30,11 @@ export default function ExpandableDescription({
     : truncatedText;
 
   return (
-    <div className="text-md max-w-3xl mx-auto p-8 pb-4 leading-relaxed">
+    <div className="text-sm md:text-md max-w-3xl mx-auto p-6 pb-4 leading-relaxed">
       <p className={`${
         isFamous 
-          ? 'text-stone-800 dark:text-stone-300' 
-          : 'text-stone-700 dark:text-stone-300'
+          ? 'text-stone-800 dark:text-yellow-100' 
+          : 'text-stone-700 dark:text-yellow-700'
       }`}>
         {displayText}
       </p>

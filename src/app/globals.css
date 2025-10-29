@@ -355,7 +355,7 @@ html,
     linear-gradient(to bottom, #57534e 1px, transparent 1px);
   mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 /* Mobile viewport optimizations */
@@ -374,8 +374,8 @@ html,
   
   /* Optimize container queries for mobile */
   .container-responsive {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 }
 

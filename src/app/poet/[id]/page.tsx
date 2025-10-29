@@ -86,14 +86,14 @@ export default async function PoetPage({ params }: PoetPageProps) {
        }`}>
        
          <div className="text-right">
-            <div className={`flex flex-col md:flex-row items-stretch justify-start relative ${
+            <div className={`flex flex-col md:flex-row items-center md:items-stretch justify-start relative ${
               isFamous 
                 ? 'border-b border-yellow-900/50' 
                 : 'bg-stone-200/50 dark:bg-stone-900 border-b border-stone-200 dark:border-yellow-900/50 backdrop-blur-md'
             }`}>
             {/* Poet Image - only for famous poets */}
              {getPoetImage(poet.slug || '') && (
-                 <div className={`relative w-[160px] h-[160px] border-l border-yellow-900/50 p-4 ${
+                 <div className={`relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] border-none md:border-l border-yellow-900/50 p-4 ${
                    isFamous 
                     //  ? 'bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-700 dark:to-orange-700 ring-4 ring-amber-200/50 dark:ring-amber-600/50' 
                     //  : 'bg-stone-300 dark:bg-stone-600'
@@ -103,7 +103,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
                      alt={`تصویر ${poet.name}`}
                      width={160}
                      height={160}
-                     className="w-full h-full rounded-md dark:brightness-70 contrast-100 hover:brightness-80 hover:contrast-100"
+                     className="w-full h-full rounded-2xl dark:brightness-90 contrast-100 hover:brightness-100 hover:contrast-100"
                      priority
                    />
                  </div>
@@ -112,18 +112,18 @@ export default async function PoetPage({ params }: PoetPageProps) {
                 isFamous ? 'p-4' : 'p-4'
               }`}>
                 <div className="flex flex-col gap-2 align-center md:align-start text-center md:text-right">
-                  <h1 className={`font-doran text-4xl font-black ${
+                  <h1 className={`font-doran text-2xl md:text-4xl font-black ${
                     isFamous 
-                      ? 'text-amber-900 dark:text-amber-100' 
+                      ? 'text-amber-900 dark:text-yellow-100' 
                       : 'text-stone-900 dark:text-stone-300'
                   }`}>
                     {poet.name}
                   </h1>
                   
                   {(poet.birthYear || poet.deathYear) && (
-                    <p className={`text-2xl font-normal ${
+                    <p className={`text-xl md:text-2xl font-normal ${
                       isFamous 
-                        ? 'text-amber-700 dark:text-amber-300' 
+                        ? 'text-amber-700 dark:text-yellow-700' 
                         : 'text-stone-600 dark:text-stone-300'
                     }`}>
                       {poet.birthYear && poet.deathYear 

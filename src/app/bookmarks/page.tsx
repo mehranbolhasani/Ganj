@@ -109,7 +109,7 @@ export default function BookmarksPage() {
         ) : (
           <div className="space-y-4">
             {Object.entries(bookmarksByPoet).map(([poetName, poetBookmarks]) => (
-              <div key={poetName} className="bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700">
+              <div key={poetName} className="bg-white/50 dark:bg-yellow-950/20 rounded-xl p-4 border border-white dark:border-yellow-900/50">
                 {/* Poet Header - Only show if there are multiple poets */}
                 {Object.keys(bookmarksByPoet).length > 1 && (
                   <div className="flex items-center gap-2 mb-3 pb-2 border-b border-stone-200 dark:border-stone-700 justify-between">

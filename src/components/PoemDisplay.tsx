@@ -21,7 +21,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
   }, []);
   return (
     <div className="max-w-4xl mx-auto w-full">
-      <div className="text-center mb-6 sm:mb-8">
+      <div className="text-center mb-4 sm:mb-8">
         <div className="flex items-center mb-4 flex-row w-full">
           <div className="flex text-right justify-between w-full">
             <h1 className="font-doran text-2xl sm:text-3xl font-black text-stone-900 dark:text-stone-300 text-right leading-tight sm:leading-14">
@@ -31,12 +31,12 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
         </div>
 
         {/* Mobile-first responsive layout */}
-        <div className="flex flex-col sm:flex-row-reverse gap-3 sm:gap-2 justify-between w-full align-center">
+        <div className="flex flex-col-reverse sm:flex-row-reverse gap-8 sm:gap-2 justify-between w-full align-end">
           {/* Controls - Mobile: full width, Desktop: right side */}
-          <div className="flex flex-row gap-1 bg-white/75 dark:bg-stone-800/80 rounded-xl shadow-sm p-1 h-fit w-full sm:w-auto justify-center sm:justify-end">
+          <div className="flex flex-row gap-1 bg-white/75 dark:bg-yellow-900/40 rounded-xl shadow-sm p-1 h-fit w-fit sm:w-auto justify-center sm:justify-end self-end">
             {/* Font Size Control - only show after hydration */}
             {isHydrated && (
-              <div className="flex justify-end border-l-stone-200 dark:border-l-stone-700 border-l-1 pl-2">
+              <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
                 <FontSizeControl showLabel={false} />
               </div>
             )}
@@ -59,7 +59,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
           </div>
           
           {/* Poet info - Mobile: below controls, Desktop: left side */}
-          <div className="text-center sm:text-right">
+          <div className="text-right">
             <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-normal">
               {poem.poetName}
             </p>
@@ -72,12 +72,12 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
         </div>
       </div>
       
-      <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 p-4 sm:p-8">
+      <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-yellow-900/20 dark:border-yellow-900/40 p-4 sm:p-8 backdrop-blur-md">
         <div className="prose prose-lg max-w-none text-center">
           {poem.verses.map((verse, index) => (
             <p 
               key={index}
-              className={`text-stone-900 dark:text-stone-300 leading-relaxed mb-4 text-right mobile-leading-relaxed ${isHydrated ? poemClasses : ''}`}
+              className={`text-stone-900 dark:text-stone-300 leading-relaxed mb-3 even:mb-9 text-right mobile-leading-relaxed ${isHydrated ? poemClasses : ''}`}
             >
               {verse}
             </p>
