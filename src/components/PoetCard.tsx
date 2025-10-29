@@ -23,7 +23,7 @@ function PoetCard({ poet }: PoetCardProps) {
   return (
     <Link 
       href={`/poet/${poet.id}`}
-      className="block backdrop-blur-md bg-white/50 dark:bg-stone-800/50 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 w-full flex-1 min-w-[310px] dark:border-stone-700/50"
+      className="block backdrop-blur-md bg-white/50 dark:bg-yellow-950/20 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 w-full flex-1 min-w-[310px] dark:border-yellow-900/50 hover:bg-stone-100 dark:hover:bg-yellow-950/80"
     >
       <div className="flex items-center justify-between p-4 flex-row-reverse">
         {/* Arrow icon */}

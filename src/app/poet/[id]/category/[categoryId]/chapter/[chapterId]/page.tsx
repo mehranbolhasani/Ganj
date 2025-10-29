@@ -1,44 +1,49 @@
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import ChapterList from '@/components/ChapterList';
 import PoemPagination from '@/components/PoemPagination';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';
 
-interface CategoryPoemsPageProps {
+interface ChapterPoemsPageProps {
   params: {
     id: string;
     categoryId: string;
+    chapterId: string;
   };
   searchParams: {
     page?: string;
   };
 }
 
-export default async function CategoryPoemsPage({ params, searchParams }: CategoryPoemsPageProps) {
+export default async function ChapterPoemsPage({ params, searchParams }: ChapterPoemsPageProps) {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
   const poetId = parseInt(resolvedParams.id);
   const categoryId = parseInt(resolvedParams.categoryId);
+  const chapterId = parseInt(resolvedParams.chapterId);
   const currentPage = parseInt(resolvedSearchParams.page || '1');
   
-  if (isNaN(poetId) || isNaN(categoryId)) {
+  if (isNaN(poetId) || isNaN(categoryId) || isNaN(chapterId)) {
     notFound();
   }
 
   let poems: Poem[] = [];
   let poetName: string = '';
   let categoryTitle: string = '';
-  let category: Category | undefined;
+  let chapterTitle: string = '';
   let error: string | null = null;
 
   try {
-    poems = await ganjoorApi.getCategoryPoems(poetId, categoryId);
-    // Get poet name and category title for breadcrumbs
+    // Get chapter details and poems
+    const chapterData = await ganjoorApi.getChapter(poetId, categoryId, chapterId);
+    poems = chapterData.poems;
+    chapterTitle = chapterData.chapter.title;
+    
+    // Get poet and category info for breadcrumbs
     const poetData = await ganjoorApi.getPoet(poetId);
     poetName = poetData.poet.name;
-    category = poetData.categories.find(cat => cat.id === categoryId);
+    const category = poetData.categories.find(cat => cat.id === categoryId);
     categoryTitle = category?.title || 'مجموعه';
   } catch (err) {
     error = err instanceof Error ? err.message : 'خطا در بارگذاری اشعار';
@@ -55,10 +60,10 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
             {error}
           </p>
           <Link 
-            href={`/poet/${poetId}`}
+            href={`/poet/${poetId}/category/${categoryId}`}
             className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
           >
-            بازگشت به شاعر
+            بازگشت به {categoryTitle}
           </Link>
         </div>
       
@@ -69,39 +74,23 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
     <>
       <Breadcrumbs items={[
         { label: poetName, href: `/poet/${poetId}` },
-        { label: categoryTitle }
+        { label: categoryTitle, href: `/poet/${poetId}/category/${categoryId}` },
+        { label: chapterTitle }
       ]} />
       
-       <div className="">
-         <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-300 text-right flex items-center justify-between">
-           <span>{categoryTitle}</span>
-           <span className="text-stone-600 dark:text-stone-300">
-             {poems.length}
-           </span>
-         </h1>
-       </div>
+      <div className="">
+        <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-300 text-right flex items-center justify-between">
+          <span>{chapterTitle}</span>
+          <span className="text-stone-600 dark:text-stone-300">
+            {poems.length}
+          </span>
+        </h1>
+        <p className="text-stone-600 dark:text-stone-400 text-right mt-2">
+          از {categoryTitle} • {poetName}
+        </p>
+      </div>
 
-       {/* Show chapters if available */}
-       {category?.chapters && category.chapters.length > 0 && (
-         <ChapterList 
-           chapters={category.chapters} 
-           categoryTitle={categoryTitle}
-           poetId={poetId}
-           categoryId={categoryId}
-         />
-       )}
-
-      {/* Show poems only if there are no chapters, or if there are direct poems */}
-      {category?.chapters && category.chapters.length > 0 ? (
-        <div className="text-center py-8">
-          <p className="text-stone-600 dark:text-stone-400 text-right mb-4">
-            برای مشاهده اشعار، روی یکی از فصول بالا کلیک کنید
-          </p>
-          <p className="text-sm text-stone-500 dark:text-stone-500 text-right">
-            این مجموعه شامل {category.chapters.length} فصل است
-          </p>
-        </div>
-      ) : poems.length === 0 ? (
+      {poems.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-stone-500 dark:text-stone-300 text-right">
             هیچ شعری یافت نشد
@@ -112,7 +101,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
           poems={poems}
           itemsPerPage={20}
           currentPage={currentPage}
-          baseUrl={`/poet/${poetId}/category/${categoryId}`}
+          baseUrl={`/poet/${poetId}/category/${categoryId}/chapter/${chapterId}`}
         />
       )}
     </>

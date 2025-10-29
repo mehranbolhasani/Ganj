@@ -13,6 +13,16 @@ export interface Category {
   description?: string;
   poetId: number;
   poemCount?: number;
+  hasChapters?: boolean;
+  chapters?: Chapter[];
+}
+
+export interface Chapter {
+  id: number;
+  title: string;
+  description?: string;
+  categoryId: number;
+  poemCount?: number;
 }
 
 export interface Poem {
@@ -23,6 +33,8 @@ export interface Poem {
   poetName: string;
   categoryId?: number;
   categoryTitle?: string;
+  chapterId?: number;
+  chapterTitle?: string;
 }
 
 export interface ApiResponse<T> {

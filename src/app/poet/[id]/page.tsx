@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import Layout from '@/components/Layout';
 import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ExpandableDescription from '@/components/ExpandableDescription';
@@ -55,46 +54,44 @@ export default async function PoetPage({ params }: PoetPageProps) {
 
   if (error || !poet) {
     return (
-      <Layout>
-        <div className="text-center py-8">
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">
-            خطا در بارگذاری
-          </h1>
-          <p className="text-stone-600 dark:text-stone-300 mb-4">
-            {error}
-          </p>
-          <Link 
-            href="/"
-            className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
-          >
-            بازگشت به صفحه اصلی
-          </Link>
-        </div>
-      </Layout>
+      <div className="text-center py-8">
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">
+          خطا در بارگذاری
+        </h1>
+        <p className="text-stone-600 dark:text-stone-300 mb-4">
+          {error}
+        </p>
+        <Link 
+          href="/"
+          className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
+        >
+          بازگشت به صفحه اصلی
+        </Link>
+      </div>
     );
   }
 
   const isFamous = isFamousPoet(poet.slug || '');
 
   return (
-    <Layout>
+    <>
       <Breadcrumbs items={[{ label: poet.name }]} />
       
        <div className={`mb-8 border rounded-2xl shadow-2xl/5 backdrop-blur-md ${
          isFamous 
-           ? 'bg-white/80 border-white dark:bg-orange-900/20 dark:border-amber-700/50' 
-           : 'bg-white/50 border-white dark:bg-stone-800/50 dark:border-stone-700'
+           ? 'bg-white/80 border-white dark:bg-yellow-950/20 dark:border-yellow-900/50 backdrop-blur-md' 
+           : 'bg-white/50 border-white dark:bg-yellow-950/80 dark:border-yellow-900/50 backdrop-blur-md'
        }`}>
        
-         <div className="text-right p-1">
-            <div className={`flex flex-col md:flex-row gap-4 items-center justify-between p-16 relative rounded-t-xl ${
+         <div className="text-right">
+            <div className={`flex flex-col md:flex-row items-stretch justify-start relative ${
               isFamous 
-                ? 'bg-orange-100/10 dark:bg-orange-900 border-b border-orange-200 dark:border-orange-700' 
-                : 'bg-stone-200/50 dark:bg-stone-700/50'
+                ? 'border-b border-yellow-900/50' 
+                : 'bg-stone-200/50 dark:bg-stone-900 border-b border-stone-200 dark:border-yellow-900/50 backdrop-blur-md'
             }`}>
             {/* Poet Image - only for famous poets */}
              {getPoetImage(poet.slug || '') && (
-                 <div className={`absolute right-[50%] translate-x-[50%] -top-16 md:right-0 md:top-[50%] md:translate-y-[-50%] w-[160px] h-[160px] rounded-2xl overflow-hidden shadow-xl ${
+                 <div className={`relative w-[160px] h-[160px] border-l border-yellow-900/50 p-4 ${
                    isFamous 
                     //  ? 'bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-700 dark:to-orange-700 ring-4 ring-amber-200/50 dark:ring-amber-600/50' 
                     //  : 'bg-stone-300 dark:bg-stone-600'
@@ -104,13 +101,13 @@ export default async function PoetPage({ params }: PoetPageProps) {
                      alt={`تصویر ${poet.name}`}
                      width={160}
                      height={160}
-                     className="w-full h-full object-cover"
+                     className="w-full h-full rounded-md dark:brightness-70 contrast-100 hover:brightness-80 hover:contrast-100"
                      priority
                    />
                  </div>
                )}
-              <div className={`flex items-center gap-6 flex-row-reverse pt-16 md:pt-0 ${
-                isFamous ? 'pr-0 md:pr-16 translate-y-2' : 'pr-0 md:pr-0 translate-y-0'
+              <div className={`flex items-center gap-6 flex-row-reverse p-4 ${
+                isFamous ? 'p-4' : 'p-4'
               }`}>
                 <div className="flex flex-col gap-2 align-center md:align-start text-center md:text-right">
                   <h1 className={`font-doran text-4xl font-black ${
@@ -132,16 +129,6 @@ export default async function PoetPage({ params }: PoetPageProps) {
                         : poet.birthYear || poet.deathYear
                       }
                     </p>
-                  )}
-                  
-                  {/* Special badge for famous poets */}
-                  {isFamous && (
-                    <div className="inline-flex items-center gap-2 mt-2 justify-center md:justify-start">
-                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-                      <span className="text-sm font-medium text-amber-700 dark:text-amber-300 bg-amber-100/50 dark:bg-amber-800/30 px-3 py-1 rounded-full">
-                        شاعر برجسته
-                      </span>
-                    </div>
                   )}
                 </div>
               </div>
@@ -167,6 +154,6 @@ export default async function PoetPage({ params }: PoetPageProps) {
         </h2>
         <CategoryList categories={categories} poetId={poetId} isFamous={isFamous} />
       </div>
-    </Layout>
+    </>
   );
 }

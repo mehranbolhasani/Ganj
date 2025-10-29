@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
+import React from "react";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import ThemeSync from "@/components/ThemeSync";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { ToastProvider } from "@/components/Toast";
+import { LazyComponents } from "@/lib/lazy-loading";
+import PreloadInitializer from "@/components/PreloadInitializer";
+import OfflineIndicator from "@/components/OfflineIndicator";
+import Layout from "@/components/Layout";
 
 import { Analytics } from "@vercel/analytics/next"
 
@@ -72,11 +80,20 @@ export default function RootLayout({
               <body className="antialiased" style={{ fontFamily: 'Estedad, DoranFaNum, Vazirmatn, Vazir, Tahoma, Arial, sans-serif' }}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
+          defaultTheme="system"
+          enableSystem={true}
           disableTransitionOnChange={false}
         >
-          {children}
+          <ThemeSync />
+          <ErrorBoundary>
+            <ToastProvider>
+              <Layout>
+                {children}
+              </Layout>
+              <OfflineIndicator />
+            </ToastProvider>
+          </ErrorBoundary>
+          <PreloadInitializer />
         </ThemeProvider>
         <Analytics />
       </body>

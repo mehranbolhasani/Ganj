@@ -55,7 +55,7 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
           <Link 
             key={poet.id} 
             href={`/poet/${poet.id}`}
-            className="flex flex-col items-center group cursor-pointer w-full bg-white/50 dark:bg-stone-800/50 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 min-h-[230px] gap-1 dark:border-stone-700/50"
+            className="flex flex-col items-center group cursor-pointer w-full bg-white/50 dark:bg-yellow-950/80 border border-white rounded-2xl shadow-lg/5 hover:shadow-sm transition-all duration-200 min-h-[230px] gap-1 dark:border-yellow-900/50 p-1"
           >
             {/* Poet Image */}
             <div className="w-full h-full rounded-xl overflow-hidden bg-stone-200 dark:bg-stone-700 group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
@@ -64,7 +64,7 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
                 alt={`تصویر ${poet.name}`}
                 width={200}
                 height={200}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-300 filter brightness-70 contrast-100 hover:brightness-80 hover:contrast-100"
                 priority
               />
             </div>

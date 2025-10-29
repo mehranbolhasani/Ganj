@@ -1,11 +1,11 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import { userPreferences } from '@/lib/user-preferences';
 
 export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const [theme, setTheme] = useState<'light' | 'dark' | 'auto'>('auto');
 
   useEffect(() => {
     // Use setTimeout to avoid synchronous setState in effect
@@ -13,13 +13,31 @@ export default function ThemeToggle() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    // Load current theme from user preferences
+    const preferences = userPreferences.getPreferences();
+    setTheme(preferences.theme);
+
+    // Listen for theme changes
+    const unsubscribe = userPreferences.addListener((preferences) => {
+      setTheme(preferences.theme);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const handleToggle = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    userPreferences.updatePreference('theme', newTheme);
+  };
+
   if (!mounted) {
     return null;
   }
 
   return (
     <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={handleToggle}
       className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
       aria-label="تغییر تم"
     >

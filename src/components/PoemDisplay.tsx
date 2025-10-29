@@ -24,17 +24,21 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
       <div className="text-center mb-8">
         <div className="flex items-center mb-4 flex-row w-full">
           <div className="flex text-right justify-between w-full">
-            <h1 className="font-doran text-4xl font-black text-stone-900 dark:text-stone-300 text-right">
+            <h1 className="font-doran text-3xl font-black text-stone-900 dark:text-stone-300 text-right leading-14">
               {poem.title}
             </h1>
+          </div>
+        </div>
 
-            <div className="flex flex-row gap-2 bg-white/75 dark:bg-stone-800/80 rounded-xl shadow-sm p-1">
-            {/* Font Size Control - only show after hydration */}
-            {isHydrated && (
-              <div className="flex justify-end border-l-stone-200 dark:border-l-stone-700 border-l-1 pl-2">
-                <FontSizeControl showLabel={false} />
-              </div>
-            )}
+        {/* Bookmark and Font Size Control + Poet Name and Category Title */}
+        <div className="flex flex-row-reverse gap-2 justify-between w-full align-center">
+            <div className="flex flex-row gap-1 bg-white/75 dark:bg-stone-800/80 rounded-xl shadow-sm p-1 h-fit">
+              {/* Font Size Control - only show after hydration */}
+              {isHydrated && (
+                <div className="flex justify-end border-l-stone-200 dark:border-l-stone-700 border-l-1 pl-2">
+                  <FontSizeControl showLabel={false} />
+                </div>
+              )}
 
               <div className="flex-1 flex justify-end">
                   {isHydrated ? (
@@ -52,17 +56,17 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
                 </div>
 
             </div>
-          </div>
-          
+            <div>
+              <p className="text-lg text-stone-600 dark:text-stone-300 font-normal text-right">
+                {poem.poetName}
+              </p>
+              {poem.categoryTitle && (
+                <p className="text-sm text-stone-500 dark:text-stone-300 mt-1 font-normal text-right">
+                  از مجموعه: {poem.categoryTitle}
+                </p>
+              )}
+            </div>
         </div>
-        <p className="text-lg text-stone-600 dark:text-stone-300 font-normal text-right">
-          {poem.poetName}
-        </p>
-        {poem.categoryTitle && (
-          <p className="text-sm text-stone-500 dark:text-stone-300 mt-1 font-normal text-right">
-            از مجموعه: {poem.categoryTitle}
-          </p>
-        )}
       </div>
       
       <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 p-8">

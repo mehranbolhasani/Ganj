@@ -11,6 +11,12 @@ interface BreadcrumbsProps {
 }
 
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
+  // Filter out the last item if it doesn't have an href (current page)
+  const breadcrumbItems = items.filter((item, index) => {
+    // Keep all items except the last one if it doesn't have an href
+    return !(index === items.length - 1 && !item.href);
+  });
+
   return (
     <nav className="flex items-center gap-2 text-sm text-[#82827c] dark:text-gray-400 mb-6">
       {/* Home icon */}
@@ -23,7 +29,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
       </Link>
 
       {/* Breadcrumb items */}
-      {items.map((item, index) => (
+      {breadcrumbItems.map((item, index) => (
         <div key={index} className="flex items-center gap-2">
           <ChevronLeft className="w-4 h-4" />
           {item.href ? (

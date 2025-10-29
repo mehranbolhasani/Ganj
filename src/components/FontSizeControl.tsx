@@ -108,7 +108,7 @@ export default function FontSizeControl({
                   updatePreference('fontSize', newSize);
                 }
               }}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${
+              className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer aspect-square flex items-center justify-center ${
                 fontSize === size
                   ? 'bg-stone-300/50 dark:bg-stone-600/75 text-stone-900 dark:text-stone-100'
                   : 'text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'

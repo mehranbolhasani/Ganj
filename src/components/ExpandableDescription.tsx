@@ -33,14 +33,14 @@ export default function ExpandableDescription({
     <div className="text-md max-w-3xl mx-auto p-8 pb-4 leading-relaxed">
       <p className={`${
         isFamous 
-          ? 'text-stone-800 dark:text-amber-200' 
+          ? 'text-stone-800 dark:text-stone-300' 
           : 'text-stone-700 dark:text-stone-300'
       }`}>
         {displayText}
       </p>
       
       {needsTruncation && (
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-start mt-4">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className={`inline-flex items-center flex-row-reverse gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${

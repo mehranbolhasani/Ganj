@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
 import PoetsDropdown from './PoetsDropdown';
 import ViewHistory from './ViewHistory';
+import GlobalSearch from './GlobalSearch';
 import { useViewHistory } from '@/lib/history-manager';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { History, Heart, Menu, X, Search } from 'lucide-react';
@@ -12,6 +13,7 @@ import { Poet } from '@/lib/types';
 
 export default function Header() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileSearchQuery, setMobileSearchQuery] = useState('');
   const [poets, setPoets] = useState<Poet[]>([]);
@@ -56,6 +58,26 @@ export default function Header() {
     };
   }, [isMobileMenuOpen]);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + K to open search
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      // Escape to close modals
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+        setIsHistoryOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <header className="w-full sm:container-responsive min-h-[80px] h-[80px] md:min-h-[128px] md:h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
       {/* Mobile Menu Button */}
@@ -70,10 +92,23 @@ export default function Header() {
       {/* Left side - Navigation (Desktop) */}
       <div className="hidden md:flex items-center gap-4 flex-row-reverse">
         {/* Navigation menu */}
-        <nav className="flex items-center gap-1 flex-row-reverse">
+        <nav className="flex items-center gap-0 flex-row-reverse">
+          {/* Search button */}
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2"
+            aria-label="جستجو"
+          >
+            <Search className="w-4 h-4" />
+            {/* <span>جستجو</span> */}
+            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-mono bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded">
+              ⌘K
+            </kbd>
+          </button>
+
           <Link
             href="/about"
-            className="px-4 py-2 rounded-md text-md font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
+            className="px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
           >
             درباره
           </Link>
@@ -81,7 +116,8 @@ export default function Header() {
           {/* History button */}
           <button
             onClick={() => setIsHistoryOpen(true)}
-            className="relative px-4 py-2 rounded-md text-md font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2 cursor-pointer"
+            data-history-trigger
+            className="relative px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2 cursor-pointer"
             aria-label="تاریخچه بازدیدها"
           >
             <History className="w-4 h-4" />
@@ -96,7 +132,8 @@ export default function Header() {
           {/* Bookmarks button */}
           <Link
             href="/bookmarks"
-            className="relative px-4 py-2 rounded-md text-md font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2 cursor-pointer"
+            data-bookmark-trigger
+            className="relative px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2 cursor-pointer"
             aria-label="علاقه‌مندی‌ها"
           >
             <Heart className="w-4 h-4" />
@@ -114,7 +151,7 @@ export default function Header() {
 
       {/* Right side - Logo */}
       <div className="flex items-center gap-1 flex-row-reverse">
-        <Link href="/" className="flex items-center gap-2 flex-row-reverse text-stone-900 dark:text-stone-300">
+        <Link href="/" className="flex items-center gap-1 flex-row-reverse text-stone-900 dark:text-stone-300">
           <span className="text-lg font-bold text-stone-900 dark:text-stone-300 translate-y-0.5">دفتر گنج</span>
           <div className="w-8 h-8 grid items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="currentColor" fillRule="evenodd" d="M5.333 0A5.333 5.333 0 0 0 0 5.333v13.334A5.333 5.333 0 0 0 5.333 24h13.334A5.333 5.333 0 0 0 24 18.667V5.333A5.333 5.333 0 0 0 18.667 0H5.333Zm0 3.333a2 2 0 0 0-2 2v13.334a2 2 0 0 0 2 2H10a2 2 0 0 0 2-2V5.333a2 2 0 0 0-2-2H5.333Z" clipRule="evenodd"/></svg>
@@ -126,6 +163,12 @@ export default function Header() {
       <ViewHistory 
         isOpen={isHistoryOpen} 
         onClose={() => setIsHistoryOpen(false)} 
+      />
+
+      {/* Global Search Modal */}
+      <GlobalSearch 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
       />
 
       {/* Mobile Menu Overlay */}
