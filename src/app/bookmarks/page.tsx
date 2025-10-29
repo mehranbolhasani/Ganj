@@ -4,9 +4,11 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useBookmarks, removeBookmark } from '@/lib/bookmarks-manager';
 import { Heart, Calendar, List, X } from 'lucide-react';
+import { useToast } from '@/components/Toast';
 
 export default function BookmarksPage() {
   const { bookmarks, loading } = useBookmarks();
+  const { toast } = useToast();
 
   // Group bookmarks by poet
   const bookmarksByPoet = useMemo(() => {
@@ -46,10 +48,16 @@ export default function BookmarksPage() {
     setRemovingBookmark({ poemId, title });
   };
 
-  const confirmRemove = () => {
+  const confirmRemove = async () => {
     if (removingBookmark) {
-      removeBookmark(removingBookmark.poemId);
-      setRemovingBookmark(null);
+      try {
+        await removeBookmark(removingBookmark.poemId);
+        toast.success('حذف شد', 'شعر از علاقه‌مندی‌ها حذف شد');
+        setRemovingBookmark(null);
+      } catch (error) {
+        console.error('Failed to remove bookmark:', error);
+        toast.error('خطا', 'خطا در حذف علاقه‌مندی');
+      }
     }
   };
 
@@ -161,6 +169,48 @@ export default function BookmarksPage() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* Confirmation Modal */}
+        {removingBookmark && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-stone-800 rounded-xl shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                  <X className="w-5 h-5 text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+                    حذف از علاقه‌مندی‌ها
+                  </h3>
+                  <p className="text-sm text-stone-500 dark:text-stone-400">
+                    این عمل قابل بازگشت نیست
+                  </p>
+                </div>
+              </div>
+              
+              <p className="text-stone-700 dark:text-stone-300 mb-6">
+                آیا مطمئن هستید که می‌خواهید <span className="font-medium">&quot;{removingBookmark.title}&quot;</span> را از علاقه‌مندی‌هایتان حذف کنید؟
+              </p>
+              
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={cancelRemove}
+                  className="px-4 py-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
+                >
+                  انصراف
+                </button>
+                <button
+                  onClick={confirmRemove}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                >
+                  حذف
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         )}
 
         {/* Confirmation Modal */}
