@@ -4,9 +4,12 @@ export default function Footer() {
   return (
     <footer className="container-responsive flex items-center justify-between px-4 py-4">
       {/* Left side - Version */}
-      <div className="px-4 py-2 rounded-md">
-        <span className="text-sm text-stone-900 dark:text-stone-300">نسخه ۰/۱</span>
-      </div>
+      <Link
+        href="/changelog"
+        className="px-4 py-2 rounded-md text-sm text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
+      >
+        نسخه ۰/۱
+      </Link>
 
       {/* Right side - Navigation */}
       <nav className="flex items-center gap-1">
