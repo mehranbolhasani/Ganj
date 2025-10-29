@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useViewHistory } from '@/lib/history-manager';
-import { History, Calendar, BarChart3, Download, Trash2, Search, Filter, Clock, Eye, User, BookOpen } from 'lucide-react';
+import { History, BarChart3, Download, Trash2, Search, Filter, Clock, User, BookOpen } from 'lucide-react';
 import { useToast } from '@/components/Toast';
 
 type GroupBy = 'none' | 'date' | 'poet';

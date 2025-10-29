@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { Search, Users, BookOpen, FileText, Calendar, Heart } from 'lucide-react';
+import { Search, Users, BookOpen, FileText, Heart } from 'lucide-react';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 import { Poet, Category, Poem } from '@/lib/types';
-import { PoemCardSkeleton, CategoryCardSkeleton, PoetCardSkeleton } from './LoadingStates';
+import { PoemCardSkeleton } from './LoadingStates';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 
 interface SearchResultsProps {
@@ -29,7 +29,7 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
   const { bookmarks } = useBookmarks();
 
   // Search function
-  const search = async () => {
+  const search = useCallback(async () => {
     if (!query.trim()) return;
 
     setIsLoading(true);
@@ -49,11 +49,11 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [query]);
 
   useEffect(() => {
     search();
-  }, [query]);
+  }, [query, search]);
 
   // Filter results based on active tab
   const filteredResults = useMemo(() => {
@@ -158,7 +158,7 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
         ].map(({ key, label, count, icon: Icon }) => (
           <button
             key={key}
-            onClick={() => setActiveTab(key as any)}
+            onClick={() => setActiveTab(key as 'all' | 'poets' | 'categories' | 'poems')}
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeTab === key
                 ? 'border-stone-800 dark:border-stone-200 text-stone-900 dark:text-stone-100'
@@ -176,7 +176,7 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
 
       {/* Results */}
       <div className="space-y-4">
-        {paginatedResults.map(({ type, data }, index) => (
+        {paginatedResults.map(({ type, data }) => (
           <div key={`${type}-${data.id}`}>
             {type === 'poet' && <PoetResultCard poet={data as Poet} />}
             {type === 'category' && <CategoryResultCard category={data as Category} />}
@@ -299,27 +299,27 @@ function PoemResultCard({ poem, isBookmarked }: { poem: Poem; isBookmarked: bool
   return (
     <Link
       href={`/poem/${poem.id}`}
-      className="block p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 transition-all duration-200"
+      className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 active:scale-[0.98] transition-all duration-200 touch-manipulation"
     >
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 bg-green-200 dark:bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
-          <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
+        <div className="w-12 h-12 sm:w-14 sm:h-14 bg-green-200 dark:bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+          <FileText className="w-6 h-6 sm:w-7 sm:h-7 text-green-600 dark:text-green-400" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 text-right">
+            <h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-100 text-right leading-tight">
               {poem.title}
             </h3>
             {isBookmarked && (
-              <Heart className="w-4 h-4 text-red-500 fill-current" />
+              <Heart className="w-5 h-5 text-red-500 fill-current flex-shrink-0" />
             )}
           </div>
-          <p className="text-sm text-stone-600 dark:text-stone-400 text-right mb-2">
+          <p className="text-sm sm:text-base text-stone-600 dark:text-stone-400 text-right mb-2 font-medium">
             {poem.poetName}
             {poem.categoryTitle && ` • ${poem.categoryTitle}`}
           </p>
           {poem.verses.length > 0 && (
-            <p className="text-sm text-stone-500 dark:text-stone-500 text-right line-clamp-2">
+            <p className="text-sm sm:text-base text-stone-500 dark:text-stone-500 text-right line-clamp-2 leading-relaxed">
               {poem.verses[0]}
             </p>
           )}

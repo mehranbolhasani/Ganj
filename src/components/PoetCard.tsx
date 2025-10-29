@@ -23,11 +23,11 @@ function PoetCard({ poet }: PoetCardProps) {
   return (
     <Link 
       href={`/poet/${poet.id}`}
-      className="block backdrop-blur-md bg-white/50 dark:bg-yellow-950/20 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 w-full flex-1 min-w-[310px] dark:border-yellow-900/50 hover:bg-stone-100 dark:hover:bg-yellow-950/80"
+      className="block backdrop-blur-md bg-white/50 dark:bg-yellow-950/20 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 w-full flex-1 min-w-[310px] dark:border-yellow-900/50 hover:bg-stone-100 dark:hover:bg-yellow-950/80 active:scale-[0.98] touch-manipulation"
     >
-      <div className="flex items-center justify-between p-4 flex-row-reverse">
+      <div className="flex items-center justify-between p-4 sm:p-6 flex-row-reverse">
         {/* Arrow icon */}
-        <div className="w-6 h-6 flex items-center justify-center rotate-180">
+        <div className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rotate-180">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-stone-400 dark:text-stone-300">
             <path
               d="M9 18L15 12L9 6"
@@ -40,17 +40,17 @@ function PoetCard({ poet }: PoetCardProps) {
         </div>
 
         {/* Poet info */}
-        <div className="flex flex-col gap-4 items-start w-full">
-          <h3 className="font-doran text-md font-bold text-stone-900 dark:text-stone-300 text-right leading-4">
+        <div className="flex flex-col gap-3 sm:gap-4 items-start w-full">
+          <h3 className="font-doran text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-300 text-right leading-tight">
             {poet.name}
           </h3>
           
           {yearRange && (
-            <div className="flex items-center gap-1 w-full justify-end flex-row-reverse">
-              <span className="text-sm text-stone-500 dark:text-stone-300 text-right leading-4">
+            <div className="flex items-center gap-2 w-full justify-end flex-row-reverse">
+              <span className="text-sm sm:text-base text-stone-500 dark:text-stone-300 text-right leading-tight font-medium">
                 {yearRange}
               </span>
-              <CalendarRange className="w-4 h-4 text-stone-400 dark:text-stone-300" />
+              <CalendarRange className="w-4 h-4 sm:w-5 sm:h-5 text-stone-400 dark:text-stone-300" />
             </div>
           )}
         </div>

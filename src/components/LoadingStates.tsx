@@ -161,6 +161,129 @@ export function PageLoadingSkeleton() {
   );
 }
 
+// Poet page skeleton (poet info + categories grid)
+export function PoetPageSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <BreadcrumbsSkeleton />
+      
+      {/* Poet info section */}
+      <div className="border rounded-2xl shadow-2xl/5 backdrop-blur-md bg-white/80 border-white dark:bg-yellow-950/20 dark:border-yellow-900/50 p-6 md:p-8">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+          <div className="w-24 h-24 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
+          <div className="flex-1 space-y-4">
+            <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
+            <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-full"></div>
+              <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
+              <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Categories section */}
+      <div className="space-y-4">
+        <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CategoryCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Category page skeleton (poems list)
+export function CategoryPageSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <BreadcrumbsSkeleton />
+      
+      {/* Category header */}
+      <div className="text-center">
+        <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3 mx-auto mb-4"></div>
+        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/6 mx-auto"></div>
+      </div>
+
+      {/* Poems grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <PoemCardSkeleton key={i} />
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <PaginationSkeleton />
+    </div>
+  );
+}
+
+// Chapter page skeleton (poems list)
+export function ChapterPageSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <BreadcrumbsSkeleton />
+      
+      {/* Chapter header */}
+      <div className="text-center">
+        <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3 mx-auto mb-4"></div>
+        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/6 mx-auto"></div>
+      </div>
+
+      {/* Poems grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <PoemCardSkeleton key={i} />
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <PaginationSkeleton />
+    </div>
+  );
+}
+
+// Search page skeleton (search results)
+export function SearchPageSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      {/* Search header */}
+      <div className="space-y-4">
+        <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/6"></div>
+      </div>
+
+      {/* Search tabs */}
+      <div className="flex gap-4 border-b">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-10 bg-stone-200 dark:bg-stone-700 rounded w-20"></div>
+        ))}
+      </div>
+
+      {/* Search results */}
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="p-4 bg-white dark:bg-stone-800 rounded-lg border">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-stone-200 dark:bg-stone-700 rounded"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-5 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
+                <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <PaginationSkeleton />
+    </div>
+  );
+}
+
 // Suspense fallback component
 export function SuspenseFallback() {
   return (

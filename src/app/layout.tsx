@@ -5,7 +5,6 @@ import { ThemeProvider } from "next-themes";
 import ThemeSync from "@/components/ThemeSync";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { ToastProvider } from "@/components/Toast";
-import { LazyComponents } from "@/lib/lazy-loading";
 import PreloadInitializer from "@/components/PreloadInitializer";
 import OfflineIndicator from "@/components/OfflineIndicator";
 import Layout from "@/components/Layout";

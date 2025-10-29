@@ -30,6 +30,7 @@ export default function BookmarkButton({
   const { bookmarks } = useBookmarks();
   const [isAnimating, setIsAnimating] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [undoTimeout, setUndoTimeout] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
@@ -92,7 +93,7 @@ export default function BookmarkButton({
       console.error('Failed to toggle bookmark:', error);
       toast.error('خطا', 'خطا در ذخیره علاقه‌مندی');
     }
-  }, [isBookmarked, poemId, poetId, poetName, title, categoryId, categoryTitle, removeBookmark, addBookmark, toast]);
+  }, [isBookmarked, poemId, poetId, poetName, title, categoryId, categoryTitle, toast]);
 
   // Keyboard shortcut handling
   useEffect(() => {

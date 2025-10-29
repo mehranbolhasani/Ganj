@@ -167,6 +167,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
 
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
+    console.log('Result clicked:', result);
     saveSearchHistory(query);
     onClose();
   };

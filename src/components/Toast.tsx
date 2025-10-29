@@ -193,22 +193,6 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
   );
 }
 
-// Convenience functions
-export const toast = {
-  success: (title: string, message?: string, options?: Partial<Toast>) => {
-    const { addToast } = useToast();
-    return addToast({ type: 'success', title, message, ...options });
-  },
-  error: (title: string, message?: string, options?: Partial<Toast>) => {
-    const { addToast } = useToast();
-    return addToast({ type: 'error', title, message, ...options });
-  },
-  warning: (title: string, message?: string, options?: Partial<Toast>) => {
-    const { addToast } = useToast();
-    return addToast({ type: 'warning', title, message, ...options });
-  },
-  info: (title: string, message?: string, options?: Partial<Toast>) => {
-    const { addToast } = useToast();
-    return addToast({ type: 'info', title, message, ...options });
-  },
-};
+// Note: To use toast notifications, import and call useToast() in your component:
+// const { toast } = useToast();
+// toast.success('Title', 'Message');

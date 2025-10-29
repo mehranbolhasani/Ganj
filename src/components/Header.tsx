@@ -80,10 +80,10 @@ export default function Header() {
 
   return (
     <header className="w-full sm:container-responsive min-h-[80px] h-[80px] md:min-h-[128px] md:h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
-      {/* Mobile Menu Button */}
+      {/* Mobile Menu Button - Improved touch target */}
       <button
         onClick={() => setIsMobileMenuOpen(true)}
-        className="md:hidden p-2 rounded-md text-stone-900 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
+        className="md:hidden p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 active:bg-stone-300 dark:active:bg-stone-600 transition-colors touch-manipulation"
         aria-label="منوی موبایل"
       >
         <Menu className="w-6 h-6" />
@@ -174,43 +174,47 @@ export default function Header() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-50 md:hidden"
+          className="fixed inset-0 bg-black/50 z-50 md:hidden mobile-touch"
           onClick={() => setIsMobileMenuOpen(false)}
         >
           {/* Mobile Menu Slide-in */}
           <div 
-            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white dark:bg-stone-800 shadow-xl transform transition-transform duration-300 ease-in-out"
+            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white dark:bg-stone-800 shadow-xl transform transition-transform duration-300 ease-in-out mobile-optimize"
             style={{ transition: 'transform 0.3s ease-in-out' }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Mobile Menu Header */}
             <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
-              <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">منو</h2>
+              <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">منو</h2>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 rounded-md text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                className="p-3 rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
                 aria-label="بستن منو"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
 
                   {/* Mobile Search */}
                   <div className="p-4 border-b border-stone-200 dark:border-stone-700">
                     <div className="relative">
-                      <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-400" />
+                      <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-stone-400" />
                       <input
                         type="text"
                         placeholder="جستجو در شاعران..."
                         value={mobileSearchQuery}
                         onChange={(e) => setMobileSearchQuery(e.target.value)}
-                        className="w-full pr-10 pl-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent"
+                        className="w-full pr-12 pl-4 py-3 text-base border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent touch-manipulation"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck="false"
                       />
                     </div>
                     
                     {/* Search Results */}
                     {mobileSearchQuery.trim() && (
-                      <div className="mt-3 max-h-48 overflow-y-auto">
+                      <div className="mt-3 max-h-60 overflow-y-auto">
                         {mobileSearchResults.length > 0 ? (
                           <div className="space-y-1">
                             {mobileSearchResults.map((poet) => (
@@ -218,14 +222,14 @@ export default function Header() {
                                 key={poet.id}
                                 href={`/poet/${poet.id}`}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="block px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 rounded-md transition-colors"
+                                className="block px-4 py-3 text-base text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 rounded-lg transition-colors touch-manipulation"
                               >
                                 {poet.name}
                               </Link>
                             ))}
                           </div>
                         ) : (
-                          <div className="px-3 py-2 text-sm text-stone-500 dark:text-stone-400">
+                          <div className="px-4 py-3 text-base text-stone-500 dark:text-stone-400 text-center">
                             هیچ شاعری با &quot;{mobileSearchQuery}&quot; یافت نشد
                           </div>
                         )}
@@ -234,15 +238,15 @@ export default function Header() {
                   </div>
 
             {/* Mobile Navigation */}
-            <div className="flex-1 overflow-y-auto">
-              <nav className="p-4 space-y-2">
+            <div className="flex-1 overflow-y-auto mobile-scroll">
+              <nav className="p-4 space-y-1">
                 {/* About Link */}
                 <Link
                   href="/about"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                  className="flex items-center gap-3 px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
                 >
-                  <span className="text-base">درباره</span>
+                  <span className="text-lg font-medium">درباره</span>
                 </Link>
 
                 {/* History Button */}
@@ -251,14 +255,14 @@ export default function Header() {
                     setIsHistoryOpen(true);
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
                 >
                   <div className="flex items-center gap-3">
-                    <History className="w-5 h-5" />
-                    <span className="text-base">تاریخچه</span>
+                    <History className="w-6 h-6" />
+                    <span className="text-lg font-medium">تاریخچه</span>
                   </div>
                   {items.length > 0 && (
-                    <span className="bg-stone-600 dark:bg-stone-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="bg-stone-600 dark:bg-stone-400 text-white text-sm font-medium rounded-full w-6 h-6 flex items-center justify-center">
                       {items.length > 9 ? '9+' : items.length}
                     </span>
                   )}
@@ -268,14 +272,14 @@ export default function Header() {
                 <Link
                   href="/bookmarks"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
                 >
                   <div className="flex items-center gap-3">
-                    <Heart className="w-5 h-5" />
-                    <span className="text-base">علاقه‌مندی‌ها</span>
+                    <Heart className="w-6 h-6" />
+                    <span className="text-lg font-medium">علاقه‌مندی‌ها</span>
                   </div>
                   {bookmarks.length > 0 && (
-                    <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="bg-red-500 text-white text-sm font-medium rounded-full w-6 h-6 flex items-center justify-center">
                       {bookmarks.length > 9 ? '9+' : bookmarks.length}
                     </span>
                   )}

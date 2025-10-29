@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Suspense } from 'react';
 import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ExpandableDescription from '@/components/ExpandableDescription';
+import { PoetPageSkeleton } from '@/components/LoadingStates';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poet, Category } from '@/lib/types';
@@ -74,7 +76,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
   const isFamous = isFamousPoet(poet.slug || '');
 
   return (
-    <>
+    <Suspense fallback={<PoetPageSkeleton />}>
       <Breadcrumbs items={[{ label: poet.name }]} />
       
        <div className={`mb-8 border rounded-2xl shadow-2xl/5 backdrop-blur-md ${
@@ -154,6 +156,6 @@ export default async function PoetPage({ params }: PoetPageProps) {
         </h2>
         <CategoryList categories={categories} poetId={poetId} isFamous={isFamous} />
       </div>
-    </>
+    </Suspense>
   );
 }

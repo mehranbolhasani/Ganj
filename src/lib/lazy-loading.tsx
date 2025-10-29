@@ -6,6 +6,7 @@ import { SuspenseFallback } from '@/components/LoadingStates';
 /**
  * Higher-order component for lazy loading with error boundary
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withLazyLoading<T = any>(
   importFunc: () => Promise<{ default: ComponentType<T> }>,
   fallback?: React.ComponentType
@@ -15,6 +16,7 @@ export function withLazyLoading<T = any>(
   return function LazyWrapper(props: T) {
     return (
       <Suspense fallback={fallback ? React.createElement(fallback) : <SuspenseFallback />}>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <LazyComponent {...(props as any)} />
       </Suspense>
     );
@@ -47,7 +49,7 @@ export const LazyComponents = {
 export function usePreloadOnHover(componentName: keyof typeof LazyComponents) {
   const preloadComponent = () => {
     // This will trigger the dynamic import
-    const component = LazyComponents[componentName];
+    void LazyComponents[componentName];
     // The component is already loaded when accessed, but we can add additional preloading logic here
   };
 
@@ -127,6 +129,7 @@ export const LazyPages = {
  */
 interface ConditionalLazyProps {
   condition: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: ComponentType<any>;
   fallback?: React.ComponentType;
   children?: React.ReactNode;

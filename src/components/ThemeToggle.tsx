@@ -5,7 +5,12 @@ import { userPreferences } from '@/lib/user-preferences';
 
 export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark' | 'auto'>('auto');
+  const [theme, setTheme] = useState<'light' | 'dark' | 'auto'>(() => {
+    if (typeof window !== 'undefined') {
+      return userPreferences.getPreferences().theme;
+    }
+    return 'auto';
+  });
 
   useEffect(() => {
     // Use setTimeout to avoid synchronous setState in effect
@@ -14,9 +19,6 @@ export default function ThemeToggle() {
   }, []);
 
   useEffect(() => {
-    // Load current theme from user preferences
-    const preferences = userPreferences.getPreferences();
-    setTheme(preferences.theme);
 
     // Listen for theme changes
     const unsubscribe = userPreferences.addListener((preferences) => {

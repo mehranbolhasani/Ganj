@@ -16,7 +16,7 @@
     "type-check": "tsc --noEmit",
     "lint:fix": "eslint . --fix",
     "predev": "npm run type-check",
-    "prebuild": "npm run type-check"
+    "prebuild": "npm run type-check && npm run lint"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

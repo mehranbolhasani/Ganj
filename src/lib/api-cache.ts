@@ -272,7 +272,7 @@ class ApiCache {
       old: 0,        // > 24 hours
     };
     
-    entries.forEach(([_, entry]) => {
+    entries.forEach(([, entry]) => {
       const age = now - entry.timestamp;
       const ageHours = age / (1000 * 60 * 60);
       
@@ -292,8 +292,8 @@ class ApiCache {
       backgroundRefresh: this.backgroundRefresh.size,
       ageDistribution,
       keys: Array.from(this.cache.keys()),
-      oldestEntry: entries.length > 0 ? Math.min(...entries.map(([_, entry]) => entry.timestamp)) : null,
-      newestEntry: entries.length > 0 ? Math.max(...entries.map(([_, entry]) => entry.timestamp)) : null,
+      oldestEntry: entries.length > 0 ? Math.min(...entries.map(([, entry]) => entry.timestamp)) : null,
+      newestEntry: entries.length > 0 ? Math.max(...entries.map(([, entry]) => entry.timestamp)) : null,
     };
   }
 }

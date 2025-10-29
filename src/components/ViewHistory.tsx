@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useViewHistory } from '@/lib/history-manager';
-import { History, Clock, Search, X, Trash2, Filter, Calendar, Eye, ArrowLeft } from 'lucide-react';
+import { History, Clock, Search, X, Trash2, Filter, ArrowLeft, Eye } from 'lucide-react';
 import { useToast } from './Toast';
 
 interface ViewHistoryProps {

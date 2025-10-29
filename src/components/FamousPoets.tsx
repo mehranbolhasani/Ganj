@@ -50,12 +50,12 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
         شاعرهای پرمخاطب
       </h2>
       
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-2 xs:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-2 xs:grid-cols-2 gap-4 sm:gap-6">
         {famousPoets.map((poet) => (
           <Link 
             key={poet.id} 
             href={`/poet/${poet.id}`}
-            className="flex flex-col items-center group cursor-pointer w-full bg-white/50 dark:bg-yellow-950/80 border border-white rounded-2xl shadow-lg/5 hover:shadow-sm transition-all duration-200 min-h-[230px] gap-1 dark:border-yellow-900/50 p-1"
+            className="flex flex-col items-center group cursor-pointer w-full bg-white/50 dark:bg-yellow-950/80 border border-white rounded-2xl shadow-lg/5 hover:shadow-sm transition-all duration-200 min-h-[200px] sm:min-h-[230px] gap-1 dark:border-yellow-900/50 p-1 active:scale-[0.98] touch-manipulation"
           >
             {/* Poet Image */}
             <div className="w-full h-full rounded-xl overflow-hidden bg-stone-200 dark:bg-stone-700 group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
@@ -70,8 +70,8 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
             </div>
             
             {/* Poet Name */}
-            <div className="text-center py-4">
-              <h3 className="font-doran text-sm md:text-base font-medium text-stone-900 dark:text-stone-100 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors">
+            <div className="text-center py-3 sm:py-4">
+              <h3 className="font-doran text-sm sm:text-base font-medium text-stone-900 dark:text-stone-100 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors leading-tight">
                 {poet.name}
               </h3>
             </div>

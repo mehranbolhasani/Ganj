@@ -1,15 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, CheckCircle } from 'lucide-react';
+import { WifiOff, CheckCircle } from 'lucide-react';
 
 export default function OfflineIndicator() {
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(() => typeof navigator !== 'undefined' ? navigator.onLine : true);
   const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
-    // Set initial state
-    setIsOnline(navigator.onLine);
 
     const handleOnline = () => {
       setIsOnline(true);

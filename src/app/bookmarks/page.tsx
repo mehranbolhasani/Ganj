@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useBookmarks, removeBookmark, clearBookmarks } from '@/lib/bookmarks-manager';
 import { Search, Heart, Trash2, Calendar, List, X, Download, Upload, Filter, SortAsc, SortDesc, CheckSquare, Square } from 'lucide-react';
@@ -17,6 +17,9 @@ export default function BookmarksPage() {
   const [filterByPoet, setFilterByPoet] = useState<string>('all');
   const [selectedBookmarks, setSelectedBookmarks] = useState<Set<number>>(new Set());
   const [showFilters, setShowFilters] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -79,8 +82,15 @@ export default function BookmarksPage() {
     return grouped;
   }, [filteredBookmarks]);
 
+  // Track current time for time ago calculations
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
+
   const formatTimeAgo = (timestamp: number): string => {
-    const diff = Date.now() - timestamp;
+    const diff = now - timestamp;
     const minutes = Math.floor(diff / (1000 * 60));
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -93,7 +103,8 @@ export default function BookmarksPage() {
   };
 
   // Export bookmarks
-  const exportBookmarks = () => {
+  const exportBookmarks = async () => {
+    setIsExporting(true);
     try {
       const dataStr = JSON.stringify(bookmarks, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -109,6 +120,8 @@ export default function BookmarksPage() {
     } catch (error) {
       console.error('Export failed:', error);
       toast.error('خطا', 'خطا در صادر کردن علاقه‌مندی‌ها');
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -117,6 +130,7 @@ export default function BookmarksPage() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setIsImporting(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -152,6 +166,8 @@ export default function BookmarksPage() {
       } catch (error) {
         console.error('Import failed:', error);
         toast.error('خطا', 'خطا در وارد کردن فایل');
+      } finally {
+        setIsImporting(false);
       }
     };
     reader.readAsText(file);
@@ -160,12 +176,15 @@ export default function BookmarksPage() {
   // Clear all bookmarks
   const clearAllBookmarks = async () => {
     if (confirm('آیا مطمئن هستید که می‌خواهید همه علاقه‌مندی‌ها را حذف کنید؟')) {
+      setIsClearing(true);
       try {
         await clearBookmarks();
         toast.success('حذف شد', 'همه علاقه‌مندی‌ها حذف شد');
       } catch (error) {
         console.error('Failed to clear bookmarks:', error);
         toast.error('خطا', 'خطا در حذف علاقه‌مندی‌ها');
+      } finally {
+        setIsClearing(false);
       }
     }
   };
@@ -282,27 +301,57 @@ export default function BookmarksPage() {
 
               <button
                 onClick={exportBookmarks}
-                className="flex items-center gap-2 px-3 py-2 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                disabled={isExporting}
+                className="flex items-center gap-2 px-3 py-2 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Download className="w-4 h-4" />
-                صادر کردن
+                {isExporting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin"></div>
+                    در حال صادر کردن...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    صادر کردن
+                  </>
+                )}
               </button>
 
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-3 py-2 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                disabled={isImporting}
+                className="flex items-center gap-2 px-3 py-2 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Upload className="w-4 h-4" />
-                وارد کردن
+                {isImporting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin"></div>
+                    در حال وارد کردن...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4" />
+                    وارد کردن
+                  </>
+                )}
               </button>
 
               {bookmarks.length > 0 && (
                 <button
                   onClick={clearAllBookmarks}
-                  className="flex items-center gap-2 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  disabled={isClearing}
+                  className="flex items-center gap-2 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Trash2 className="w-4 h-4" />
-                  حذف همه
+                  {isClearing ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-red-300 border-t-red-600 rounded-full animate-spin"></div>
+                      در حال حذف...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4" />
+                      حذف همه
+                    </>
+                  )}
                 </button>
               )}
             </div>

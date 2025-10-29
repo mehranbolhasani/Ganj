@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import SearchResults from '@/components/SearchResults';
-import { SearchResultSkeleton } from '@/components/LoadingStates';
+import { SearchPageSkeleton } from '@/components/LoadingStates';
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -29,11 +29,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </h1>
       </div>
 
-      {query ? (
-        <Suspense fallback={<SearchResultSkeleton />}>
-          <SearchResults query={query} type={type} page={page} />
-        </Suspense>
-      ) : (
+          {query ? (
+            <Suspense fallback={<SearchPageSkeleton />}>
+              <SearchResults query={query} type={type} page={page} />
+            </Suspense>
+          ) : (
         <div className="text-center py-12">
           <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

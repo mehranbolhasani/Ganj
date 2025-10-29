@@ -112,8 +112,15 @@ export default function BookmarksWidget({
 }
 
 function BookmarkItem({ bookmark }: { bookmark: BookmarkItem }) {
+  // Track current time for time ago calculations
+  const [now, setNow] = React.useState(() => Date.now());
+  React.useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
+
   const formatTimeAgo = (timestamp: number): string => {
-    const diff = Date.now() - timestamp;
+    const diff = now - timestamp;
     const minutes = Math.floor(diff / (1000 * 60));
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));

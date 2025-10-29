@@ -30,20 +30,20 @@ export default function PoemPagination({
   
   if (totalPages <= 1) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
         {poems.map((poem) => (
           <Link
             key={poem.id}
             href={`/poem/${poem.id}`}
-            className="block p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600"
+            className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 active:scale-[0.98] transition-all duration-200 touch-manipulation"
           >
-            <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-300 mb-2 text-right">
+            <h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-300 mb-3 text-right leading-tight">
               {poem.title}
             </h3>
-            <p className="text-stone-600 dark:text-stone-300 text-sm text-right flex items-center justify-start gap-2">
-              <span>{poem.poetName}</span>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base text-right flex items-center justify-start gap-2">
+              <span className="font-medium">{poem.poetName}</span>
               {poem.chapterTitle && (
-                <span className="block text-xs text-stone-500 dark:text-stone-400 mt-1">
+                <span className="block text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
                   {poem.chapterTitle}
                 </span>
               )}
@@ -57,20 +57,20 @@ export default function PoemPagination({
   return (
     <div>
       {/* Poems Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 mb-12">
         {currentPoems.map((poem) => (
           <Link
             key={poem.id}
             href={`/poem/${poem.id}`}
-            className="block p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600"
+            className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 active:scale-[0.98] transition-all duration-200 touch-manipulation"
           >
-            <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-300 mb-2 text-right">
+            <h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-300 mb-3 text-right leading-tight">
               {poem.title}
             </h3>
-            <p className="text-stone-600 dark:text-stone-300 text-sm text-right flex items-center justify-start gap-2">
-              <span>{poem.poetName}</span>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base text-right flex items-center justify-start gap-2">
+              <span className="font-medium">{poem.poetName}</span>
               {poem.chapterTitle && (
-                <span className="block text-xs text-stone-500 dark:text-stone-400 mt-1">
+                <span className="block text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
                   {poem.chapterTitle}
                 </span>
               )}
@@ -80,11 +80,11 @@ export default function PoemPagination({
       </div>
       
       {/* Pagination Controls */}
-      <div className="flex items-center justify-center gap-2 text-sm mb-4">
+      <div className="flex items-center justify-center gap-2 sm:gap-3 text-sm mb-4">
         {currentPage > 1 && (
           <Link
             href={generatePageUrl(currentPage - 1)}
-            className="px-3 py-1 rounded bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+            className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600 active:bg-stone-400 dark:active:bg-stone-500 transition-colors touch-manipulation font-medium"
           >
             قبلی
           </Link>
@@ -107,10 +107,10 @@ export default function PoemPagination({
               <Link
                 key={pageNum}
                 href={generatePageUrl(pageNum)}
-                className={`px-3 py-1 rounded transition-colors ${
+                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-lg transition-colors touch-manipulation font-medium ${
                   currentPage === pageNum
                     ? 'bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 active:bg-stone-300 dark:active:bg-stone-600'
                 }`}
               >
                 {pageNum}
@@ -122,7 +122,7 @@ export default function PoemPagination({
         {currentPage < totalPages && (
           <Link
             href={generatePageUrl(currentPage + 1)}
-            className="px-3 py-1 rounded bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+            className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600 active:bg-stone-400 dark:active:bg-stone-500 transition-colors touch-manipulation font-medium"
           >
             بعدی
           </Link>

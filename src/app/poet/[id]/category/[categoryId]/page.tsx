@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ChapterList from '@/components/ChapterList';
 import PoemPagination from '@/components/PoemPagination';
+import { CategoryPageSkeleton } from '@/components/LoadingStates';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';
@@ -66,7 +68,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
   }
 
   return (
-    <>
+    <Suspense fallback={<CategoryPageSkeleton />}>
       <Breadcrumbs items={[
         { label: poetName, href: `/poet/${poetId}` },
         { label: categoryTitle }
@@ -115,6 +117,6 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
           baseUrl={`/poet/${poetId}/category/${categoryId}`}
         />
       )}
-    </>
+    </Suspense>
   );
 }
