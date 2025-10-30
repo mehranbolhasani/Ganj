@@ -10,7 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        'doran': ['DoranFaNum', 'sans-serif'],
+        'abar': ['Abar VF', 'sans-serif'],
         'estedad': ['Estedad', 'sans-serif'],
       },
     },

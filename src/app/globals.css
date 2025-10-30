@@ -19,6 +19,17 @@
   font-feature-settings: 'kern' 1, 'liga' 1;
 }
 
+@font-face {
+  font-family: "Abar VF";
+  src: url("/fonts/AbarFaNum-VF.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* Abar Variable Font utilities */
+
 :root {
   --background: #f5f5f4;
   --foreground: #1c1917;
@@ -120,8 +131,10 @@
   --color-slate-950: #020617;
   
   /* Font Variables */
-  --font-doran: 'DoranFaNum', sans-serif;
+  /* --font-doran removed in favor of Abar */
   --font-estedad: 'Estedad', sans-serif;
+  --font-abar: 'Abar VF', sans-serif;
+  --font-abad: 'Abad VF', sans-serif;
 }
 
 /* Default to light mode */
@@ -145,11 +158,35 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Estedad', 'DoranFaNum', 'Vazirmatn', 'Vazir', 'Tahoma', 'Arial', sans-serif;
+  font-family: 'Estedad', 'Abar VF', 'Vazirmatn', 'Vazir', 'Tahoma', 'Arial', sans-serif;
   direction: rtl;
   text-align: right;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Abar font utility: control variations via CSS variables */
+.font-abar {
+  font-family: 'Abar VF', 'Estedad', 'Vazirmatn', sans-serif;
+  --abar-wght: 400;
+  --abar-cntr: 0;
+  font-variation-settings: 'wght' var(--abar-wght), 'CNTR' var(--abar-cntr);
+}
+
+/* Weight presets */
+.abar-wght-300 { --abar-wght: 300; }
+.abar-wght-400 { --abar-wght: 400; }
+.abar-wght-500 { --abar-wght: 500; }
+.abar-wght-600 { --abar-wght: 600; }
+.abar-wght-700 { --abar-wght: 700; }
+.abar-wght-800 { --abar-wght: 800; }
+.abar-wght-900 { --abar-wght: 900; }
+
+/* Contrast presets */
+.abar-cntr-0   { --abar-cntr: 0; }
+.abar-cntr-25  { --abar-cntr: 25; }
+.abar-cntr-50  { --abar-cntr: 50; }
+.abar-cntr-75  { --abar-cntr: 75; }
+.abar-cntr-100 { --abar-cntr: 100; }
 
 /* Set color-scheme based on theme class */
 html.light {

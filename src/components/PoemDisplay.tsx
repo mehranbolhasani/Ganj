@@ -24,7 +24,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
       <div className="text-center mb-4 sm:mb-8">
         <div className="flex items-center mb-4 flex-row w-full">
           <div className="flex text-right justify-between w-full">
-            <h1 className="font-doran text-2xl sm:text-3xl font-black text-stone-900 dark:text-stone-300 text-right leading-tight sm:leading-14">
+            <h1 className="font-hafez text-2xl sm:text-4xl font-normal text-stone-900 dark:text-stone-300 text-right leading-tight sm:leading-14">
               {poem.title}
             </h1>
           </div>

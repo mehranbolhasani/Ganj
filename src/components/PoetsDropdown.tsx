@@ -130,10 +130,10 @@ export default function PoetsDropdown() {
       {/* Dropdown Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1 px-4 py-2 rounded-md text-sm font-normal transition-colors z-2 relative cursor-pointer ${
+        className={`flex items-center gap-1 px-2 py-2 rounded-md text-sm font-semibold transition-colors z-2 relative cursor-pointer ${
           isOpen 
-            ? 'bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100' 
-            : 'text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800'
+            ? 'bg-yellow-600/20 dark:bg-red-900 text-stone-900 dark:text-stone-100 dark:hover:text-stone-100 hover:text-yellow-800' 
+            : 'text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-600/20 dark:active:bg-red-800 hover:text-yellow-800 dark:hover:text-stone-100 dark:active:text-stone-100 dark:active:hover:text-stone-100'
         }`}
       >
         <span>شاعرها</span>

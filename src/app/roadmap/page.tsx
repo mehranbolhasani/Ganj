@@ -131,14 +131,14 @@ export default function RoadmapPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-8 w-full">
       {/* Header */}
       <div className="mb-8">
         <Link 
           href="/"
           className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors mb-4"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 rotate-180" />
           بازگشت به صفحه اصلی
         </Link>
         
@@ -203,10 +203,10 @@ export default function RoadmapPage() {
               ویژگی‌های تکمیل شده
             </h2>
             <p className="text-stone-700 dark:text-stone-300 mb-6">
-              این ویژگی‌ها در حال حاضر در گنج موجود هستند و می‌توانید از آن‌ها استفاده کنید.
+              این ویژگی‌ها در حال حاضر در گنج موجودن و می‌تونید ازشون استفاده کنید.
             </p>
             
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-1 gap-4">
               {currentFeatures.map((feature, index) => (
                 <div key={index} className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-stone-200 dark:border-stone-700">
                   <div className="flex items-start gap-3">
@@ -252,7 +252,7 @@ export default function RoadmapPage() {
               ویژگی‌های در حال توسعه
             </h2>
             <p className="text-stone-700 dark:text-stone-300 mb-6">
-              این ویژگی‌ها در حال توسعه هستند و به زودی در دسترس قرار خواهند گرفت.
+              این ویژگی‌ها در حال توسعه هستن و به زودی در دسترس قرار خواهند گرفت.
             </p>
             
             <div className="space-y-4">
@@ -309,7 +309,7 @@ export default function RoadmapPage() {
               این ایده‌ها برای آینده گنج در نظر گرفته شده‌اند و ممکن است در نسخه‌های بعدی پیاده‌سازی شوند.
             </p>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-1 lg:grid-cols-1 gap-4">
               {futureFeatures.map((feature, index) => (
                 <div key={index} className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-stone-200 dark:border-stone-700">
                   <div className="flex items-start gap-3">
@@ -349,7 +349,7 @@ export default function RoadmapPage() {
             href="/contact"
             className="px-4 py-2 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors text-sm font-medium"
           >
-            تماس با ما
+            تماس با من
           </Link>
           <Link
             href="/changelog"

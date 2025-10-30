@@ -7,6 +7,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { ToastProvider } from "@/components/Toast";
 import PreloadInitializer from "@/components/PreloadInitializer";
 import OfflineIndicator from "@/components/OfflineIndicator";
+import RouteProgress from "@/components/RouteProgress";
 import Layout from "@/components/Layout";
 
 import { Analytics } from "@vercel/analytics/next"
@@ -76,7 +77,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
-              <body className="antialiased" style={{ fontFamily: 'Estedad, DoranFaNum, Vazirmatn, Vazir, Tahoma, Arial, sans-serif' }}>
+      <body className="antialiased" style={{ fontFamily: 'Estedad, Abar VF, Vazirmatn, Vazir, Tahoma, Arial, sans-serif' }}>
+        <RouteProgress />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

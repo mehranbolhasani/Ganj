@@ -9,6 +9,7 @@ interface PoetCardProps {
 }
 
 function PoetCard({ poet }: PoetCardProps) {
+  const [isNavigating, setIsNavigating] = React.useState(false);
   // Format birth and death years
   const formatYear = (year?: number) => {
     if (!year) return '';
@@ -23,11 +24,16 @@ function PoetCard({ poet }: PoetCardProps) {
   return (
     <Link 
       href={`/poet/${poet.id}`}
-      className="block backdrop-blur-md bg-white/50 dark:bg-yellow-950/20 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 w-full flex-1 min-w-[310px] dark:border-yellow-900/50 hover:bg-stone-100 dark:hover:bg-yellow-950/80 active:scale-[0.98] touch-manipulation"
+      prefetch
+      onClick={() => {
+        // Ensure visible feedback immediately
+        if (!isNavigating) setIsNavigating(true);
+      }}
+      className={`relative block backdrop-blur-md bg-white/70 dark:bg-yellow-950/20 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 w-full flex-1 min-w-[310px] dark:border-yellow-900/50 hover:bg-stone-100 dark:hover:bg-yellow-950/80 active:scale-[0.98] touch-manipulation ${isNavigating ? 'opacity-75' : ''}`}
     >
       <div className="flex items-center justify-between p-4 sm:p-6 flex-row-reverse">
         {/* Arrow icon */}
-        <div className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rotate-180">
+        <div className="w-8 h-8 flex items-center justify-center rotate-180 rounded-full bg-stone-200/70 dark:bg-stone-700 aspect-square">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-stone-400 dark:text-stone-300">
             <path
               d="M9 18L15 12L9 6"
@@ -41,7 +47,7 @@ function PoetCard({ poet }: PoetCardProps) {
 
         {/* Poet info */}
         <div className="flex flex-col gap-3 sm:gap-4 items-start w-full">
-          <h3 className="font-doran text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-300 text-right leading-tight">
+          <h3 className="font-abar text-lg sm:text-base abar-wght-600 text-stone-900 dark:text-stone-300 text-right leading-tight">
             {poet.name}
           </h3>
           
@@ -55,6 +61,11 @@ function PoetCard({ poet }: PoetCardProps) {
           )}
         </div>
       </div>
+      {isNavigating && (
+        <div className="absolute inset-0 rounded-xl bg-white/40 dark:bg-stone-900/30 backdrop-blur-[1px] flex items-center justify-center">
+          <span className="inline-block w-4 h-4 rounded-full border-2 border-stone-400 border-t-transparent animate-spin" />
+        </div>
+      )}
     </Link>
   );
 }

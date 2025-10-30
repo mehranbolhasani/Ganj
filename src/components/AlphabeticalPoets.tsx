@@ -89,7 +89,7 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
 
   return (
     <div className="w-full">
-      <h2 className="font-doran text-xl font-bold text-stone-900 dark:text-stone-100 mb-8 text-right">
+      <h2 className="font-abar text-xl abar-wght-700 text-stone-900 dark:text-stone-100 mb-8 text-right">
         شاعرهای دیگر
       </h2>
       
@@ -103,11 +103,11 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
             data-letter={letter}
             className="scroll-mt-20"
           >
-            <div className="flex items-center mb-4">
-              <h3 className="text-xl font-semibold text-stone-800 dark:text-stone-200">
+            <div className="flex items-center mb-4 sticky top-1 z-2 bg-white/60 dark:bg-stone-800 px-2 py-2 rounded-lg backdrop-blur-md">
+              <h3 className="text-xl font-abar abar-wght-500 text-stone-800 dark:text-stone-200 pr-2">
                 {letter}
               </h3>
-              <div className="flex-1 h-px bg-stone-200 dark:bg-stone-700 mr-4"></div>
+              <div className="flex-1 h-px bg-stone-100 dark:bg-stone-700 mr-4"></div>
             </div>
             
             <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">

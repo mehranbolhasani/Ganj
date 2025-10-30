@@ -83,7 +83,7 @@ export default function Header() {
       {/* Mobile Menu Button - Improved touch target */}
       <button
         onClick={() => setIsMobileMenuOpen(true)}
-        className="md:hidden p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 active:bg-stone-300 dark:active:bg-stone-600 transition-colors touch-manipulation"
+        className="md:hidden p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
         aria-label="منوی موبایل"
       >
         <Menu className="w-6 h-6" />
@@ -96,7 +96,7 @@ export default function Header() {
           {/* Search button */}
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2"
+            className="px-2 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors flex items-center gap-2 cursor-pointer"
             aria-label="جستجو"
           >
             <Search className="w-4 h-4" />
@@ -105,25 +105,18 @@ export default function Header() {
               ⌘K
             </kbd>
           </button>
-
-          <Link
-            href="/about"
-            className="px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
-          >
-            درباره
-          </Link>
           
           {/* History button */}
           <button
             onClick={() => setIsHistoryOpen(true)}
             data-history-trigger
-            className="relative px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2 cursor-pointer"
+            className="relative px-2 py-2 rounded-md text-sm font-semibold text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-600/20 dark:active:bg-red-800 transition-colors flex items-center gap-1 cursor-pointer"
             aria-label="تاریخچه بازدیدها"
           >
             <History className="w-4 h-4" />
             <span>تاریخچه</span>
             {items.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-stone-600 dark:bg-stone-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
                 {items.length > 9 ? '9+' : items.length}
               </span>
             )}
@@ -133,13 +126,13 @@ export default function Header() {
           <Link
             href="/bookmarks"
             data-bookmark-trigger
-            className="relative px-4 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors flex items-center gap-2 cursor-pointer"
+            className="relative px-2 py-2 rounded-md text-sm font-semibold text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-600/20 dark:active:bg-red-800 transition-colors flex items-center gap-1 cursor-pointer"
             aria-label="علاقه‌مندی‌ها"
           >
             <Heart className="w-4 h-4" />
             <span>علاقه‌مندی‌ها</span>
             {bookmarks.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="relative bg-red-200 text-red-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
                 {bookmarks.length > 9 ? '9+' : bookmarks.length}
               </span>
             )}
@@ -152,9 +145,9 @@ export default function Header() {
       {/* Right side - Logo */}
       <div className="flex items-center gap-1 flex-row-reverse">
         <Link href="/" className="flex items-center gap-1 flex-row-reverse text-stone-900 dark:text-stone-300">
-          <span className="text-lg font-bold text-stone-900 dark:text-stone-300 translate-y-0.5">دفتر گنج</span>
+          <span className="text-md font-abar abar-wght-700 text-stone-900 dark:text-stone-300 translate-y-0.5">دفتر گنج</span>
           <div className="w-8 h-8 grid items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="currentColor" fillRule="evenodd" d="M5.333 0A5.333 5.333 0 0 0 0 5.333v13.334A5.333 5.333 0 0 0 5.333 24h13.334A5.333 5.333 0 0 0 24 18.667V5.333A5.333 5.333 0 0 0 18.667 0H5.333Zm0 3.333a2 2 0 0 0-2 2v13.334a2 2 0 0 0 2 2H10a2 2 0 0 0 2-2V5.333a2 2 0 0 0-2-2H5.333Z" clipRule="evenodd"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="#d97706" fillRule="evenodd" d="M5.333 0A5.333 5.333 0 0 0 0 5.333v13.334A5.333 5.333 0 0 0 5.333 24h13.334A5.333 5.333 0 0 0 24 18.667V5.333A5.333 5.333 0 0 0 18.667 0H5.333Zm0 3.333a2 2 0 0 0-2 2v13.334a2 2 0 0 0 2 2H10a2 2 0 0 0 2-2V5.333a2 2 0 0 0-2-2H5.333Z" clipRule="evenodd"/></svg>
           </div>
         </Link>
       </div>
@@ -279,7 +272,7 @@ export default function Header() {
                     <span className="text-lg font-medium">علاقه‌مندی‌ها</span>
                   </div>
                   {bookmarks.length > 0 && (
-                    <span className="bg-red-500 text-white text-sm font-medium rounded-full w-6 h-6 flex items-center justify-center">
+                    <span className="bg-red-500/60 text-red-600 text-sm font-medium rounded-full w-6 h-6 flex items-center justify-center">
                       {bookmarks.length > 9 ? '9+' : bookmarks.length}
                     </span>
                   )}

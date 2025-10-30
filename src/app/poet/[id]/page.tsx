@@ -81,15 +81,15 @@ export default async function PoetPage({ params }: PoetPageProps) {
       
        <div className={`mb-8 border rounded-2xl shadow-2xl/5 backdrop-blur-md ${
          isFamous 
-           ? 'bg-white/80 border-white dark:bg-yellow-950/20 dark:border-yellow-900/50 backdrop-blur-md' 
-           : 'bg-white/50 border-white dark:bg-yellow-950/80 dark:border-yellow-900/50 backdrop-blur-md'
+           ? 'bg-white/80 border-white dark:bg-stone-950/20 dark:border-yellow-900/50 backdrop-blur-md' 
+           : 'bg-white/50 border-white dark:bg-stone-800/50 dark:border-stone-700 backdrop-blur-md'
        }`}>
        
          <div className="text-right">
             <div className={`flex flex-col md:flex-row items-center md:items-stretch justify-start relative ${
               isFamous 
                 ? 'border-b border-yellow-900/50' 
-                : 'bg-stone-200/50 dark:bg-stone-900 border-b border-stone-200 dark:border-yellow-900/50 backdrop-blur-md'
+                : 'border-b border-stone-700 p-4'
             }`}>
             {/* Poet Image - only for famous poets */}
              {getPoetImage(poet.slug || '') && (
@@ -103,7 +103,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
                      alt={`تصویر ${poet.name}`}
                      width={160}
                      height={160}
-                     className="w-full h-full rounded-2xl dark:brightness-90 contrast-100 hover:brightness-100 hover:contrast-100"
+                     className="w-full h-full rounded-2xl dark:brightness-100 contrast-100 hover:brightness-100 hover:contrast-100"
                      priority
                    />
                  </div>
@@ -112,7 +112,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
                 isFamous ? 'p-4' : 'p-4'
               }`}>
                 <div className="flex flex-col gap-2 align-center md:align-start text-center md:text-right">
-                  <h1 className={`font-doran text-2xl md:text-4xl font-black ${
+                  <h1 className={`font-abar text-2xl md:text-3xl abar-wght-700 ${
                     isFamous 
                       ? 'text-amber-900 dark:text-yellow-100' 
                       : 'text-stone-900 dark:text-stone-300'
@@ -147,7 +147,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
       </div>
 
       <div>
-        <h2 className={`font-doran text-2xl font-semibold mb-6 text-right ${
+        <h2 className={`font-abar text-2xl font-semibold mb-6 text-right ${
           isFamous 
             ? 'text-amber-900 dark:text-amber-100' 
             : 'text-stone-900 dark:text-stone-300'

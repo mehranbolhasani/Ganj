@@ -34,7 +34,7 @@ export default function ExpandableDescription({
       <p className={`${
         isFamous 
           ? 'text-stone-800 dark:text-yellow-100' 
-          : 'text-stone-700 dark:text-yellow-700'
+          : 'text-stone-700 dark:text-stone-300'
       }`}>
         {displayText}
       </p>
