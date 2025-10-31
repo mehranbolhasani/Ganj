@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Users, BookOpen, FileText, Heart } from 'lucide-react';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { searchAll } from '@/lib/supabase-search';
 import { Poet, Category, Poem } from '@/lib/types';
 import { PoemCardSkeleton } from './LoadingStates';
 import { useBookmarks } from '@/lib/bookmarks-manager';
@@ -28,7 +28,7 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
   
   const { bookmarks } = useBookmarks();
 
-  // Search function
+  // Search function using Supabase
   const search = useCallback(async () => {
     if (!query.trim()) return;
 
@@ -36,13 +36,8 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
     setError(null);
 
     try {
-      const [poets, categories, poems] = await Promise.all([
-        ganjoorApi.searchPoets(query, 50),
-        ganjoorApi.searchCategories(query, 50),
-        ganjoorApi.searchPoems(query, 100),
-      ]);
-
-      setResults({ poets, categories, poems });
+      const results = await searchAll(query, 100);
+      setResults(results);
     } catch (err) {
       console.error('Search failed:', err);
       setError('خطا در جستجو. لطفاً دوباره تلاش کنید.');

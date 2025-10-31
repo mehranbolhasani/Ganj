@@ -19,10 +19,9 @@
     "prebuild": "npm run type-check && npm run lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.48.1",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
-    "flexsearch": "^0.8.212",
-    "fuse.js": "^7.1.0",
     "lucide-react": "^0.546.0",
     "next": "16.0.0",
     "next-themes": "^0.4.6",
@@ -38,6 +37,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "5.9.3"
   }
 }

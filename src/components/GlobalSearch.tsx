@@ -3,10 +3,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, X, Clock, ArrowUp, ArrowDown, ArrowRight } from 'lucide-react';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { searchAll } from '@/lib/supabase-search';
 import { Poet, Category, Poem } from '@/lib/types';
 import { useToast } from './Toast';
-import { searchIndex } from '@/lib/search-index';
 
 interface SearchResult {
   type: 'poet' | 'category' | 'poem';
@@ -31,50 +30,10 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [indexReady, setIndexReady] = useState(false);
-  const [indexProgress, setIndexProgress] = useState<{ status: 'ready' | 'loading' | 'building'; progress: number; message?: string }>({ 
-    status: 'loading', 
-    progress: 0 
-  });
   
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  
-  // Cache for recent searches (to avoid re-searching same queries)
-  const searchCacheRef = useRef<Map<string, SearchResult[]>>(new Map());
-  
-  // Poll index progress when modal is open and index is building
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    const updateProgress = () => {
-      const progress = searchIndex.getProgress();
-      setIndexProgress(progress);
-      setIndexReady(progress.status === 'ready');
-    };
-    
-    updateProgress();
-    const interval = setInterval(updateProgress, 500); // Update every 500ms
-    
-    return () => clearInterval(interval);
-  }, [isOpen]);
-
-  // Check if index is ready and ensure it's initialized when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      // Check current state
-      setIndexReady(searchIndex.isIndexed);
-      
-      // Ensure index is initialized (won't rebuild if already ready)
-      searchIndex.initialize().then(() => {
-        setIndexReady(searchIndex.isIndexed);
-      }).catch(() => {
-        // Index failed to initialize, will fall back to API
-        setIndexReady(false);
-      });
-    }
-  }, [isOpen]);
   
   // Load search history from localStorage
   useEffect(() => {
@@ -101,19 +60,10 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     localStorage.setItem('ganj_search_history', JSON.stringify(newHistory));
   }, [searchHistory]);
 
-  // Search function with caching and consistent performance
+  // Search function using Supabase (instant, no indexing wait)
   const search = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults([]);
-      return;
-    }
-
-    // Check cache first for instant results
-    const cacheKey = searchQuery.trim().toLowerCase();
-    const cached = searchCacheRef.current.get(cacheKey);
-    if (cached) {
-      setResults(cached);
-      setSelectedIndex(0);
       return;
     }
 
@@ -121,29 +71,11 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     const startTime = performance.now();
     
     try {
-      // Don't wait for index if it's still building - use API immediately for faster response
-      // Only check if index is already ready, don't wait for initialization
-      let waitedForIndex = false;
-      if (searchIndex.isIndexed || indexReady) {
-        // Index is ready, will use it
-        waitedForIndex = false; // Already ready, no waiting
-      } else {
-        // Index not ready - don't wait, just use API immediately
-        // This prevents blocking on index initialization (can take 30+ seconds)
-        console.log('[GlobalSearch] Index not ready, using API immediately (no wait)');
-      }
-
-      // Increased limits for better search coverage
-      // If index is ready, these will be instant FlexSearch results
-      // If not ready, they'll fall back to API search (slower)
-      const [poets, categories, poems] = await Promise.all([
-        ganjoorApi.searchPoets(searchQuery, 10),
-        ganjoorApi.searchCategories(searchQuery, 10),
-        ganjoorApi.searchPoems(searchQuery, 50), // Increased from 10 to 50 for more results
-      ]);
+      // Search using Supabase API (instant full-text search)
+      const { poets, categories, poems } = await searchAll(searchQuery, 50);
       
       const searchTime = performance.now() - startTime;
-      console.log(`[GlobalSearch] Search "${searchQuery}": ${poets.length} poets, ${categories.length} categories, ${poems.length} poems (${Math.round(searchTime)}ms${waitedForIndex ? ', waited for index' : ''})`);
+      console.log(`[GlobalSearch] Supabase search "${searchQuery}": ${poets.length} poets, ${categories.length} categories, ${poems.length} poems (${Math.round(searchTime)}ms)`);
 
       const searchResults: SearchResult[] = [
         ...poets.map(poet => ({
@@ -163,15 +95,6 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
         })),
       ];
 
-      // Cache results (keep cache size reasonable - max 50 entries)
-      if (searchCacheRef.current.size >= 50) {
-        const firstKey = searchCacheRef.current.keys().next().value;
-        if (firstKey) {
-          searchCacheRef.current.delete(firstKey);
-        }
-      }
-      searchCacheRef.current.set(cacheKey, searchResults);
-
       setResults(searchResults);
       setSelectedIndex(0);
     } catch (error) {
@@ -180,22 +103,17 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, indexReady]);
+  }, [toast]);
 
-  // Debounced search with shorter delay for better responsiveness
+  // Debounced search
   useEffect(() => {
-    // Clear cache when query changes significantly (to force fresh search)
-    if (query.trim().length === 0) {
-      searchCacheRef.current.clear();
-    }
-
     const timeoutId = setTimeout(() => {
       if (query.trim()) {
         search(query);
       } else {
         setResults([]);
       }
-    }, 200); // Reduced from 300ms to 200ms for faster response
+    }, 300); // Debounce delay
 
     return () => clearTimeout(timeoutId);
   }, [query, search]);
@@ -300,37 +218,13 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
           {isLoading ? (
             <div className="p-8 text-center">
               <div className="animate-spin w-6 h-6 border-2 border-stone-300 dark:border-stone-600 border-t-stone-600 dark:border-t-stone-300 rounded-full mx-auto mb-3"></div>
-              <p className="text-stone-500 dark:text-stone-400 mb-2">
-                {indexReady 
-                  ? 'در حال جستجو...' 
-                  : indexProgress.status === 'building'
-                  ? (indexProgress.message || 'در حال آماده‌سازی جستجو...')
-                  : 'در حال بارگذاری...'}
-              </p>
-              {indexProgress.status === 'building' && indexProgress.progress > 0 && (
-                <div className="w-full max-w-xs mx-auto mt-3">
-                  <div className="h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-stone-600 dark:bg-stone-400 transition-all duration-500 ease-out"
-                      style={{ width: `${indexProgress.progress}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-xs text-stone-400 dark:text-stone-500 mt-2">
-                    {indexProgress.progress}% تکمیل شده • این فرآیند یک‌بار انجام می‌شود
-                  </p>
-                </div>
-              )}
+              <p className="text-stone-500 dark:text-stone-400">در حال جستجو...</p>
             </div>
           ) : query.trim() && results.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-stone-500 dark:text-stone-400 mb-2">
+              <p className="text-stone-500 dark:text-stone-400 mb-4">
                 هیچ نتیجه‌ای یافت نشد
               </p>
-              {!indexReady && (
-                <p className="text-xs text-stone-400 dark:text-stone-500 mb-4">
-                  در حال آماده‌سازی جستجو. لطفاً چند لحظه صبر کنید و دوباره جستجو کنید.
-                </p>
-              )}
               <Link
                 href={`/search?q=${encodeURIComponent(query)}`}
                 onClick={onClose}
