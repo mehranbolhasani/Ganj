@@ -46,6 +46,8 @@ DEVELOPMENT.md
 PERFORMANCE_FIXES.md
 PERFORMANCE_OPTIMIZATION_PLAN.md 
 SUPABASE_SETUP.md
+CHANGELOG.md
+USER_GUIDE.md
 
 # Migration scripts and logs (may contain sensitive data)
 scripts/migrate-to-supabase.ts
@@ -66,8 +68,12 @@ migration*.txt
 # Local development files
 .cursor/
 high-priority-features.plan.md
+Ganjeh.code-workspace
 
 # Backup and temporary files
 *.backup
 *.bak
 *.tmp
+
+fix-deps.sh
+start-dev.sh
