@@ -37,13 +37,13 @@ This will create:
 Make sure your `.env.local` file has these variables:
 
 ```bash
-# Supabase (you already have these)
-NEXT_PUBLIC_SUPABASE_URL=https://bcizaerhgsoeqrcqbtxh.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjaXphZXJoZ3NvZXFyY3FidHhoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTg1NDI5MSwiZXhwIjoyMDc3NDMwMjkxfQ.83wlpel_KVM-SAxkADX4Ns_kumMCuqEyLxCw9kMeFW8
+# Supabase - Get these from https://supabase.com/dashboard/project/YOUR_PROJECT/settings/api
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_secret_key
 
-# Resend (already set up)
-RESEND_API_KEY=re_FuKLza3L_KsoHre2wgFNKMtYVutZPc8eQ
-RESEND_FROM_EMAIL=contact.ganj.directory
+# Resend - Get from https://resend.com/api-keys
+RESEND_API_KEY=your_resend_api_key
+RESEND_FROM_EMAIL=your-verified-domain@example.com
 RESEND_TO_EMAIL=your-email@example.com
 ```
 
