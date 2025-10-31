@@ -21,11 +21,28 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Ganjoor API base URL
-const GANJOOR_API_BASE = 'https://api.ganjoor.net/api';
+const GANJOOR_API_BASE = 'https://api.ganjoor.net/api/ganjoor';
 
 // Configuration
-const FAMOUS_POET_COUNT = 15; // Import all poems from top 15 poets
-const OTHER_POET_COUNT = 10; // Import limited poems from next 10 poets
+// Famous poets IDs (manually curated list of the most famous Persian poets)
+const FAMOUS_POET_IDS = [
+  2,  // حافظ شیرازی (Hafez)
+  7,  // سعدی شیرازی (Saadi)
+  5,  // جلال الدین محمد مولوی (Molavi/Rumi)
+  4,  // ابوالقاسم فردوسی (Ferdowsi)
+  9,  // عطار نیشابوری (Attar)
+  6,  // نظامی گنجوی (Nezami)
+  3,  // عمر خیام (Khayyam)
+  1,  // رودکی (Rudaki)
+  11, // خواجوی کرمانی (Khaju)
+  8,  // اوحدی مراغه‌ای (Owhadi)
+  26, // ابوسعید ابوالخیر (Abu-Said)
+  10, // باباطاهر (Baba Taher)
+  25, // پروین اعتصامی (Parvin Etesami)
+  12, // سنایی غزنوی (Sanai)
+  13, // سوزنی سمرقندی (Suzani)
+];
+const OTHER_POET_COUNT = 10; // Import limited poems from next 10 poets (after famous ones)
 const BATCH_SIZE = 50; // Insert in batches
 const DELAY_MS = 100; // Delay between API calls
 
@@ -81,7 +98,7 @@ async function importPoets() {
   return poets;
 }
 
-// Step 2: Import Categories for a poet
+// Step 2: Import Categories for a poet (including all nested children)
 async function importCategoriesForPoet(poetId: number, poetName: string) {
   try {
     const data = await fetchGanjoor<{
@@ -118,7 +135,7 @@ async function importCategoriesForPoet(poetId: number, poetName: string) {
       poem_count: 0,
     });
     
-    // Child categories
+    // Child categories (level 1)
     if (data.cat.children) {
       for (const child of data.cat.children) {
         categories.push({
@@ -129,10 +146,43 @@ async function importCategoriesForPoet(poetId: number, poetName: string) {
           url_slug: child.urlSlug || null,
           poem_count: child.poemCount || 0,
         });
+        
+        // Fetch nested children (level 2) to ensure all categories exist
+        try {
+          await delay(DELAY_MS);
+          const childData = await fetchGanjoor<{
+            cat: {
+              id: number;
+              title: string;
+              urlSlug?: string;
+              children?: Array<{
+                id: number;
+                title: string;
+                urlSlug?: string;
+                poemCount?: number;
+              }>;
+            };
+          }>(`/cat/${child.id}`);
+          
+          if (childData.cat.children) {
+            for (const grandchild of childData.cat.children) {
+              categories.push({
+                id: grandchild.id,
+                poet_id: poetId,
+                parent_id: child.id,
+                title: grandchild.title,
+                url_slug: grandchild.urlSlug || null,
+                poem_count: grandchild.poemCount || 0,
+              });
+            }
+          }
+        } catch {
+          // Silently skip if nested fetch fails
+        }
       }
     }
     
-    // Insert categories
+    // Insert all categories
     if (categories.length > 0) {
       const { error } = await supabase.from('categories').upsert(categories);
       
@@ -289,8 +339,13 @@ async function migrate() {
     
     for (let i = 0; i < poets.length; i++) {
       const poet = poets[i];
-      const isFamous = i < FAMOUS_POET_COUNT;
-      const shouldImport = i < (FAMOUS_POET_COUNT + OTHER_POET_COUNT);
+      const isFamous = FAMOUS_POET_IDS.includes(poet.id);
+      
+      // Import famous poets + next OTHER_POET_COUNT non-famous poets
+      const famousPoetsProcessed = poets.slice(0, i).filter(p => FAMOUS_POET_IDS.includes(p.id)).length;
+      const otherPoetsProcessed = poets.slice(0, i).filter(p => !FAMOUS_POET_IDS.includes(p.id)).length;
+      
+      const shouldImport = isFamous || otherPoetsProcessed < OTHER_POET_COUNT;
       
       if (!shouldImport) {
         console.log(`⏭️  Skipping ${poet.name} (poet ${i + 1}/${poets.length})`);
