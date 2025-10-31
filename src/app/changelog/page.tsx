@@ -37,7 +37,7 @@ export default function ChangelogPage() {
           </div>
           <div>
             <h2 className="text-xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100">نسخه ۰/۲</h2>
-            <p className="text-stone-600 dark:text-stone-300">آخرین به‌روزرسانی - ۹ اکتبر ۲۰۲۵</p>
+            <p className="text-stone-600 dark:text-stone-300">آخرین به‌روزرسانی - ۳۱ اکتبر ۲۰۲۵</p>
           </div>
         </div>
         
