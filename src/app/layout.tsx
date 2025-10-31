@@ -6,6 +6,7 @@ import ThemeSync from "@/components/ThemeSync";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { ToastProvider } from "@/components/Toast";
 import PreloadInitializer from "@/components/PreloadInitializer";
+import SearchIndexInitializer from "@/components/SearchIndexInitializer";
 import OfflineIndicator from "@/components/OfflineIndicator";
 import RouteProgress from "@/components/RouteProgress";
 import Layout from "@/components/Layout";
@@ -96,6 +97,7 @@ export default function RootLayout({
             </ToastProvider>
           </ErrorBoundary>
           <PreloadInitializer />
+          <SearchIndexInitializer />
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
