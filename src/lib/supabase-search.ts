@@ -24,7 +24,6 @@ export async function searchAll(
   const cacheKey = `${query}-${limit}-${type}`;
   const cached = searchCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    console.log(`[SearchCache] Hit for "${query}"`);
     return cached.data;
   }
 

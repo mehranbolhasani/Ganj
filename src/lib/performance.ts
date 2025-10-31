@@ -24,28 +24,23 @@ export function trackCoreWebVitals() {
     const { onCLS, onINP, onFCP, onLCP, onTTFB } = webVitals;
     
     onCLS((metric: PerformanceMetric) => {
-      console.log('CLS:', metric);
       sendToAnalytics(metric);
     });
 
     // onFID is deprecated, use onINP instead
     onINP((metric: PerformanceMetric) => {
-      console.log('INP:', metric);
       sendToAnalytics(metric);
     });
 
     onFCP((metric: PerformanceMetric) => {
-      console.log('FCP:', metric);
       sendToAnalytics(metric);
     });
 
     onLCP((metric: PerformanceMetric) => {
-      console.log('LCP:', metric);
       sendToAnalytics(metric);
     });
 
     onTTFB((metric: PerformanceMetric) => {
-      console.log('TTFB:', metric);
       sendToAnalytics(metric);
     });
   });
@@ -54,18 +49,9 @@ export function trackCoreWebVitals() {
 /**
  * Send metrics to analytics service
  */
-function sendToAnalytics(metric: PerformanceMetric) {
-  // In production, you would send this to your analytics service
-  // For now, we'll just log it
-  console.log('Performance Metric:', {
-    name: metric.name,
-    value: metric.value,
-    delta: metric.delta,
-    id: metric.id,
-    navigationType: metric.navigationType,
-  });
-
-  // Example: Send to Google Analytics
+function sendToAnalytics(_metric: PerformanceMetric) {
+  // Metrics are now tracked by Vercel Speed Insights
+  // If you want to add custom analytics, implement here:
   // gtag('event', metric.name, {
   //   event_category: 'Web Vitals',
   //   event_label: metric.id,
@@ -86,7 +72,6 @@ export function trackCustomMetric(name: string, value: number, delta: number) {
     navigationType: 'navigate',
   };
 
-  console.log('Custom Metric:', metric);
   sendToAnalytics(metric);
 }
 

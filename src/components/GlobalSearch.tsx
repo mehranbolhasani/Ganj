@@ -90,9 +90,6 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
       // Search using Supabase API (instant full-text search) - limited to 20 for performance
       const { poets, categories, poems } = await searchAll(searchQuery, 20);
       
-      const searchTime = performance.now() - startTime;
-      console.log(`[GlobalSearch] Supabase search "${searchQuery}": ${poets.length} poets, ${categories.length} categories, ${poems.length} poems (${Math.round(searchTime)}ms)`);
-
       const searchResults: SearchResult[] = [
         ...poets.map(poet => ({
           type: 'poet' as const,
@@ -190,7 +187,6 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
 
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
-    console.log('Result clicked:', result);
     saveSearchHistory(query);
     onClose();
   };

@@ -82,8 +82,6 @@ export async function POST(req: NextRequest) {
         if (!emailRes.ok) {
           emailError = `Resend failed: ${emailRes.status} - ${JSON.stringify(emailData)}`;
           console.error('Resend email failed:', emailRes.status, emailData);
-        } else {
-          console.log('Resend email sent successfully:', emailData);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';
