@@ -1,11 +1,53 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Smooth loading wrapper that prevents flashing
+export function SmoothLoadingWrapper({ 
+  children, 
+  delay = 300, // Only show after 300ms (increased for better UX)
+  minDuration = 600 // Show for at least 600ms once visible (increased)
+}: { 
+  children: React.ReactNode; 
+  delay?: number; 
+  minDuration?: number;
+}) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Start the delay timer
+    const delayTimer = setTimeout(() => {
+      setIsVisible(true);
+    }, delay);
+
+    return () => {
+      clearTimeout(delayTimer);
+    };
+  }, [delay]);
+
+  // Don't show anything during the delay period
+  if (!isVisible) {
+    return <div className="min-h-[200px]" />; // Preserve space to avoid layout shift
+  }
+
+  return (
+    <div 
+      className="animate-fadeIn"
+      style={{ 
+        minHeight: '200px',
+        animationDuration: '300ms',
+        animationFillMode: 'both'
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 // Skeleton loader for poem cards
 export function PoemCardSkeleton() {
   return (
-    <div className="p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 animate-pulse">
+    <div className="p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700">
       <div className="space-y-3">
         <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
         <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
@@ -148,7 +190,7 @@ export function LoadingOverlay({ message = 'در حال بارگذاری...' }: 
 // Page loading skeleton
 export function PageLoadingSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="space-y-6 opacity-0 animate-delayedFadeIn">
       <BreadcrumbsSkeleton />
       <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -164,7 +206,7 @@ export function PageLoadingSkeleton() {
 // Poet page skeleton (poet info + categories grid)
 export function PoetPageSkeleton() {
   return (
-    <div className="space-y-8 animate-pulse">
+    <div className="space-y-8 opacity-0 animate-delayedFadeIn">
       <BreadcrumbsSkeleton />
       
       {/* Poet info section */}
@@ -199,7 +241,7 @@ export function PoetPageSkeleton() {
 // Category page skeleton (poems list)
 export function CategoryPageSkeleton() {
   return (
-    <div className="space-y-8 animate-pulse">
+    <div className="space-y-8 opacity-0 animate-delayedFadeIn">
       <BreadcrumbsSkeleton />
       
       {/* Category header */}
@@ -224,7 +266,7 @@ export function CategoryPageSkeleton() {
 // Chapter page skeleton (poems list)
 export function ChapterPageSkeleton() {
   return (
-    <div className="space-y-8 animate-pulse">
+    <div className="space-y-8 opacity-0 animate-delayedFadeIn">
       <BreadcrumbsSkeleton />
       
       {/* Chapter header */}
@@ -249,7 +291,7 @@ export function ChapterPageSkeleton() {
 // Search page skeleton (search results)
 export function SearchPageSkeleton() {
   return (
-    <div className="space-y-8 animate-pulse">
+    <div className="space-y-8 opacity-0 animate-delayedFadeIn">
       {/* Search header */}
       <div className="space-y-4">
         <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>

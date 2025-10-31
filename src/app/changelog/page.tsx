@@ -6,7 +6,7 @@ import { ArrowLeft, Calendar, Star, Bug, Plus, Zap, Heart, Settings } from 'luci
 
 export default function ChangelogPage() {
   return (
-    <div className="max-w-4xl mx-auto w-full px-4 py-8">
+    <div className="max-w-4xl mx-auto w-full px-0 py-4">
       {/* Header */}
       <div className="mb-8">
         <Link 
@@ -18,14 +18,11 @@ export default function ChangelogPage() {
         </Link>
         
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-            <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-          </div>
           <div>
-            <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">
+            <h1 className="text-3xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100 mb-4">
               تاریخچه تغییرات
             </h1>
-            <p className="text-stone-600 dark:text-stone-300">
+            <p className="text-stone-600 dark:text-stone-300 text-lg mb-8">
               تمام تغییرات و بهبودهای انجام شده در گنج
             </p>
           </div>
@@ -33,13 +30,13 @@ export default function ChangelogPage() {
       </div>
 
       {/* Current Version */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl p-6 mb-16 border border-blue-200 dark:border-blue-800">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-xl p-4 mb-16 border border-blue-200 dark:border-blue-800/50">
         <div className="flex items-center gap-3 mb-9">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Star className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">نسخه ۰/۲</h2>
+            <h2 className="text-xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100">نسخه ۰/۲</h2>
             <p className="text-stone-600 dark:text-stone-300">آخرین به‌روزرسانی - ۹ اکتبر ۲۰۲۵</p>
           </div>
         </div>

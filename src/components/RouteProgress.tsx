@@ -3,11 +3,12 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 
-export default function RouteProgress(): JSX.Element {
+export default function RouteProgress(): JSX.Element | null {
   const pathname = usePathname();
   const [isActive, setIsActive] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
 
-  // Show a short progress bar on pathname change
+  // Show a smooth progress bar on pathname change
   const lastPathRef = React.useRef<string | null>(null);
 
   React.useEffect(() => {
@@ -19,30 +20,45 @@ export default function RouteProgress(): JSX.Element {
     if (pathname !== lastPathRef.current) {
       lastPathRef.current = pathname;
       setIsActive(true);
-      const minDuration = 350; // ensure visible feedback
-      const timer = setTimeout(() => setIsActive(false), minDuration);
-      return () => clearTimeout(timer);
+      setProgress(0);
+      
+      // Simulate smooth progress
+      const progressInterval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) return prev;
+          const increment = Math.random() * 15;
+          return Math.min(prev + increment, 90);
+        });
+      }, 150);
+      
+      // Complete the progress bar
+      const completeTimer = setTimeout(() => {
+        setProgress(100);
+        setTimeout(() => {
+          setIsActive(false);
+          setProgress(0);
+        }, 200);
+      }, 400);
+
+      return () => {
+        clearInterval(progressInterval);
+        clearTimeout(completeTimer);
+      };
     }
   }, [pathname]);
 
+  if (!isActive) return null;
+
   return (
-    <div
-      aria-hidden
-      className={`fixed top-0 left-0 right-0 z-[60] h-0.5 overflow-hidden transition-opacity ${
-        isActive ? 'opacity-100' : 'opacity-0'
-      }`}
-    >
+    <div className="fixed top-0 left-0 right-0 z-[60] h-1">
       <div
-        className="h-full bg-stone-900 dark:bg-stone-100 origin-left animate-[routeProgress_0.6s_ease-out]"
-        style={{ transform: isActive ? 'scaleX(1)' : 'scaleX(0)' }}
+        className="h-full bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-600 shadow-lg shadow-yellow-500/30 transition-all duration-200 ease-out"
+        style={{
+          width: `${progress}%`,
+          transition: progress === 100 ? 'width 200ms ease-in, opacity 200ms' : 'width 200ms ease-out',
+          opacity: progress === 100 ? 0 : 1,
+        }}
       />
-      <style jsx>{`
-        @keyframes routeProgress {
-          0% { transform: scaleX(0); }
-          60% { transform: scaleX(0.7); }
-          100% { transform: scaleX(1); }
-        }
-      `}</style>
     </div>
   );
 }

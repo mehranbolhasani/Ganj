@@ -63,13 +63,14 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
             href={`/poet/${poet.id}`}
             className="flex flex-col items-center group cursor-pointer w-full bg-white/50 dark:bg-yellow-950/80 border border-white rounded-2xl shadow-lg/5 hover:shadow-lg transition-all duration-200 min-h-[200px] sm:min-h-[230px] gap-1 dark:border-yellow-900/50 p-1 active:scale-[0.98] touch-manipulation"
           >
-            {/* Poet Image */}
-            <div className="w-full h-full rounded-xl overflow-hidden bg-stone-200 dark:bg-stone-700 group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
+            {/* Poet Image with explicit dimensions to prevent CLS */}
+            <div className="w-full aspect-square rounded-xl overflow-hidden bg-stone-200 dark:bg-stone-700 group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
               <Image
                 src={`/images/${getPoetImage(poet.slug || '')}`}
                 alt={`تصویر ${poet.name}`}
-                width={200}
-                height={200}
+                width={384}
+                height={384}
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-300"
                 priority
               />

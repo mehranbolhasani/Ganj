@@ -83,7 +83,7 @@ export default function FontSizeControl({
   }
 
   return (
-    <div className={`font-size-control ${className}`}>
+    <div className={`flex align-center font-size-control ${className}`}>
       {showLabel && (
         <div className="flex items-center gap-2 mb-2">
           <Type className="w-4 h-4 text-stone-600 dark:text-stone-400" />

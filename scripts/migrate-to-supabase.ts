@@ -33,13 +33,13 @@ const FAMOUS_POET_IDS = [
   9,  // عطار نیشابوری (Attar)
   6,  // نظامی گنجوی (Nezami)
   3,  // عمر خیام (Khayyam)
-  1,  // رودکی (Rudaki)
+  12, // رودکی سمرقندی (Rudaki) - CORRECTED ID!
   11, // خواجوی کرمانی (Khaju)
   8,  // اوحدی مراغه‌ای (Owhadi)
   26, // ابوسعید ابوالخیر (Abu-Said)
   10, // باباطاهر (Baba Taher)
   25, // پروین اعتصامی (Parvin Etesami)
-  12, // سنایی غزنوی (Sanai)
+  14, // سنایی غزنوی (Sanai)
   13, // سوزنی سمرقندی (Suzani)
 ];
 const OTHER_POET_COUNT = 10; // Import limited poems from next 10 poets (after famous ones)

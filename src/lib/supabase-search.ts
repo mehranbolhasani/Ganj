@@ -1,121 +1,58 @@
-/**
- * Supabase Search Client
- * Client-side wrapper for the search API
- */
-
 import { Poet, Category, Poem } from './types';
 
-interface SearchResults {
+interface SearchResponse {
   poets: Poet[];
   categories: Category[];
   poems: Poem[];
+  message?: string;
 }
 
-/**
- * Search across poets, categories, and poems using Supabase
- */
-export async function searchAll(query: string, limit: number = 20): Promise<SearchResults> {
+// Simple in-memory cache for search results
+const searchCache = new Map<string, { data: SearchResponse; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+export async function searchAll(
+  query: string,
+  limit: number = 20,
+  type: 'all' | 'poets' | 'categories' | 'poems' = 'all'
+): Promise<SearchResponse> {
   if (!query || query.trim().length < 2) {
-    return { poets: [], categories: [], poems: [] };
+    return { poets: [], categories: [], poems: [], message: 'Query too short' };
   }
-  
-  try {
-    const response = await fetch(
-      `/api/search?q=${encodeURIComponent(query)}&type=all&limit=${limit}`
-    );
-    
-    if (!response.ok) {
-      console.error('Search API error:', response.status, response.statusText);
-      return { poets: [], categories: [], poems: [] };
-    }
-    
-    const data = await response.json();
-    return {
-      poets: data.poets || [],
-      categories: data.categories || [],
-      poems: data.poems || [],
-    };
-  } catch (error) {
-    console.error('Search error:', error);
-    return { poets: [], categories: [], poems: [] };
-  }
-}
 
-/**
- * Search only poets
- */
-export async function searchPoets(query: string, limit: number = 10): Promise<Poet[]> {
-  if (!query || query.trim().length < 2) {
-    return [];
+  // Check cache first
+  const cacheKey = `${query}-${limit}-${type}`;
+  const cached = searchCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    console.log(`[SearchCache] Hit for "${query}"`);
+    return cached.data;
   }
-  
-  try {
-    const response = await fetch(
-      `/api/search?q=${encodeURIComponent(query)}&type=poets&limit=${limit}`
-    );
-    
-    if (!response.ok) {
-      console.error('Search poets API error:', response.status);
-      return [];
-    }
-    
-    const data = await response.json();
-    return data.poets || [];
-  } catch (error) {
-    console.error('Search poets error:', error);
-    return [];
-  }
-}
 
-/**
- * Search only categories
- */
-export async function searchCategories(query: string, limit: number = 10): Promise<Category[]> {
-  if (!query || query.trim().length < 2) {
-    return [];
-  }
-  
-  try {
-    const response = await fetch(
-      `/api/search?q=${encodeURIComponent(query)}&type=categories&limit=${limit}`
-    );
-    
-    if (!response.ok) {
-      console.error('Search categories API error:', response.status);
-      return [];
-    }
-    
-    const data = await response.json();
-    return data.categories || [];
-  } catch (error) {
-    console.error('Search categories error:', error);
-    return [];
-  }
-}
+  const params = new URLSearchParams({
+    q: query,
+    limit: limit.toString(),
+    type: type,
+  });
 
-/**
- * Search only poems
- */
-export async function searchPoems(query: string, limit: number = 50): Promise<Poem[]> {
-  if (!query || query.trim().length < 2) {
-    return [];
+  const response = await fetch(`/api/search?${params.toString()}`);
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to fetch search results');
   }
-  
-  try {
-    const response = await fetch(
-      `/api/search?q=${encodeURIComponent(query)}&type=poems&limit=${limit}`
-    );
-    
-    if (!response.ok) {
-      console.error('Search poems API error:', response.status);
-      return [];
-    }
-    
-    const data = await response.json();
-    return data.poems || [];
-  } catch (error) {
-    console.error('Search poems error:', error);
-    return [];
-  }
-}
 
+  const data = await response.json();
+  
+  // Store in cache
+  searchCache.set(cacheKey, { data, timestamp: Date.now() });
+  
+  // Clean old cache entries (keep last 50)
+  if (searchCache.size > 50) {
+    const entries = Array.from(searchCache.entries());
+    entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
+    for (let i = 0; i < 10; i++) {
+      searchCache.delete(entries[i][0]);
+    }
+  }
+
+  return data;
+}

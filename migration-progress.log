@@ -1,0 +1,874 @@
+🚀 Starting Ganjoor → Supabase migration...
+
+
+📚 Step 1: Importing poets...
+Found 228 poets
+✅ Inserted poets 1-50/228
+✅ Inserted poets 51-100/228
+✅ Inserted poets 101-150/228
+✅ Inserted poets 151-200/228
+✅ Inserted poets 201-228/228
+
+📖 Step 2 & 3: Importing categories and poems...
+
+📝 [1/228] Processing آذر بیگدلی (FAMOUS)...
+✅ Inserted 9 categories for آذر بیگدلی
+   📂 Category: دیوان اشعار
+   ✅ Inserted 29/29 poems for قصاید
+   ✅ Inserted 50/207 poems for غزلیات
+   ✅ Inserted 100/207 poems for غزلیات
+   ✅ Inserted 150/207 poems for غزلیات
+   ✅ Inserted 200/207 poems for غزلیات
+   ✅ Inserted 207/207 poems for غزلیات
+❌ Error inserting poems for قطعات: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:281:30)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 57/57 poems for قطعات
+   ✅ Inserted 2/2 poems for ترکیبات
+   ✅ Inserted 50/185 poems for رباعیات
+   ✅ Inserted 100/185 poems for رباعیات
+   ✅ Inserted 150/185 poems for رباعیات
+   ✅ Inserted 185/185 poems for رباعیات
+   ✅ Inserted 16/16 poems for مثنویات
+   ✅ Inserted 50/58 poems for حکایات
+   ✅ Inserted 58/58 poems for حکایات
+   ✅ Inserted 50/555 poems for دیوان اشعار
+   ✅ Inserted 100/555 poems for دیوان اشعار
+   ✅ Inserted 150/555 poems for دیوان اشعار
+   ✅ Inserted 200/555 poems for دیوان اشعار
+   ✅ Inserted 250/555 poems for دیوان اشعار
+   ✅ Inserted 300/555 poems for دیوان اشعار
+   ✅ Inserted 350/555 poems for دیوان اشعار
+   ✅ Inserted 400/555 poems for دیوان اشعار
+   ✅ Inserted 450/555 poems for دیوان اشعار
+   ✅ Inserted 500/555 poems for دیوان اشعار
+   ✅ Inserted 550/555 poems for دیوان اشعار
+   ✅ Inserted 555/555 poems for دیوان اشعار
+   📂 Category: قصاید
+   ✅ Inserted 29/29 poems for قصاید
+   📂 Category: غزلیات
+   ✅ Inserted 50/207 poems for غزلیات
+   ✅ Inserted 100/207 poems for غزلیات
+   ✅ Inserted 150/207 poems for غزلیات
+   ✅ Inserted 200/207 poems for غزلیات
+   ✅ Inserted 207/207 poems for غزلیات
+
+📝 [2/228] Processing آشفتهٔ شیرازی (FAMOUS)...
+✅ Inserted 2 categories for آشفتهٔ شیرازی
+   📂 Category: غزلیات
+   ✅ Inserted 50/1256 poems for غزلیات
+   ✅ Inserted 100/1256 poems for غزلیات
+   ✅ Inserted 150/1256 poems for غزلیات
+   ✅ Inserted 200/1256 poems for غزلیات
+   ✅ Inserted 250/1256 poems for غزلیات
+   ✅ Inserted 300/1256 poems for غزلیات
+   ✅ Inserted 350/1256 poems for غزلیات
+   ✅ Inserted 400/1256 poems for غزلیات
+   ✅ Inserted 450/1256 poems for غزلیات
+   ✅ Inserted 500/1256 poems for غزلیات
+   ✅ Inserted 550/1256 poems for غزلیات
+   ✅ Inserted 600/1256 poems for غزلیات
+   ✅ Inserted 650/1256 poems for غزلیات
+   ✅ Inserted 700/1256 poems for غزلیات
+   ✅ Inserted 750/1256 poems for غزلیات
+   ✅ Inserted 800/1256 poems for غزلیات
+   ✅ Inserted 850/1256 poems for غزلیات
+   ✅ Inserted 900/1256 poems for غزلیات
+   ✅ Inserted 950/1256 poems for غزلیات
+   ✅ Inserted 1000/1256 poems for غزلیات
+   ✅ Inserted 1050/1256 poems for غزلیات
+   ✅ Inserted 1100/1256 poems for غزلیات
+   ✅ Inserted 1150/1256 poems for غزلیات
+   ✅ Inserted 1200/1256 poems for غزلیات
+   ✅ Inserted 1250/1256 poems for غزلیات
+   ✅ Inserted 1256/1256 poems for غزلیات
+
+📝 [3/228] Processing آیتی بیرجندی (FAMOUS)...
+✅ Inserted 2 categories for آیتی بیرجندی
+   📂 Category: گزیدهٔ اشعار
+   ✅ Inserted 12/12 poems for گزیدهٔ اشعار
+
+📝 [4/228] Processing ابن حسام خوسفی (FAMOUS)...
+✅ Inserted 7 categories for ابن حسام خوسفی
+   📂 Category: غزلیات
+   ✅ Inserted 50/178 poems for غزلیات
+   ✅ Inserted 100/178 poems for غزلیات
+   ✅ Inserted 150/178 poems for غزلیات
+   ✅ Inserted 178/178 poems for غزلیات
+   📂 Category: رباعیات
+   ✅ Inserted 50/100 poems for رباعیات
+   ✅ Inserted 100/100 poems for رباعیات
+   📂 Category: ترکیبات
+   ✅ Inserted 2/2 poems for ترکیبات
+
+📝 [5/228] Processing محمد بن عمادالدین خراسانی (FAMOUS)...
+✅ Inserted 2 categories for محمد بن عمادالدین خراسانی
+   📂 Category: روضة المحبین
+   ✅ Inserted 50/62 poems for روضة المحبین
+   ✅ Inserted 62/62 poems for روضة المحبین
+
+📝 [6/228] Processing ابن یمین فریومدی (FAMOUS)...
+✅ Inserted 11 categories for ابن یمین فریومدی
+   📂 Category: دیوان اشعار
+   ✅ Inserted 50/162 poems for قصاید
+   ✅ Inserted 100/162 poems for قصاید
+   ✅ Inserted 150/162 poems for قصاید
+   ✅ Inserted 162/162 poems for قصاید
+   ✅ Inserted 50/324 poems for غزلیات
+   ✅ Inserted 100/324 poems for غزلیات
+   ✅ Inserted 150/324 poems for غزلیات
+   ✅ Inserted 200/324 poems for غزلیات
+   ✅ Inserted 250/324 poems for غزلیات
+   ✅ Inserted 300/324 poems for غزلیات
+   ✅ Inserted 324/324 poems for غزلیات
+   ✅ Inserted 50/888 poems for قطعات
+   ✅ Inserted 100/888 poems for قطعات
+   ✅ Inserted 150/888 poems for قطعات
+   ✅ Inserted 200/888 poems for قطعات
+   ✅ Inserted 250/888 poems for قطعات
+   ✅ Inserted 300/888 poems for قطعات
+   ✅ Inserted 350/888 poems for قطعات
+   ✅ Inserted 400/888 poems for قطعات
+   ✅ Inserted 450/888 poems for قطعات
+   ✅ Inserted 500/888 poems for قطعات
+   ✅ Inserted 550/888 poems for قطعات
+   ✅ Inserted 600/888 poems for قطعات
+   ✅ Inserted 650/888 poems for قطعات
+   ✅ Inserted 700/888 poems for قطعات
+   ✅ Inserted 750/888 poems for قطعات
+   ✅ Inserted 800/888 poems for قطعات
+   ✅ Inserted 850/888 poems for قطعات
+   ✅ Inserted 888/888 poems for قطعات
+   ✅ Inserted 12/12 poems for ترکیبات
+   ✅ Inserted 10/10 poems for مثنویات
+   ✅ Inserted 50/629 poems for رباعیات
+   ✅ Inserted 100/629 poems for رباعیات
+   ✅ Inserted 150/629 poems for رباعیات
+   ✅ Inserted 200/629 poems for رباعیات
+   ✅ Inserted 250/629 poems for رباعیات
+   ✅ Inserted 300/629 poems for رباعیات
+   ✅ Inserted 350/629 poems for رباعیات
+   ✅ Inserted 400/629 poems for رباعیات
+   ✅ Inserted 450/629 poems for رباعیات
+❌ Error inserting poems for رباعیات: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:281:30)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 550/629 poems for رباعیات
+   ✅ Inserted 600/629 poems for رباعیات
+   ✅ Inserted 629/629 poems for رباعیات
+   ✅ Inserted 20/20 poems for ماده تاریخ‌ها
+   ✅ Inserted 15/15 poems for معمیات
+   ✅ Inserted 50/79 poems for اشعار عربی
+   ✅ Inserted 79/79 poems for اشعار عربی
+   ✅ Inserted 50/2139 poems for دیوان اشعار
+❌ Error inserting poems for دیوان اشعار: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 150/2139 poems for دیوان اشعار
+   ✅ Inserted 200/2139 poems for دیوان اشعار
+   ✅ Inserted 250/2139 poems for دیوان اشعار
+   ✅ Inserted 300/2139 poems for دیوان اشعار
+   ✅ Inserted 350/2139 poems for دیوان اشعار
+   ✅ Inserted 400/2139 poems for دیوان اشعار
+   ✅ Inserted 450/2139 poems for دیوان اشعار
+   ✅ Inserted 500/2139 poems for دیوان اشعار
+   ✅ Inserted 550/2139 poems for دیوان اشعار
+   ✅ Inserted 600/2139 poems for دیوان اشعار
+   ✅ Inserted 650/2139 poems for دیوان اشعار
+   ✅ Inserted 700/2139 poems for دیوان اشعار
+   ✅ Inserted 750/2139 poems for دیوان اشعار
+   ✅ Inserted 800/2139 poems for دیوان اشعار
+   ✅ Inserted 850/2139 poems for دیوان اشعار
+   ✅ Inserted 900/2139 poems for دیوان اشعار
+   ✅ Inserted 950/2139 poems for دیوان اشعار
+   ✅ Inserted 1000/2139 poems for دیوان اشعار
+   ✅ Inserted 1050/2139 poems for دیوان اشعار
+❌ Error inserting poems for دیوان اشعار: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 1150/2139 poems for دیوان اشعار
+   ✅ Inserted 1200/2139 poems for دیوان اشعار
+   ✅ Inserted 1250/2139 poems for دیوان اشعار
+   ✅ Inserted 1300/2139 poems for دیوان اشعار
+   ✅ Inserted 1350/2139 poems for دیوان اشعار
+   ✅ Inserted 1400/2139 poems for دیوان اشعار
+   ✅ Inserted 1450/2139 poems for دیوان اشعار
+   ✅ Inserted 1500/2139 poems for دیوان اشعار
+❌ Error inserting poems for دیوان اشعار: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 1600/2139 poems for دیوان اشعار
+   ✅ Inserted 1650/2139 poems for دیوان اشعار
+   ✅ Inserted 1700/2139 poems for دیوان اشعار
+   ✅ Inserted 1750/2139 poems for دیوان اشعار
+   ✅ Inserted 1800/2139 poems for دیوان اشعار
+   ✅ Inserted 1850/2139 poems for دیوان اشعار
+   ✅ Inserted 1900/2139 poems for دیوان اشعار
+   ✅ Inserted 1950/2139 poems for دیوان اشعار
+   ✅ Inserted 2000/2139 poems for دیوان اشعار
+   ✅ Inserted 2050/2139 poems for دیوان اشعار
+   ✅ Inserted 2100/2139 poems for دیوان اشعار
+   ✅ Inserted 2139/2139 poems for دیوان اشعار
+   📂 Category: قصاید
+   ✅ Inserted 50/162 poems for قصاید
+   ✅ Inserted 100/162 poems for قصاید
+   ✅ Inserted 150/162 poems for قصاید
+❌ Error inserting poems for قصاید: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   📂 Category: غزلیات
+   ✅ Inserted 50/324 poems for غزلیات
+   ✅ Inserted 100/324 poems for غزلیات
+❌ Error inserting poems for غزلیات: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 200/324 poems for غزلیات
+   ✅ Inserted 250/324 poems for غزلیات
+   ✅ Inserted 300/324 poems for غزلیات
+   ✅ Inserted 324/324 poems for غزلیات
+
+📝 [7/228] Processing ابواسحاق جویباری (FAMOUS)...
+✅ Inserted 1 categories for ابواسحاق جویباری
+
+📝 [8/228] Processing ابوالحسن فراهانی (FAMOUS)...
+✅ Inserted 9 categories for ابوالحسن فراهانی
+   📂 Category: دیوان اشعار
+   ✅ Inserted 25/25 poems for قصاید
+   ✅ Inserted 50/61 poems for غزلیات
+   ✅ Inserted 61/61 poems for غزلیات
+   ✅ Inserted 45/45 poems for قطعات
+   ✅ Inserted 50/60 poems for غزلیات ناتمام
+   ✅ Inserted 60/60 poems for غزلیات ناتمام
+   ✅ Inserted 50/165 poems for رباعیات
+   ✅ Inserted 100/165 poems for رباعیات
+   ✅ Inserted 150/165 poems for رباعیات
+   ✅ Inserted 165/165 poems for رباعیات
+   ✅ Inserted 19/19 poems for مفردات
+   ✅ Inserted 2/2 poems for مثنویات
+   ✅ Inserted 50/377 poems for دیوان اشعار
+   ✅ Inserted 100/377 poems for دیوان اشعار
+   ✅ Inserted 150/377 poems for دیوان اشعار
+   ✅ Inserted 200/377 poems for دیوان اشعار
+   ✅ Inserted 250/377 poems for دیوان اشعار
+   ✅ Inserted 300/377 poems for دیوان اشعار
+   ✅ Inserted 350/377 poems for دیوان اشعار
+   ✅ Inserted 377/377 poems for دیوان اشعار
+   📂 Category: قصاید
+   ✅ Inserted 25/25 poems for قصاید
+   📂 Category: غزلیات
+   ✅ Inserted 50/61 poems for غزلیات
+   ✅ Inserted 61/61 poems for غزلیات
+
+📝 [9/228] Processing ابوالحسین خارجی (FAMOUS)...
+✅ Inserted 1 categories for ابوالحسین خارجی
+
+📝 [10/228] Processing ابوالعلاء شوشتری (FAMOUS)...
+✅ Inserted 2 categories for ابوالعلاء شوشتری
+   📂 Category: اشعار باقیمانده
+   ✅ Inserted 5/5 poems for اشعار باقیمانده
+
+📝 [11/228] Processing ابوالفرج رونی (FAMOUS)...
+✅ Inserted 8 categories for ابوالفرج رونی
+   📂 Category: دیوان اشعار
+   ✅ Inserted 50/86 poems for قصاید
+   ✅ Inserted 86/86 poems for قصاید
+   ✅ Inserted 18/18 poems for مقطعات
+   ✅ Inserted 45/45 poems for رباعیات
+   ✅ Inserted 3/3 poems for غزلیات
+   ✅ Inserted 2/2 poems for هجویات
+   ✅ Inserted 12/12 poems for رباعیات الحاقی
+   ✅ Inserted 50/166 poems for دیوان اشعار
+   ✅ Inserted 100/166 poems for دیوان اشعار
+   ✅ Inserted 150/166 poems for دیوان اشعار
+   ✅ Inserted 166/166 poems for دیوان اشعار
+   📂 Category: قصاید
+   ✅ Inserted 50/86 poems for قصاید
+   ✅ Inserted 86/86 poems for قصاید
+   📂 Category: مقطعات
+   ✅ Inserted 18/18 poems for مقطعات
+
+📝 [12/228] Processing ابوالفضل بیهقی (FAMOUS)...
+✅ Inserted 8 categories for ابوالفضل بیهقی
+   📂 Category: تاریخ بیهقی
+   ✅ Inserted 33/33 poems for باقیماندهٔ مجلد پنجم
+   ✅ Inserted 47/47 poems for مجلد ششم
+   ✅ Inserted 42/42 poems for مجلد هفتم
+   ✅ Inserted 50/52 poems for مجلد هشتم
+   ✅ Inserted 52/52 poems for مجلد هشتم
+   ✅ Inserted 47/47 poems for مجلد نهم
+❌ Error inserting poems for مجلد دهم: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:281:30)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 50/229 poems for تاریخ بیهقی
+   ✅ Inserted 100/229 poems for تاریخ بیهقی
+   ✅ Inserted 150/229 poems for تاریخ بیهقی
+❌ Error inserting poems for تاریخ بیهقی: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at async importPoemsForCategory (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:290:27)\n' +
+    '    at async migrate (/Users/mehranbolhasani/Projects/Ganjeh/scripts/migrate-to-supabase.ts:346:23)',
+  hint: '',
+  code: ''
+}
+   ✅ Inserted 229/229 poems for تاریخ بیهقی
+   📂 Category: باقیماندهٔ مجلد پنجم
+   ✅ Inserted 33/33 poems for باقیماندهٔ مجلد پنجم
+   📂 Category: مجلد ششم
+   ✅ Inserted 47/47 poems for مجلد ششم
+
+📝 [13/228] Processing ابوالمؤید بلخی (FAMOUS)...
+✅ Inserted 2 categories for ابوالمؤید بلخی
+   📂 Category: اشعار پراکنده
+   ✅ Inserted 20/20 poems for اشعار پراکنده
+
+📝 [14/228] Processing ابوالمثل بخارایی (FAMOUS)...
+✅ Inserted 2 categories for ابوالمثل بخارایی
+   📂 Category: ابیات پراکنده
+   ✅ Inserted 22/22 poems for ابیات پراکنده
+
+📝 [15/228] Processing ابوحفص سغدی (FAMOUS)...
+✅ Inserted 1 categories for ابوحفص سغدی
+
+📝 [16/228] Processing ابوسعید ابوالخیر...
+✅ Inserted 3 categories for ابوسعید ابوالخیر
+   📂 Category: رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 50/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 100/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 150/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 200/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 250/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 300/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 350/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 400/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 450/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 500/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 550/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 600/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 650/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 700/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 724/724 poems for رباعیات نقل شده از ابوسعید از دیگر شاعران
+   📂 Category: ابیات پراکندهٔ نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 50/62 poems for ابیات پراکندهٔ نقل شده از ابوسعید از دیگر شاعران
+   ✅ Inserted 62/62 poems for ابیات پراکندهٔ نقل شده از ابوسعید از دیگر شاعران
+
+📝 [17/228] Processing ابوسلیک گرگانی...
+✅ Inserted 3 categories for ابوسلیک گرگانی
+   📂 Category: قطعات
+   ✅ Inserted 2/2 poems for قطعات
+   📂 Category: ابیات پراکنده
+   ✅ Inserted 7/7 poems for ابیات پراکنده
+
+📝 [18/228] Processing ابوطیب مصعبی...
+✅ Inserted 2 categories for ابوطیب مصعبی
+   📂 Category: اشعار باقیمانده
+   ✅ Inserted 3/3 poems for اشعار باقیمانده
+
+📝 [19/228] Processing ابوعلی حسن بن احمد عثمانی...
+✅ Inserted 8 categories for ابوعلی حسن بن احمد عثمانی
+   📂 Category: برگردان رسالهٔ قشیریه
+   ✅ Inserted 3/3 poems for دیباچه
+   ✅ Inserted 2/2 poems for باب اول
+   ✅ Inserted 50/82 poems for باب دوم
+   ✅ Inserted 82/82 poems for باب دوم
+   ✅ Inserted 28/28 poems for باب سوم
+   ✅ Inserted 49/49 poems for باب ۴ تا ۵۲
+   ✅ Inserted 26/26 poems for باب ۵۳ تا آخر
+   ✅ Inserted 50/190 poems for برگردان رسالهٔ قشیریه
+   ✅ Inserted 100/190 poems for برگردان رسالهٔ قشیریه
+   ✅ Inserted 150/190 poems for برگردان رسالهٔ قشیریه
+   ✅ Inserted 190/190 poems for برگردان رسالهٔ قشیریه
+   📂 Category: دیباچه
+   ✅ Inserted 3/3 poems for دیباچه
+   📂 Category: باب اول
+   ✅ Inserted 2/2 poems for باب اول
+
+📝 [20/228] Processing اثیر اخسیکتی...
+✅ Inserted 8 categories for اثیر اخسیکتی
+   📂 Category: دیوان اشعار
+   ✅ Inserted 50/118 poems for قصاید
+   ✅ Inserted 100/118 poems for قصاید
+   ✅ Inserted 118/118 poems for قصاید
+   ✅ Inserted 50/197 poems for غزلیات
+   ✅ Inserted 100/197 poems for غزلیات
+   ✅ Inserted 150/197 poems for غزلیات
+   ✅ Inserted 197/197 poems for غزلیات
+   ✅ Inserted 50/65 poems for قطعات
+   ✅ Inserted 65/65 poems for قطعات
+   ✅ Inserted 6/6 poems for ترکیبات
+   ✅ Inserted 50/64 poems for رباعیات
+   ✅ Inserted 64/64 poems for رباعیات
+   ✅ Inserted 17/17 poems for مفردات
+   ✅ Inserted 50/467 poems for دیوان اشعار
+   ✅ Inserted 100/467 poems for دیوان اشعار
+   ✅ Inserted 150/467 poems for دیوان اشعار
+   ✅ Inserted 200/467 poems for دیوان اشعار
+   ✅ Inserted 250/467 poems for دیوان اشعار
+   ✅ Inserted 300/467 poems for دیوان اشعار
+   ✅ Inserted 350/467 poems for دیوان اشعار
+   ✅ Inserted 400/467 poems for دیوان اشعار
+   ✅ Inserted 450/467 poems for دیوان اشعار
+   ✅ Inserted 467/467 poems for دیوان اشعار
+   📂 Category: قصاید
+   ✅ Inserted 50/118 poems for قصاید
+   ✅ Inserted 100/118 poems for قصاید
+   ✅ Inserted 118/118 poems for قصاید
+   📂 Category: غزلیات
+   ✅ Inserted 50/197 poems for غزلیات
+   ✅ Inserted 100/197 poems for غزلیات
+   ✅ Inserted 150/197 poems for غزلیات
+   ✅ Inserted 197/197 poems for غزلیات
+
+📝 [21/228] Processing احمد برمکی...
+✅ Inserted 1 categories for احمد برمکی
+
+📝 [22/228] Processing ادیب الممالک فراهانی...
+✅ Inserted 17 categories for ادیب الممالک فراهانی
+   📂 Category: دیوان اشعار
+   ✅ Inserted 50/144 poems for قصاید
+   ✅ Inserted 100/144 poems for قصاید
+   ✅ Inserted 144/144 poems for قصاید
+   ✅ Inserted 6/6 poems for قصاید عربی
+   ✅ Inserted 50/139 poems for غزلیات
+   ✅ Inserted 100/139 poems for غزلیات
+   ✅ Inserted 139/139 poems for غزلیات
+   ✅ Inserted 5/5 poems for مسمطات
+   ✅ Inserted 4/4 poems for ترجیعات
+   ✅ Inserted 9/9 poems for ترکیبات
+   ✅ Inserted 50/251 poems for مقطعات
+   ✅ Inserted 100/251 poems for مقطعات
+   ✅ Inserted 150/251 poems for مقطعات
+   ✅ Inserted 200/251 poems for مقطعات
+   ✅ Inserted 250/251 poems for مقطعات
+   ✅ Inserted 251/251 poems for مقطعات
+   ✅ Inserted 33/33 poems for مثنویات
+   ✅ Inserted 50/89 poems for رباعیات طنز
+   ✅ Inserted 89/89 poems for رباعیات طنز
+   ✅ Inserted 4/4 poems for سرودهای وطنی
+   ✅ Inserted 8/8 poems for اصطلاحات علم رمل
+   ✅ Inserted 50/51 poems for فرهنگ پارسی
+   ✅ Inserted 51/51 poems for فرهنگ پارسی
+   ✅ Inserted 30/30 poems for اضافات
+❌ Error inserting poems for شورشنامه: {
+  code: '23503',
+  details: 'Key (category_id)=(2734) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for رستم نامه: {
+  code: '23503',
+  details: 'Key (category_id)=(2735) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for در تقریظ شاهنامه و مثنویات و قطعات دیگر: {
+  code: '23503',
+  details: 'Key (category_id)=(2736) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for منظومه‌ها: {
+  code: '23503',
+  details: 'Key (category_id)=(2734) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for منظومه‌ها: {
+  code: '23503',
+  details: 'Key (category_id)=(2736) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+   ✅ Inserted 44/44 poems for مفردات
+   ✅ Inserted 50/873 poems for دیوان اشعار
+   ✅ Inserted 100/873 poems for دیوان اشعار
+   ✅ Inserted 150/873 poems for دیوان اشعار
+   ✅ Inserted 200/873 poems for دیوان اشعار
+   ✅ Inserted 250/873 poems for دیوان اشعار
+   ✅ Inserted 300/873 poems for دیوان اشعار
+   ✅ Inserted 350/873 poems for دیوان اشعار
+   ✅ Inserted 400/873 poems for دیوان اشعار
+   ✅ Inserted 450/873 poems for دیوان اشعار
+   ✅ Inserted 500/873 poems for دیوان اشعار
+   ✅ Inserted 550/873 poems for دیوان اشعار
+   ✅ Inserted 600/873 poems for دیوان اشعار
+   ✅ Inserted 650/873 poems for دیوان اشعار
+   ✅ Inserted 700/873 poems for دیوان اشعار
+   ✅ Inserted 750/873 poems for دیوان اشعار
+❌ Error inserting poems for دیوان اشعار: {
+  code: '23503',
+  details: 'Key (category_id)=(2734) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for دیوان اشعار: {
+  code: '23503',
+  details: 'Key (category_id)=(2735) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+   ✅ Inserted 873/873 poems for دیوان اشعار
+   📂 Category: قصاید
+   ✅ Inserted 50/144 poems for قصاید
+   ✅ Inserted 100/144 poems for قصاید
+   ✅ Inserted 144/144 poems for قصاید
+   📂 Category: قصاید عربی
+   ✅ Inserted 6/6 poems for قصاید عربی
+
+📝 [23/228] Processing ادیب صابر...
+✅ Inserted 8 categories for ادیب صابر
+   📂 Category: دیوان اشعار
+   ✅ Inserted 50/102 poems for قصاید
+   ✅ Inserted 100/102 poems for قصاید
+   ✅ Inserted 102/102 poems for قصاید
+   ✅ Inserted 7/7 poems for ترکیبات
+   ✅ Inserted 50/54 poems for غزلیات
+   ✅ Inserted 54/54 poems for غزلیات
+   ✅ Inserted 50/122 poems for مقطعات
+   ✅ Inserted 100/122 poems for مقطعات
+   ✅ Inserted 122/122 poems for مقطعات
+   ✅ Inserted 50/81 poems for رباعیات
+   ✅ Inserted 81/81 poems for رباعیات
+❌ Error inserting poems for قصاید: {
+  code: '23503',
+  details: 'Key (category_id)=(2824) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for قطعات: {
+  code: '23503',
+  details: 'Key (category_id)=(2825) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for رباعیات: {
+  code: '23503',
+  details: 'Key (category_id)=(2826) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for مفردات: {
+  code: '23503',
+  details: 'Key (category_id)=(2827) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for ملحقات: {
+  code: '23503',
+  details: 'Key (category_id)=(2824) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for ملحقات: {
+  code: '23503',
+  details: 'Key (category_id)=(2825) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+   ✅ Inserted 50/432 poems for دیوان اشعار
+   ✅ Inserted 100/432 poems for دیوان اشعار
+   ✅ Inserted 150/432 poems for دیوان اشعار
+   ✅ Inserted 200/432 poems for دیوان اشعار
+   ✅ Inserted 250/432 poems for دیوان اشعار
+   ✅ Inserted 300/432 poems for دیوان اشعار
+   ✅ Inserted 350/432 poems for دیوان اشعار
+❌ Error inserting poems for دیوان اشعار: {
+  code: '23503',
+  details: 'Key (category_id)=(2824) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+❌ Error inserting poems for دیوان اشعار: {
+  code: '23503',
+  details: 'Key (category_id)=(2825) is not present in table "categories".',
+  hint: null,
+  message: 'insert or update on table "poems" violates foreign key constraint "poems_category_id_fkey"'
+}
+   📂 Category: قصاید
+   ✅ Inserted 50/102 poems for قصاید
+   ✅ Inserted 100/102 poems for قصاید
+   ✅ Inserted 102/102 poems for قصاید
+   📂 Category: ترکیبات
+   ✅ Inserted 7/7 poems for ترکیبات
+
+📝 [24/228] Processing ازرقی هروی...
+✅ Inserted 4 categories for ازرقی هروی
+   📂 Category: قصاید
+   ✅ Inserted 50/66 poems for قصاید
+   ✅ Inserted 66/66 poems for قصاید
+   📂 Category: مقطعات
+   ✅ Inserted 9/9 poems for مقطعات
+   📂 Category: رباعیات
+   ✅ Inserted 50/108 poems for رباعیات
+   ✅ Inserted 100/108 poems for رباعیات
+   ✅ Inserted 108/108 poems for رباعیات
+
+📝 [25/228] Processing اسدی توسی...
+✅ Inserted 2 categories for اسدی توسی
+   📂 Category: گرشاسپ‌نامه
+   ✅ Inserted 50/144 poems for گرشاسپ‌نامه
+   ✅ Inserted 100/144 poems for گرشاسپ‌نامه
+   ✅ Inserted 144/144 poems for گرشاسپ‌نامه
+⏭️  Skipping اسیر شهرستانی (poet 26/228)
+⏭️  Skipping اسیری لاهیجی (poet 27/228)
+⏭️  Skipping عبدالکریم اشراق بیرجندی (poet 28/228)
+⏭️  Skipping افسر کرمانی (poet 29/228)
+⏭️  Skipping افسرالملوک عاملی (poet 30/228)
+⏭️  Skipping اقبال لاهوری (poet 31/228)
+⏭️  Skipping الهامی کرمانشاهی (poet 32/228)
+⏭️  Skipping امامی هروی (poet 33/228)
+⏭️  Skipping امیر پازواری (poet 34/228)
+⏭️  Skipping امیر حسینی هروی (poet 35/228)
+⏭️  Skipping امیر شاهی سبزواری (poet 36/228)
+⏭️  Skipping امیر معزی نیشابوری (poet 37/228)
+⏭️  Skipping امیرخسرو دهلوی (poet 38/228)
+⏭️  Skipping امیرعلیشیر نوایی (poet 39/228)
+⏭️  Skipping انوری ابیوردی (poet 40/228)
+⏭️  Skipping اوحدالدین کرمانی (poet 41/228)
+⏭️  Skipping اوحدی مراغه‌ای (poet 42/228)
+⏭️  Skipping اهلی شیرازی (poet 43/228)
+⏭️  Skipping ایرانشان ابن ابی الخیر  (poet 44/228)
+⏭️  Skipping ایرج میرزا (poet 45/228)
+⏭️  Skipping باباافضل کاشانی (poet 46/228)
+⏭️  Skipping باباطاهر (poet 47/228)
+⏭️  Skipping بابافغانی شیرازی (poet 48/228)
+⏭️  Skipping بسام کرد (poet 49/228)
+⏭️  Skipping بلعمی (poet 50/228)
+⏭️  Skipping بلند اقبال (poet 51/228)
+⏭️  Skipping بهاء ولد (poet 52/228)
+⏭️  Skipping بیدل دهلوی (poet 53/228)
+⏭️  Skipping پروین اعتصامی (poet 54/228)
+⏭️  Skipping ترکی شیرازی (poet 55/228)
+⏭️  Skipping ترکی کشی (poet 56/228)
+⏭️  Skipping جامی (poet 57/228)
+⏭️  Skipping جلاب بخارایی (poet 58/228)
+⏭️  Skipping جلال عضد (poet 59/228)
+⏭️  Skipping جمال‌الدین عبدالرزاق اصفهانی (poet 60/228)
+⏭️  Skipping جویای تبریزی (poet 61/228)
+⏭️  Skipping جهان ملک خاتون (poet 62/228)
+⏭️  Skipping جیحون یزدی (poet 63/228)
+⏭️  Skipping حاجب شیرازی (poet 64/228)
+⏭️  Skipping حافظ شیرازی (poet 65/228)
+⏭️  Skipping حزین لاهیجی (poet 66/228)
+⏭️  Skipping حسین خوارزمی (poet 67/228)
+⏭️  Skipping حکیم سبزواری (poet 68/228)
+⏭️  Skipping حکیم نزاری قهستانی (poet 69/228)
+⏭️  Skipping حمیدالدین بلخی (poet 70/228)
+⏭️  Skipping حنظلهٔ بادغیسی (poet 71/228)
+⏭️  Skipping حیدر شیرازی (poet 72/228)
+⏭️  Skipping خاقانی شروانی (poet 73/228)
+⏭️  Skipping خالد نقشبندی (poet 74/228)
+⏭️  Skipping خلیل‌الله خلیلی (poet 75/228)
+⏭️  Skipping خواجوی کرمانی (poet 76/228)
+⏭️  Skipping خواجه عبدالله انصاری (poet 77/228)
+⏭️  Skipping خواجه نصیرالدین طوسی (poet 78/228)
+⏭️  Skipping خیالی بخارایی (poet 79/228)
+⏭️  Skipping خیام نیشابوری (poet 80/228)
+⏭️  Skipping دقیقی طوسی (poet 81/228)
+⏭️  Skipping رشحه (poet 82/228)
+⏭️  Skipping رضاقلی خان هدایت (poet 83/228)
+⏭️  Skipping رضی‌الدین آرتیمانی (poet 84/228)
+⏭️  Skipping رفیق اصفهانی (poet 85/228)
+⏭️  Skipping رودکی سمرقندی (poet 86/228)
+⏭️  Skipping رونقی بخارایی (poet 87/228)
+⏭️  Skipping رهی معیری (poet 88/228)
+⏭️  Skipping سام میرزا صفوی (poet 89/228)
+⏭️  Skipping سپهری بخارایی (poet 90/228)
+⏭️  Skipping سحاب اصفهانی (poet 91/228)
+⏭️  Skipping سراج قمری (poet 92/228)
+⏭️  Skipping سرایندهٔ فرامرزنامه (poet 93/228)
+⏭️  Skipping سعدالدین وراوینی (poet 94/228)
+⏭️  Skipping سعدی شیرازی (poet 95/228)
+⏭️  Skipping سعیدا (poet 96/228)
+⏭️  Skipping سلطان باهو (poet 97/228)
+⏭️  Skipping سلطان ولد (poet 98/228)
+⏭️  Skipping سلمان ساوجی (poet 99/228)
+⏭️  Skipping سلیم تهرانی (poet 100/228)
+⏭️  Skipping سلیمی جرونی (poet 101/228)
+⏭️  Skipping سنایی غزنوی (poet 102/228)
+⏭️  Skipping سوزنی سمرقندی (poet 103/228)
+⏭️  Skipping سید حسن غزنوی (poet 104/228)
+⏭️  Skipping سیدای نسفی (poet 105/228)
+⏭️  Skipping سیف فرغانی (poet 106/228)
+⏭️  Skipping شاطر عباس صبوحی (poet 107/228)
+⏭️  Skipping شاکر بخارایی (poet 108/228)
+⏭️  Skipping شاه نعمت‌الله ولی (poet 109/228)
+⏭️  Skipping ابراهیم شاهدی دده (poet 110/228)
+⏭️  Skipping شمس مغربی (poet 111/228)
+⏭️  Skipping شهریار (poet 112/228)
+⏭️  Skipping شهید بلخی (poet 113/228)
+⏭️  Skipping شیخ بهایی (poet 114/228)
+⏭️  Skipping شیخ محمود شبستری (poet 115/228)
+⏭️  Skipping صائب (poet 116/228)
+⏭️  Skipping صابر همدانی (poet 117/228)
+⏭️  Skipping صامت بروجردی (poet 118/228)
+⏭️  Skipping صانع بلخی (poet 119/228)
+⏭️  Skipping صغیر اصفهانی (poet 120/228)
+⏭️  Skipping صفای اصفهانی (poet 121/228)
+⏭️  Skipping صفایی جندقی (poet 122/228)
+⏭️  Skipping صفی علیشاه (poet 123/228)
+⏭️  Skipping صوفی محمد هروی (poet 124/228)
+⏭️  Skipping طبیب اصفهانی (poet 125/228)
+⏭️  Skipping طخاری (poet 126/228)
+⏭️  Skipping طغرای مشهدی (poet 127/228)
+⏭️  Skipping طغرل احراری (poet 128/228)
+⏭️  Skipping ظهیر فاریابی (poet 129/228)
+⏭️  Skipping ظهیری سمرقندی (poet 130/228)
+⏭️  Skipping عارف قزوینی (poet 131/228)
+⏭️  Skipping عبادی مروزی (poet 132/228)
+⏭️  Skipping عبدالقادر گیلانی (poet 133/228)
+⏭️  Skipping عبدالواسع جبلی (poet 134/228)
+⏭️  Skipping عبید زاکانی (poet 135/228)
+⏭️  Skipping عثمان مختاری (poet 136/228)
+⏭️  Skipping عراقی (poet 137/228)
+⏭️  Skipping عرفی شیرازی (poet 138/228)
+⏭️  Skipping عسجدی مروزی (poet 139/228)
+⏭️  Skipping عطار نیشابوری (poet 140/228)
+⏭️  Skipping عمان سامانی (poet 141/228)
+⏭️  Skipping عمعق بخاری (poet 142/228)
+⏭️  Skipping عنصرالمعالی کیکاووس (poet 143/228)
+⏭️  Skipping عنصری بلخی (poet 144/228)
+⏭️  Skipping عین‌القضات همدانی (poet 145/228)
+⏭️  Skipping عیوقی (poet 146/228)
+⏭️  Skipping غالب دهلوی (poet 147/228)
+⏭️  Skipping غبار همدانی (poet 148/228)
+⏭️  Skipping محمدحسین غروی اصفهانی (poet 149/228)
+⏭️  Skipping امام محمد غزالی (poet 150/228)
+⏭️  Skipping غنی کشمیری (poet 151/228)
+⏭️  Skipping فایز (poet 152/228)
+⏭️  Skipping فخرالدین اسعد گرگانی (poet 153/228)
+⏭️  Skipping فرالاوی (poet 154/228)
+⏭️  Skipping فرخی سیستانی (poet 155/228)
+⏭️  Skipping فرخی یزدی (poet 156/228)
+⏭️  Skipping ابوالقاسم فردوسی (poet 157/228)
+⏭️  Skipping فروغی بسطامی (poet 158/228)
+⏭️  Skipping فصیحی هروی (poet 159/228)
+⏭️  Skipping فضولی بغدادی (poet 160/228)
+⏭️  Skipping فلکی شروانی (poet 161/228)
+⏭️  Skipping فنودی (poet 162/228)
+⏭️  Skipping فیاض لاهیجی (poet 163/228)
+⏭️  Skipping فیروز مشرقی (poet 164/228)
+⏭️  Skipping فیض کاشانی (poet 165/228)
+⏭️  Skipping قاآنی (poet 166/228)
+⏭️  Skipping قائم مقام فراهانی (poet 167/228)
+⏭️  Skipping قاسم انوار (poet 168/228)
+⏭️  Skipping قدسی مشهدی (poet 169/228)
+⏭️  Skipping قصاب کاشانی (poet 170/228)
+⏭️  Skipping قطران تبریزی (poet 171/228)
+⏭️  Skipping قوامی رازی (poet 172/228)
+⏭️  Skipping کسایی مروزی (poet 173/228)
+⏭️  Skipping کلیم (poet 174/228)
+⏭️  Skipping کمال خجندی (poet 175/228)
+⏭️  Skipping کمال‌الدین اسماعیل (poet 176/228)
+⏭️  Skipping کوهی (poet 177/228)
+⏭️  Skipping لبیبی (poet 178/228)
+⏭️  Skipping مجد همگر (poet 179/228)
+⏭️  Skipping مجیرالدین بیلقانی (poet 180/228)
+⏭️  Skipping محتشم کاشانی (poet 181/228)
+⏭️  Skipping محمد بن مخلد سگزی (poet 182/228)
+⏭️  Skipping محمد بن منور (poet 183/228)
+⏭️  Skipping محمد کوسج (poet 184/228)
+⏭️  Skipping محمد وصیف سگزی (poet 185/228)
+⏭️  Skipping محمود وراق هروی (poet 186/228)
+⏭️  Skipping محیط قمی (poet 187/228)
+⏭️  Skipping مرادی (poet 188/228)
+⏭️  Skipping مسعود سعد سلمان (poet 189/228)
+⏭️  Skipping مسعودی مروزی (poet 190/228)
+⏭️  Skipping مشتاق اصفهانی (poet 191/228)
+⏭️  Skipping ملا احمد نراقی (poet 192/228)
+⏭️  Skipping ملا مسیح پانی‌پتی (poet 193/228)
+⏭️  Skipping ملک‌الشعرا بهار (poet 194/228)
+⏭️  Skipping منوچهری دامغانی (poet 195/228)
+⏭️  Skipping جلال الدین محمد مولوی (poet 196/228)
+⏭️  Skipping مهستی گنجوی (poet 197/228)
+⏭️  Skipping رشیدالدین میبدی (poet 198/228)
+⏭️  Skipping میرداماد (poet 199/228)
+⏭️  Skipping میرزا آقاخان کرمانی (poet 200/228)
+⏭️  Skipping میرزا حبیب خراسانی (poet 201/228)
+⏭️  Skipping میرزاده عشقی (poet 202/228)
+⏭️  Skipping میلی (poet 203/228)
+⏭️  Skipping ناصر بخارایی (poet 204/228)
+⏭️  Skipping ناصرخسرو قبادیانی (poet 205/228)
+⏭️  Skipping نجم‌الدین رازی (poet 206/228)
+⏭️  Skipping عمادالدین نسیمی (poet 207/228)
+⏭️  Skipping نشاط اصفهانی (poet 208/228)
+⏭️  Skipping نصرالله منشی (poet 209/228)
+⏭️  Skipping نظام قاری (poet 210/228)
+⏭️  Skipping نظامی گنجوی (poet 211/228)
+⏭️  Skipping نظامی عروضی (poet 212/228)
+⏭️  Skipping نظیری نیشابوری (poet 213/228)
+⏭️  Skipping نورعلیشاه (poet 214/228)
+⏭️  Skipping نوعی خبوشانی (poet 215/228)
+⏭️  Skipping نیر تبریزی (poet 216/228)
+⏭️  Skipping واعظ قزوینی (poet 217/228)
+⏭️  Skipping وحدت کرمانشاهی (poet 218/228)
+⏭️  Skipping وحشی بافقی (poet 219/228)
+⏭️  Skipping وحیدالزمان قزوینی (poet 220/228)
+⏭️  Skipping رشیدالدین وطواط (poet 221/228)
+⏭️  Skipping وفایی شوشتری (poet 222/228)
+⏭️  Skipping وفایی مهابادی (poet 223/228)
+⏭️  Skipping هاتف اصفهانی (poet 224/228)
+⏭️  Skipping علی بن عثمان هجویری (poet 225/228)
+⏭️  Skipping هلالی جغتایی (poet 226/228)
+⏭️  Skipping همام تبریزی (poet 227/228)
+⏭️  Skipping یغمای جندقی (poet 228/228)
+
+🔄 Refreshing famous poets view...
+
+✅ Migration complete!
+📊 Stats:
+   - Poets: 228
+   - Categories: 123
+   - Poems: 9781
+   - Duration: 18.73 minutes

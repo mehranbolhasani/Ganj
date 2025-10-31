@@ -80,14 +80,26 @@ export default function Header() {
 
   return (
     <header className="w-full sm:container-responsive min-h-[80px] h-[80px] md:min-h-[128px] md:h-[128px] flex items-center justify-between z-10 flex-row-reverse relative">
-      {/* Mobile Menu Button - Improved touch target */}
-      <button
-        onClick={() => setIsMobileMenuOpen(true)}
-        className="md:hidden p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
-        aria-label="منوی موبایل"
-      >
-        <Menu className="w-6 h-6" />
-      </button>
+      {/* Mobile Menu & Search Buttons */}
+      <div className="md:hidden flex items-center gap-2">
+        {/* Mobile Search Button */}
+        <button
+          onClick={() => setIsSearchOpen(true)}
+          className="p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
+          aria-label="جستجو"
+        >
+          <Search className="w-6 h-6" />
+        </button>
+        
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
+          aria-label="منوی موبایل"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
 
       {/* Left side - Navigation (Desktop) */}
       <div className="hidden md:flex items-center gap-4 flex-row-reverse">
@@ -172,7 +184,7 @@ export default function Header() {
         >
           {/* Mobile Menu Slide-in */}
           <div 
-            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white dark:bg-stone-800 shadow-xl transform transition-transform duration-300 ease-in-out mobile-optimize"
+            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white/95 dark:bg-stone-800/95 backdrop-blur-sm shadow-xl transform transition-transform duration-300 ease-in-out mobile-optimize"
             style={{ transition: 'transform 0.3s ease-in-out' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -233,14 +245,6 @@ export default function Header() {
             {/* Mobile Navigation */}
             <div className="flex-1 overflow-y-auto mobile-scroll">
               <nav className="p-4 space-y-1">
-                {/* About Link */}
-                <Link
-                  href="/about"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
-                >
-                  <span className="text-lg font-medium">درباره</span>
-                </Link>
 
                 {/* History Button */}
                 <button
@@ -255,7 +259,7 @@ export default function Header() {
                     <span className="text-lg font-medium">تاریخچه</span>
                   </div>
                   {items.length > 0 && (
-                    <span className="bg-stone-600 dark:bg-stone-400 text-white text-sm font-medium rounded-full w-6 h-6 flex items-center justify-center">
+                    <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
                       {items.length > 9 ? '9+' : items.length}
                     </span>
                   )}
@@ -272,7 +276,7 @@ export default function Header() {
                     <span className="text-lg font-medium">علاقه‌مندی‌ها</span>
                   </div>
                   {bookmarks.length > 0 && (
-                    <span className="bg-red-500/60 text-red-600 text-sm font-medium rounded-full w-6 h-6 flex items-center justify-center">
+                    <span className="relative bg-red-200 text-red-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
                       {bookmarks.length > 9 ? '9+' : bookmarks.length}
                     </span>
                   )}
@@ -281,44 +285,36 @@ export default function Header() {
                 {/* Poets Section */}
                 <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
                   <h3 className="px-4 py-2 text-sm font-medium text-stone-500 dark:text-stone-400 mb-2">
-                    شاعران
+                    محبوب‌ترین شاعرها
                   </h3>
                   
                   {/* Mobile Poets Dropdown Content */}
                   <div className="space-y-1">
                     {/* Famous Poets */}
                     <div className="px-4 py-2">
-                      <h4 className="text-sm font-medium text-stone-600 dark:text-stone-400 mb-2">شاعران مشهور</h4>
                       <div className="space-y-1">
-                        {['hafez', 'saadi', 'moulavi', 'ferdousi', 'khayyam', 'saeb', 'attar', 'nezami', 'shahriar'].map((poet) => (
+                        {[
+                          { id: 2, name: 'حافظ' },
+                          { id: 7, name: 'سعدی' },
+                          { id: 5, name: 'مولانا' },
+                          { id: 4, name: 'فردوسی' },
+                          { id: 3, name: 'خیام' },
+                          { id: 9, name: 'عطار' },
+                          { id: 6, name: 'نظامی' },
+                          { id: 12, name: 'رودکی' },
+                          { id: 26, name: 'ابوسعید ابوالخیر' },
+                        ].map((poet) => (
                           <Link
-                            key={poet}
-                            href={`/poet/${poet}`}
+                            key={poet.id}
+                            href={`/poet/${poet.id}`}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="block px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 rounded-md transition-colors"
+                            className="block px-0 py-2 text-base font-medium text-stone-600 dark:text-stone-400 transition-colors"
                           >
-                            {poet === 'hafez' && 'حافظ'}
-                            {poet === 'saadi' && 'سعدی'}
-                            {poet === 'moulavi' && 'مولانا'}
-                            {poet === 'ferdousi' && 'فردوسی'}
-                            {poet === 'khayyam' && 'خیام'}
-                            {poet === 'saeb' && 'صائب'}
-                            {poet === 'attar' && 'عطار'}
-                            {poet === 'nezami' && 'نظامی'}
-                            {poet === 'shahriar' && 'شهریار'}
+                            {poet.name}
                           </Link>
                         ))}
                       </div>
                     </div>
-
-                    {/* All Poets Link */}
-                    <Link
-                      href="/"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block px-4 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 rounded-md transition-colors"
-                    >
-                      همه شاعران
-                    </Link>
                   </div>
                 </div>
               </nav>

@@ -367,7 +367,59 @@ html,
   }
 }
 
-/* Grid background with fade-out effect */
+/* Smooth fade-in animation for loading states */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Delayed fade-in for skeletons - prevents flash on fast loads */
+@keyframes delayedFadeIn {
+  0% {
+    opacity: 0;
+  }
+  /* Stay invisible for 500ms */
+  99% {
+    opacity: 0;
+  }
+  /* Then fade in quickly */
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-delayedFadeIn {
+  animation: delayedFadeIn 500ms ease-out forwards;
+  /* Start invisible, stay invisible until animation completes */
+  opacity: 0;
+}
+
+/* Subtle pulse for skeleton elements (only after they're visible) */
+@keyframes subtlePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-delayedFadeIn > * {
+  animation: subtlePulse 2s ease-in-out infinite;
+  animation-delay: 500ms; /* Start pulsing after skeleton is visible */
+}
+
+/* Grid background with fade-out effect - optimized for performance */
 .grid-background {
   position: fixed;
   top: 0;
@@ -376,6 +428,8 @@ html,
   bottom: 0;
   z-index: 0;
   will-change: auto;
+  content-visibility: auto;
+  contain: layout style paint;
   background-image: 
     linear-gradient(to right, #e2e8f0 1px, transparent 1px),
     linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);

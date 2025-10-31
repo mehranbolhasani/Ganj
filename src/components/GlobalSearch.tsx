@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useTransition } from 'react';
 import Link from 'next/link';
-import { Search, X, Clock, ArrowUp, ArrowDown, ArrowRight } from 'lucide-react';
+import { Search, X, Clock, ArrowUp, ArrowDown, CornerDownLeft } from 'lucide-react';
 import { searchAll } from '@/lib/supabase-search';
 import { Poet, Category, Poem } from '@/lib/types';
 import { useToast } from './Toast';
@@ -30,10 +30,24 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [isPending, startTransition] = useTransition();
   
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  
+  // Disable body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
   
   // Load search history from localStorage
   useEffect(() => {
@@ -63,7 +77,9 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
   // Search function using Supabase (instant, no indexing wait)
   const search = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
-      setResults([]);
+      startTransition(() => {
+        setResults([]);
+      });
       return;
     }
 
@@ -71,8 +87,8 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     const startTime = performance.now();
     
     try {
-      // Search using Supabase API (instant full-text search)
-      const { poets, categories, poems } = await searchAll(searchQuery, 50);
+      // Search using Supabase API (instant full-text search) - limited to 20 for performance
+      const { poets, categories, poems } = await searchAll(searchQuery, 20);
       
       const searchTime = performance.now() - startTime;
       console.log(`[GlobalSearch] Supabase search "${searchQuery}": ${poets.length} poets, ${categories.length} categories, ${poems.length} poems (${Math.round(searchTime)}ms)`);
@@ -95,8 +111,11 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
         })),
       ];
 
-      setResults(searchResults);
-      setSelectedIndex(0);
+      // Use startTransition to make updates non-blocking
+      startTransition(() => {
+        setResults(searchResults);
+        setSelectedIndex(0);
+      });
     } catch (error) {
       console.error('Search failed:', error);
       toast.error('خطا در جستجو', 'لطفاً دوباره تلاش کنید');
@@ -105,15 +124,17 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     }
   }, [toast]);
 
-  // Debounced search
+  // Debounced search - increased to 500ms for better performance
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (query.trim()) {
         search(query);
       } else {
-        setResults([]);
+        startTransition(() => {
+          setResults([]);
+        });
       }
-    }, 300); // Debounce delay
+    }, 500); // Increased from 300ms to 500ms for better INP
 
     return () => clearTimeout(timeoutId);
   }, [query, search]);
@@ -172,6 +193,18 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     console.log('Result clicked:', result);
     saveSearchHistory(query);
     onClose();
+  };
+  
+  // Highlight matching text in search results
+  const highlightText = (text: string, highlight: string) => {
+    if (!highlight.trim()) return text;
+    
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return parts.map((part, index) => 
+      part.toLowerCase() === highlight.toLowerCase() 
+        ? `<mark class="bg-yellow-200 dark:bg-yellow-600/40 text-stone-900 dark:text-stone-100 px-0.5 rounded">${part}</mark>`
+        : part
+    ).join('');
   };
 
   // Handle history item click
@@ -234,39 +267,114 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
               </Link>
             </div>
           ) : query.trim() ? (
-            <div className="py-2">
-              {results.map((result, index) => (
-                <Link
-                  key={`${result.type}-${result.data.id}`}
-                  href={result.url}
-                  onClick={() => handleResultClick(result)}
-                  className={`block p-3 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors ${
-                    index === selectedIndex ? 'bg-stone-50 dark:bg-stone-700' : ''
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0">
-                      {result.type === 'poet' && <div className="w-8 h-8 bg-stone-200 dark:bg-stone-600 rounded-full"></div>}
-                      {result.type === 'category' && <div className="w-8 h-8 bg-blue-200 dark:bg-blue-600 rounded"></div>}
-                      {result.type === 'poem' && <div className="w-8 h-8 bg-green-200 dark:bg-green-600 rounded"></div>}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-stone-900 dark:text-stone-100 text-right truncate">
-                        {result.type === 'poet' ? (result.data as Poet).name : (result.data as Category | Poem).title}
-                      </h4>
-                      <p className="text-sm text-stone-500 dark:text-stone-400 text-right">
-                        {result.type === 'poet' && 'شاعر'}
-                        {result.type === 'category' && `مجموعه • ${(result.data as Category).poetId}`}
-                        {result.type === 'poem' && `شعر • ${(result.data as Poem).poetName}`}
-                      </p>
-                    </div>
-                    <div className="flex-shrink-0">
-                      {index === selectedIndex && <ArrowRight className="w-4 h-4 text-stone-400" />}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <>
+              {/* Results count */}
+              <div className="px-4 py-3 text-sm text-stone-500 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
+                {results.length} نتیجه
+              </div>
+              
+              {/* Results list */}
+              <div className="divide-y divide-stone-200 dark:divide-stone-700/50">
+                {results.map((result, index) => {
+                  const isPoet = result.type === 'poet';
+                  const isCategory = result.type === 'category';
+                  const isPoem = result.type === 'poem';
+                  
+                  const data = result.data as Poet | Category | Poem;
+                  const title = isPoet ? (data as Poet).name : (data as Category | Poem).title;
+                  
+                  let poetName = '';
+                  let categoryTitle = '';
+                  let verses: string[] = [];
+                  
+                  if (isPoem) {
+                    const poemData = data as Poem;
+                    poetName = poemData.poetName || '';
+                    categoryTitle = poemData.categoryTitle || '';
+                    verses = poemData.verses || [];
+                  } else if (isCategory) {
+                    // Category doesn't have poetName in our types, skip it
+                    poetName = '';
+                  }
+                  
+                  // Find the beyt (couplet) that contains the search term
+                  // A beyt = 2 verses (hemistiches)
+                  let displayVerses: string[] = [];
+                  if (verses.length > 0) {
+                    // Try to find which beyt contains the search term
+                    let foundIndex = -1;
+                    for (let i = 0; i < verses.length; i++) {
+                      if (verses[i].toLowerCase().includes(query.toLowerCase())) {
+                        foundIndex = i;
+                        break;
+                      }
+                    }
+                    
+                    if (foundIndex >= 0) {
+                      // Show the beyt containing the match (even index = first hemistich, pair it with next)
+                      const beytStart = foundIndex % 2 === 0 ? foundIndex : foundIndex - 1;
+                      displayVerses = [
+                        verses[beytStart] || '',
+                        verses[beytStart + 1] || ''
+                      ].filter(v => v);
+                    } else {
+                      // No match found (might be in title), show first beyt
+                      displayVerses = [verses[0], verses[1]].filter(v => v);
+                    }
+                  }
+                  
+                  return (
+                    <Link
+                      key={`${result.type}-${data.id}`}
+                      href={result.url}
+                      onClick={() => handleResultClick(result)}
+                      className={`block p-4 hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors group ${
+                        index === selectedIndex ? 'bg-stone-100 dark:bg-yellow-800/30' : ''
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1 min-w-0">
+                          {/* Title with highlight */}
+                          <h4 
+                            className="font-abar text-[15px] font-medium text-stone-900 dark:text-stone-100 text-right mb-1"
+                            dangerouslySetInnerHTML={{ __html: highlightText(title, query) }}
+                          />
+                          
+                          {/* Metadata */}
+                          <p className="text-[13px] text-stone-500 dark:text-stone-400 text-right mb-2">
+                            {isPoet && 'شاعر'}
+                            {isCategory && `${poetName}`}
+                            {isPoem && (
+                              <>
+                                {poetName}
+                                {categoryTitle && ` - ${categoryTitle}`}
+                              </>
+                            )}
+                          </p>
+                          
+                          {/* Beyt preview for poems (both hemistiches) */}
+                          {isPoem && displayVerses.length > 0 && (
+                            <div className="text-[13px] text-stone-600 dark:text-stone-300 text-right leading-relaxed space-y-1">
+                              {displayVerses.map((verse, vIndex) => (
+                                <p 
+                                  key={vIndex}
+                                  dangerouslySetInnerHTML={{ __html: highlightText(verse, query) }}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Arrow indicator */}
+                        <div className="flex-shrink-0 pt-1">
+                          <CornerDownLeft className="w-4 h-4 text-stone-400 dark:text-stone-500 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors" />
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </>
           ) : showHistory && searchHistory.length > 0 ? (
             <div className="py-2">
               <div className="flex items-center justify-between px-3 py-2">
@@ -302,7 +410,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                 <span>انتخاب</span>
               </span>
               <span className="flex items-center gap-1">
-                <ArrowRight className="w-3 h-3" />
+                <CornerDownLeft className="w-3 h-3" />
                 <span>باز کردن</span>
               </span>
             </div>

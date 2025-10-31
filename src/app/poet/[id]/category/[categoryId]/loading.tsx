@@ -1,7 +1,5 @@
-import { CategoryPageSkeleton } from '@/components/LoadingStates';
-
 export default function Loading() {
-  return <CategoryPageSkeleton />;
+  return <div className="min-h-screen" />;
 }
 
 
