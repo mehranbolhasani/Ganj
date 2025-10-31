@@ -11,6 +11,7 @@ import RouteProgress from "@/components/RouteProgress";
 import Layout from "@/components/Layout";
 
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 
 export const metadata: Metadata = {
@@ -97,6 +98,7 @@ export default function RootLayout({
           <PreloadInitializer />
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
