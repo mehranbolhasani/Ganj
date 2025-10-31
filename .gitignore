@@ -39,3 +39,35 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Sensitive documentation and setup files
+DEVELOPMENT.md
+PERFORMANCE_FIXES.md
+PERFORMANCE_OPTIMIZATION_PLAN.md 
+SUPABASE_SETUP.md
+
+# Migration scripts and logs (may contain sensitive data)
+scripts/migrate-to-supabase.ts
+scripts/clear-supabase-data.ts
+supabase-schema.sql
+*.log
+migration*.log
+migration*.txt
+
+# IDE and workspace files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Local development files
+.cursor/
+high-priority-features.plan.md
+
+# Backup and temporary files
+*.backup
+*.bak
+*.tmp
