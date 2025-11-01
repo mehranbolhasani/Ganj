@@ -97,7 +97,7 @@ function ToastContainer() {
 
   return (
     <div
-      className="fixed top-4 left-4 z-50 space-y-2 max-w-sm w-full"
+      className="fixed top-4 left-4 right-4 z-50 space-y-2 max-w-sm sm:w-full sm:right-auto"
       role="region"
       aria-live="polite"
       aria-label="اعلانات"
@@ -163,11 +163,11 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
         </div>
         
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-medium text-stone-900 dark:text-stone-100 text-right">
+          <h4 className="text-sm font-medium text-stone-900 dark:text-stone-100 text-right break-words">
             {toast.title}
           </h4>
           {toast.message && (
-            <p className="text-sm text-stone-600 dark:text-stone-400 text-right mt-1">
+            <p className="text-sm text-stone-600 dark:text-stone-400 text-right mt-1 break-words">
               {toast.message}
             </p>
           )}

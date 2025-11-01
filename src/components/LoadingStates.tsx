@@ -337,3 +337,41 @@ export function SuspenseFallback() {
     </div>
   );
 }
+
+// Page transition spinner - subtle centered spinner for page transitions
+// Works alongside the top progress bar
+export function PageTransitionSpinner() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-fadeIn" style={{ animationDuration: '400ms' }}>
+        <div className="relative">
+          {/* Outer subtle glow ring */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-400/10 to-orange-400/10 blur-xl animate-pulse" />
+          
+          {/* Main spinner */}
+          <div className="relative">
+            <svg 
+              className="w-10 h-10 animate-spin text-yellow-600/40 dark:text-yellow-500/40" 
+              fill="none" 
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

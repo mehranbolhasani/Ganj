@@ -143,9 +143,9 @@ export default function BookmarkButton({
         )}
       </button>
 
-      {/* Tooltip */}
+      {/* Tooltip - Hidden on mobile to prevent horizontal scrolling */}
       {showTooltip && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 text-xs rounded shadow-lg whitespace-nowrap z-10">
+        <div className="hidden md:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 text-xs rounded shadow-lg whitespace-nowrap z-10">
           {isBookmarked ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
           <span className="block text-xs opacity-75">کلید B</span>
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-stone-800 dark:border-t-stone-200"></div>
