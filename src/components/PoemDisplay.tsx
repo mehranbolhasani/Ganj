@@ -76,8 +76,6 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
-      setReadingTheme('default'); // Reset theme when exiting
-      setScrollProgress(0); // Reset progress
     }
 
     return () => {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Star, Bug, Plus, Zap, Heart, Settings } from 'lucide-react';
+import { ArrowLeft, Star, Bug, Plus, Zap, Heart, Settings } from 'lucide-react';
 
 export default function ChangelogPage() {
   return (

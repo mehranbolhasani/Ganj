@@ -30,6 +30,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPending, startTransition] = useTransition();
   
   const inputRef = useRef<HTMLInputElement>(null);
@@ -84,7 +85,6 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     }
 
     setIsLoading(true);
-    const startTime = performance.now();
     
     try {
       // Search using Supabase API (instant full-text search) - limited to 20 for performance
@@ -186,7 +186,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
   }, [isOpen]);
 
   // Handle result click
-  const handleResultClick = (result: SearchResult) => {
+  const handleResultClick = (_result: SearchResult) => {
     saveSearchHistory(query);
     onClose();
   };
@@ -196,7 +196,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     if (!highlight.trim()) return text;
     
     const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return parts.map((part, index) => 
+    return parts.map((part) => 
       part.toLowerCase() === highlight.toLowerCase() 
         ? `<mark class="bg-yellow-200 dark:bg-yellow-600/40 text-stone-900 dark:text-stone-100 px-0.5 rounded">${part}</mark>`
         : part
