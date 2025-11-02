@@ -171,17 +171,44 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
               <FontSizeControl showLabel={false} vertical={true} />
             </div>
             
-            {/* Theme toggle button */}
+            {/* Theme toggle button with color indicators */}
             <button
               onClick={cycleTheme}
-              className={`${theme.controlsBg} backdrop-blur-sm rounded-xl shadow-lg p-3 flex flex-col items-center gap-1 hover:scale-105 transition-all duration-200`}
+              className={`${theme.controlsBg} backdrop-blur-sm rounded-xl shadow-lg p-3 flex flex-col items-center gap-2 hover:scale-105 transition-all duration-200`}
               aria-label="تغییر تم"
               title={`تم: ${getThemeLabel()}`}
             >
               <Palette className={`w-5 h-5 ${theme.text}`} />
-              <span className={`text-xs ${theme.secondaryText}`}>
-                {getThemeLabel()}
-              </span>
+              
+              {/* Theme indicators - 3 colored dots */}
+              <div className="flex items-center gap-1">
+                {/* Default theme dot */}
+                <div 
+                  className={`rounded-full transition-all duration-200 ${
+                    readingTheme === 'default' 
+                      ? 'w-2.5 h-2.5 bg-stone-500 dark:bg-stone-400' 
+                      : 'w-1.5 h-1.5 bg-stone-400/40 dark:bg-stone-600/40'
+                  }`}
+                />
+                
+                {/* Sepia theme dot */}
+                <div 
+                  className={`rounded-full transition-all duration-200 ${
+                    readingTheme === 'sepia' 
+                      ? 'w-2.5 h-2.5 bg-[#8b7355]' 
+                      : 'w-1.5 h-1.5 bg-[#8b7355]/40'
+                  }`}
+                />
+                
+                {/* Night theme dot */}
+                <div 
+                  className={`rounded-full transition-all duration-200 ${
+                    readingTheme === 'night' 
+                      ? 'w-2.5 h-2.5 bg-blue-400' 
+                      : 'w-1.5 h-1.5 bg-blue-400/40'
+                  }`}
+                />
+              </div>
             </button>
           </div>
         )}
