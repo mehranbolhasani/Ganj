@@ -95,10 +95,10 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
     switch (readingTheme) {
       case 'sepia':
         return {
-          bg: 'bg-[#f4ecd8]',
-          text: 'text-[#5c4b37]',
-          secondaryText: 'text-[#8b7355]',
-          controlsBg: 'bg-[#e8dcc4]/90',
+          bg: 'bg-[#f4ecd8] dark:bg-[#2d2416]', // Light: warm paper, Dark: warm dark brown
+          text: 'text-[#5c4b37] dark:text-[#e8dcc4]', // Light: brown, Dark: light beige
+          secondaryText: 'text-[#8b7355] dark:text-[#b8a888]', // Light: lighter brown, Dark: muted beige
+          controlsBg: 'bg-[#e8dcc4]/90 dark:bg-[#3d3220]/90', // Light: light beige, Dark: darker brown
           filter: '',
         };
       case 'night':
@@ -107,7 +107,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
           text: 'text-[#d4d4d4]',
           secondaryText: 'text-[#a3a3a3]',
           controlsBg: 'bg-[#2a2a2a]/90',
-          filter: 'brightness-90 contrast-90', // Blue light filter effect
+          filter: 'brightness(90%) contrast(90%)', // Blue light filter effect
         };
       default:
         return {
