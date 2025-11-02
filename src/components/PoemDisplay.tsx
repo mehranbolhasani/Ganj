@@ -5,16 +5,20 @@ import { Poem } from '@/lib/types';
 import { useFontSize } from '@/lib/user-preferences';
 import FontSizeControl from './FontSizeControl';
 import BookmarkButton from './BookmarkButton';
-import { BookOpen, X } from 'lucide-react';
+import { BookOpen, X, Palette } from 'lucide-react';
 
 interface PoemDisplayProps {
   poem: Poem;
 }
 
+type ReadingTheme = 'default' | 'sepia' | 'night';
+
 export default function PoemDisplay({ poem }: PoemDisplayProps) {
   const { poemClasses } = useFontSize();
   const [isHydrated, setIsHydrated] = useState(false);
   const [isDistractFree, setIsDistractFree] = useState(false);
+  const [readingTheme, setReadingTheme] = useState<ReadingTheme>('default');
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   // Prevent hydration mismatch by only rendering after hydration
   useEffect(() => {
@@ -58,30 +62,127 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
+      setReadingTheme('default'); // Reset theme when exiting
+      setScrollProgress(0); // Reset progress
     }
 
     return () => {
       document.body.style.overflow = '';
     };
   }, [isDistractFree]);
+
+  // Track scroll progress in distract-free mode
+  useEffect(() => {
+    if (!isDistractFree) return;
+
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const scrollTop = target.scrollTop;
+      const scrollHeight = target.scrollHeight - target.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    };
+
+    const scrollContainer = document.querySelector('.distract-free-scroll');
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, [isDistractFree]);
+
+  // Get theme styles
+  const getThemeStyles = () => {
+    switch (readingTheme) {
+      case 'sepia':
+        return {
+          bg: 'bg-[#f4ecd8]',
+          text: 'text-[#5c4b37]',
+          secondaryText: 'text-[#8b7355]',
+          controlsBg: 'bg-[#e8dcc4]/90',
+          filter: '',
+        };
+      case 'night':
+        return {
+          bg: 'bg-[#1a1a1a]',
+          text: 'text-[#d4d4d4]',
+          secondaryText: 'text-[#a3a3a3]',
+          controlsBg: 'bg-[#2a2a2a]/90',
+          filter: 'brightness-90 contrast-90', // Blue light filter effect
+        };
+      default:
+        return {
+          bg: 'bg-stone-50 dark:bg-stone-900',
+          text: 'text-stone-900 dark:text-stone-100',
+          secondaryText: 'text-stone-500 dark:text-stone-400',
+          controlsBg: 'bg-stone-200/80 dark:bg-stone-800/80',
+          filter: '',
+        };
+    }
+  };
+
+  const theme = getThemeStyles();
+
+  // Cycle through themes
+  const cycleTheme = () => {
+    const themes: ReadingTheme[] = ['default', 'sepia', 'night'];
+    const currentIndex = themes.indexOf(readingTheme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setReadingTheme(themes[nextIndex]);
+  };
+
+  const getThemeLabel = () => {
+    switch (readingTheme) {
+      case 'sepia': return 'کاغذی';
+      case 'night': return 'شب';
+      default: return 'پیش‌فرض';
+    }
+  };
+
   // Distract-free reading mode
   if (isDistractFree) {
     return (
-      <div className="fixed inset-0 z-50 bg-stone-50 dark:bg-stone-900 overflow-y-auto animate-fadeIn">
+      <div 
+        className={`fixed inset-0 z-50 overflow-y-auto animate-fadeIn distract-free-scroll ${theme.bg}`}
+        style={{ filter: theme.filter }}
+      >
+        {/* Progress bar at top */}
+        <div className="fixed top-0 left-0 right-0 h-1 bg-stone-200/30 dark:bg-stone-700/30 z-50">
+          <div 
+            className="h-full bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-600 transition-all duration-300 ease-out"
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+
         {/* Close button - always visible */}
         <button
           onClick={() => setIsDistractFree(false)}
-          className="fixed top-4 left-4 sm:top-6 sm:left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-stone-200/80 dark:bg-stone-800/80 backdrop-blur-sm text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-700 transition-all duration-200 shadow-lg group"
+          className={`fixed top-4 left-4 sm:top-6 sm:left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full ${theme.controlsBg} backdrop-blur-sm ${theme.text} hover:scale-110 transition-all duration-200 shadow-lg group`}
           aria-label="بستن حالت تمرکز (ESC)"
           title="بستن (ESC)"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Floating font size control - bottom right */}
+        {/* Floating controls - bottom left */}
         {isHydrated && (
-          <div className="fixed bottom-6 left-6 z-50 bg-stone-200/80 dark:bg-stone-800/80 backdrop-blur-sm rounded-xl shadow-lg p-2">
-            <FontSizeControl showLabel={false} />
+          <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-2">
+            {/* Font size control */}
+            <div className={`${theme.controlsBg} backdrop-blur-sm rounded-xl shadow-lg p-2`}>
+              <FontSizeControl showLabel={false} />
+            </div>
+            
+            {/* Theme toggle button */}
+            <button
+              onClick={cycleTheme}
+              className={`${theme.controlsBg} backdrop-blur-sm rounded-xl shadow-lg p-3 flex flex-col items-center gap-1 hover:scale-105 transition-all duration-200`}
+              aria-label="تغییر تم"
+              title={`تم: ${getThemeLabel()}`}
+            >
+              <Palette className={`w-5 h-5 ${theme.text}`} />
+              <span className={`text-xs ${theme.secondaryText}`}>
+                {getThemeLabel()}
+              </span>
+            </button>
           </div>
         )}
 
@@ -89,12 +190,12 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
         <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-16 sm:py-20">
           <div className="max-w-3xl w-full">
             {/* Title */}
-            <h1 className="font-abar abar-wght-700 text-3xl sm:text-5xl text-stone-900 dark:text-stone-100 text-center mb-4 sm:mb-6 leading-tight">
+            <h1 className={`font-abar abar-wght-700 text-3xl sm:text-5xl ${theme.text} text-center mb-4 sm:mb-6 leading-tight`}>
               {poem.title}
             </h1>
 
             {/* Poet name - subtle */}
-            <p className="text-center text-base sm:text-lg text-stone-500 dark:text-stone-400 mb-12 sm:mb-16 font-normal">
+            <p className={`text-center text-base sm:text-lg ${theme.secondaryText} mb-12 sm:mb-16 font-normal`}>
               {poem.poetName}
             </p>
 
@@ -103,7 +204,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
               {poem.verses.map((verse, index) => (
                 <p 
                   key={index}
-                  className={`text-stone-800 dark:text-stone-200 text-center leading-loose sm:leading-loose text-lg sm:text-2xl ${isHydrated ? poemClasses : ''} ${index % 2 === 1 ? 'mb-8 sm:mb-12' : ''}`}
+                  className={`${theme.text} text-center leading-loose sm:leading-loose text-lg sm:text-2xl ${isHydrated ? poemClasses : ''} ${index % 2 === 1 ? 'mb-8 sm:mb-12' : ''}`}
                   style={{ 
                     lineHeight: '2.5',
                   }}
@@ -114,8 +215,8 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
             </div>
 
             {/* Subtle hint at bottom */}
-            <p className="text-center text-xs sm:text-sm text-stone-400 dark:text-stone-600 mt-16 sm:mt-20 font-normal">
-              برای خروج از حالت تمرکز کلید ESC را فشار دهید
+            <p className={`text-center text-xs sm:text-sm ${theme.secondaryText} mt-16 sm:mt-20 font-normal opacity-60`}>
+              برای خروج از حالت تمرکز کلید ESC را فشار دهید • پیمایش: {Math.round(scrollProgress)}%
             </p>
           </div>
         </div>
