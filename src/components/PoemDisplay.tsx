@@ -165,10 +165,10 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
 
         {/* Floating controls - bottom left */}
         {isHydrated && (
-          <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-2">
-            {/* Font size control */}
+          <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-3">
+            {/* Font size control - vertical layout */}
             <div className={`${theme.controlsBg} backdrop-blur-sm rounded-xl shadow-lg p-2`}>
-              <FontSizeControl showLabel={false} />
+              <FontSizeControl showLabel={false} vertical={true} />
             </div>
             
             {/* Theme toggle button */}
