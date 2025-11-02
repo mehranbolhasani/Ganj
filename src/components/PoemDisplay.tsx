@@ -280,7 +280,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
         {/* Mobile-first responsive layout */}
         <div className="flex flex-col-reverse sm:flex-row-reverse gap-8 sm:gap-2 justify-between w-full align-end">
           {/* Controls - Mobile: full width, Desktop: right side */}
-          <div className="flex flex-row gap-1 bg-white/75 dark:bg-yellow-900/40 rounded-xl shadow-sm p-1 h-fit w-fit sm:w-auto justify-center sm:justify-end self-end">
+          <div className="flex flex-row gap-1 bg-white/75 dark:bg-yellow-900/20 rounded-xl shadow-sm p-1 h-fit w-fit sm:w-auto justify-center sm:justify-end self-end backdrop-blur-sm">
             {/* Font Size Control - only show after hydration */}
             {isHydrated && (
               <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
@@ -332,7 +332,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
         </div>
       </div>
       
-      <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-yellow-900/20 dark:border-yellow-900/40 p-4 sm:p-8 backdrop-blur-md">
+      <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-yellow-900/10 dark:border-yellow-900/40 p-4 sm:p-8 backdrop-blur-md">
         <div className="prose prose-lg max-w-none text-center">
           {poem.verses.map((verse, index) => (
             <p 
