@@ -14,11 +14,25 @@ interface PoemDisplayProps {
 type ReadingTheme = 'default' | 'sepia' | 'night';
 
 export default function PoemDisplay({ poem }: PoemDisplayProps) {
-  const { poemClasses } = useFontSize();
+  const { poemClasses, fontSize } = useFontSize();
   const [isHydrated, setIsHydrated] = useState(false);
   const [isDistractFree, setIsDistractFree] = useState(false);
   const [readingTheme, setReadingTheme] = useState<ReadingTheme>('default');
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Get distract-free mode font sizes (larger than normal)
+  const getDistractFreeFontSize = () => {
+    switch (fontSize) {
+      case 'small':
+        return 'text-base sm:text-xl'; // Slightly larger than normal small
+      case 'medium':
+        return 'text-lg sm:text-2xl'; // Default distract-free size
+      case 'large':
+        return 'text-xl sm:text-3xl'; // Extra large for reading
+      default:
+        return 'text-lg sm:text-2xl';
+    }
+  };
 
   // Prevent hydration mismatch by only rendering after hydration
   useEffect(() => {
@@ -231,7 +245,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
               {poem.verses.map((verse, index) => (
                 <p 
                   key={index}
-                  className={`${theme.text} text-center leading-loose sm:leading-loose text-lg sm:text-2xl ${isHydrated ? poemClasses : ''} ${index % 2 === 1 ? 'mb-8 sm:mb-12' : ''}`}
+                  className={`${theme.text} text-center leading-loose sm:leading-loose ${getDistractFreeFontSize()} ${index % 2 === 1 ? 'mb-8 sm:mb-12' : ''}`}
                   style={{ 
                     lineHeight: '2.5',
                   }}
