@@ -133,8 +133,10 @@ export const hybridApi = {
   async getPoet(id: number): Promise<{ poet: Poet; categories: Category[] }> {
     const startTime = performance.now();
 
-    // Try Supabase first if available
-    if (isSupabaseAvailable()) {
+    // TEMPORARY: Disable Supabase due to corrupt category data
+    // All categories have title "(0) حافظ" instead of proper names
+    // Re-enable after fixing Supabase data
+    if (false && isSupabaseAvailable()) {
       try {
         // Check if poet exists in Supabase first (fast check)
         const hasPoet = await supabaseApi.hasPoet(id);
@@ -188,8 +190,8 @@ export const hybridApi = {
   async getCategoryPoems(poetId: number, categoryId: number): Promise<Poem[]> {
     const startTime = performance.now();
 
-    // Try Supabase first if available
-    if (isSupabaseAvailable()) {
+    // TEMPORARY: Disable Supabase due to corrupt category data
+    if (false && isSupabaseAvailable()) {
       try {
         const poems = await supabaseApi.getCategoryPoems(poetId, categoryId);
         
@@ -236,8 +238,8 @@ export const hybridApi = {
   async getPoem(id: number): Promise<Poem> {
     const startTime = performance.now();
 
-    // Try Supabase first if available
-    if (isSupabaseAvailable()) {
+    // TEMPORARY: Disable Supabase due to corrupt category data
+    if (false && isSupabaseAvailable()) {
       try {
         // Check if poem exists in Supabase first (fast check)
         const hasPoem = await supabaseApi.hasPoem(id);
