@@ -2,7 +2,7 @@ import Link from 'next/link';
 import PoemDisplay from '@/components/PoemDisplay';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import HistoryTracker from '@/components/HistoryTracker';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { hybridApi } from '@/lib/hybrid-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
 
@@ -26,7 +26,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
   let error: string | null = null;
 
   try {
-    poem = await ganjoorApi.getPoem(poemId);
+    poem = await hybridApi.getPoem(poemId);
     poetName = poem.poetName;
     categoryTitle = poem.categoryTitle || 'مجموعه';
   } catch (err) {
