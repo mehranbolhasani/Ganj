@@ -142,6 +142,12 @@ export const supabaseApi = {
         birthYear: poetData.birth_year || undefined,
         deathYear: poetData.death_year || undefined,
       };
+      
+      // Debug logging
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Supabase] Loaded poet: ${poet.name} (ID: ${id})`);
+        console.log(`[Supabase] Description: ${poet.description ? 'Yes' : 'No'}`);
+      }
 
       // Transform categories data
       let categories: Category[] = ((poetData.categories as unknown[]) || []).map((cat: unknown) => {
@@ -164,18 +170,35 @@ export const supabaseApi = {
       // Filter out categories that match the poet's name (these are usually parent/root categories)
       const poetName = poetData.name;
       categories = categories.filter(category => {
-        // Exclude categories where title exactly matches poet name
-        if (category.title === poetName) {
+        // Normalize both strings for comparison (remove extra spaces, diacritics, etc.)
+        const normalizeString = (str: string) => {
+          return str.trim().replace(/\s+/g, ' ').toLowerCase();
+        };
+        
+        const normalizedCategoryTitle = normalizeString(category.title);
+        const normalizedPoetName = normalizeString(poetName);
+        
+        // Exclude if they match
+        if (normalizedCategoryTitle === normalizedPoetName) {
           return false;
         }
-        // Also exclude common variations (with/without spaces)
-        const normalizedTitle = category.title.trim();
-        const normalizedPoetName = poetName.trim();
-        if (normalizedTitle === normalizedPoetName) {
+        
+        // Also check if category title contains only the poet name (sometimes has extra words)
+        // But only if the category title is very similar (< 5 chars difference)
+        const lengthDiff = Math.abs(normalizedCategoryTitle.length - normalizedPoetName.length);
+        if (lengthDiff < 5 && normalizedCategoryTitle.includes(normalizedPoetName)) {
           return false;
         }
+        
         return true;
       });
+      
+      // Debug logging for category filtering
+      if (process.env.NODE_ENV === 'development') {
+        const originalCount = (poetData.categories as unknown[])?.length || 0;
+        console.log(`[Supabase] Filtered categories: ${originalCount} -> ${categories.length}`);
+        console.log(`[Supabase] Categories:`, categories.map(c => c.title));
+      }
 
       // Always calculate poem counts from poems table to ensure accuracy
       // This handles cases where poem_count column might be incorrect or missing
@@ -187,8 +210,7 @@ export const supabaseApi = {
           .from('poems')
           .select('category_id')
           .eq('poet_id', id)
-          .in('category_id', categoryIds)
-          .not('category_id', 'is', null); // Exclude poems with null category_id
+          .in('category_id', categoryIds);
 
         if (!countError && poemCounts) {
           // Count poems per category
@@ -214,6 +236,11 @@ export const supabaseApi = {
             // Otherwise, return 0
             return { ...category, poemCount: 0 };
           });
+          
+          // Debug logging for poem counts
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`[Supabase] Poem counts:`, categories.map(c => `${c.title}: ${c.poemCount}`));
+          }
         } else if (countError) {
           console.warn('Failed to count poems for categories:', countError);
           // Fallback: use stored poem_count if available
