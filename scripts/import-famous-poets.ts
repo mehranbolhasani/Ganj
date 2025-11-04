@@ -68,17 +68,6 @@ interface GanjoorPoem {
 }
 
 /**
- * Fetch poet data from Ganjoor API
- */
-async function fetchPoetFromGanjoor(poetId: number): Promise<GanjoorPoet> {
-  const response = await fetch(`https://api.ganjoor.net/api/ganjoor/poet/${poetId}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch poet ${poetId}: ${response.statusText}`);
-  }
-  return response.json();
-}
-
-/**
  * Fetch category poems from Ganjoor API
  */
 async function fetchCategoryPoems(poetId: number, catId: number): Promise<GanjoorPoem[]> {
@@ -129,7 +118,27 @@ async function importPoet(poetId: number, poetName: string) {
   try {
     // Step 1: Fetch poet data from Ganjoor
     console.log('📡 Fetching poet data from Ganjoor API...');
-    const ganjoorPoet = await fetchPoetFromGanjoor(poetId);
+    const response = await fetch(`https://api.ganjoor.net/api/ganjoor/poet/${poetId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch poet ${poetId}: ${response.statusText}`);
+    }
+    const data = await response.json();
+    
+    // Ganjoor API returns { poet: {...}, cat: {...} }
+    const ganjoorPoet = data.poet;
+    const rootCategory = data.cat;
+    
+    if (!ganjoorPoet) {
+      console.error('❌ No poet data in API response');
+      return;
+    }
+    
+    console.log('📋 Poet data:', {
+      id: ganjoorPoet.id,
+      name: ganjoorPoet.name,
+      hasDescription: !!ganjoorPoet.description,
+      hasCat: !!rootCategory,
+    });
     
     // Step 2: Upsert poet into Supabase
     console.log('💾 Upserting poet into Supabase...');
@@ -138,7 +147,7 @@ async function importPoet(poetId: number, poetName: string) {
       .upsert({
         id: ganjoorPoet.id,
         name: ganjoorPoet.name,
-        slug: ganjoorPoet.cat?.urlSlug || '',
+        slug: rootCategory?.urlSlug || '',
         description: ganjoorPoet.description || '',
         birth_year: ganjoorPoet.birthYearInLHijri || null,
         death_year: ganjoorPoet.deathYearInLHijri || null,
@@ -151,12 +160,12 @@ async function importPoet(poetId: number, poetName: string) {
     console.log('✅ Poet upserted');
     
     // Step 3: Get all categories
-    if (!ganjoorPoet.cat) {
+    if (!rootCategory) {
       console.log('⚠️  No categories found for this poet');
       return;
     }
     
-    const categories = flattenCategories(ganjoorPoet.cat, poetId);
+    const categories = flattenCategories(rootCategory, poetId);
     console.log(`📂 Found ${categories.length} categories`);
     
     // Step 4: Upsert categories
