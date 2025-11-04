@@ -175,8 +175,14 @@ export const supabaseApi = {
       });
 
       // Filter out categories that match the poet's name (these are usually parent/root categories)
+      // Also filter out categories with 0 poems (either not imported or genuinely empty)
       const poetName = poetData.name;
       categories = categories.filter(category => {
+        // Exclude if poem count is 0 or undefined
+        if (!category.poemCount || category.poemCount === 0) {
+          return false;
+        }
+        
         // Normalize both strings for comparison (remove extra spaces, diacritics, etc.)
         const normalizeString = (str: string) => {
           return str.trim().replace(/\s+/g, ' ').toLowerCase();

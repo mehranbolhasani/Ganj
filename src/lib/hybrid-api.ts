@@ -136,7 +136,7 @@ export const hybridApi = {
     // TEMPORARY: Disable Supabase due to corrupt category data
     // All categories have title "(0) حافظ" instead of proper names
     // Re-enable after fixing Supabase data
-    if (false && isSupabaseAvailable()) {
+    if (isSupabaseAvailable()) {
       try {
         // Check if poet exists in Supabase first (fast check)
         const hasPoet = await supabaseApi.hasPoet(id);
@@ -191,7 +191,7 @@ export const hybridApi = {
     const startTime = performance.now();
 
     // TEMPORARY: Disable Supabase due to corrupt category data
-    if (false && isSupabaseAvailable()) {
+    if (isSupabaseAvailable()) {
       try {
         const poems = await supabaseApi.getCategoryPoems(poetId, categoryId);
         
@@ -239,7 +239,7 @@ export const hybridApi = {
     const startTime = performance.now();
 
     // TEMPORARY: Disable Supabase due to corrupt category data
-    if (false && isSupabaseAvailable()) {
+    if (isSupabaseAvailable()) {
       try {
         // Check if poem exists in Supabase first (fast check)
         const hasPoem = await supabaseApi.hasPoem(id);
