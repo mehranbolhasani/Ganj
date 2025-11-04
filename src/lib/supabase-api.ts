@@ -19,23 +19,16 @@ const supabaseKey = typeof window === 'undefined'
   // Client-side: use anon key only
   : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Debug logging (only in development)
-if (process.env.NODE_ENV === 'development') {
-  if (!supabaseUrl) {
-    console.warn('⚠️  Supabase URL not found. Check NEXT_PUBLIC_SUPABASE_URL in .env.local');
-  }
-  if (!supabaseKey) {
-    console.warn('⚠️  Supabase key not found. Check NEXT_PUBLIC_SUPABASE_ANON_KEY or SUPABASE_SERVICE_ROLE_KEY in .env.local');
-  }
+// Debug logging (only in development, and only once)
+let hasWarnedAboutCredentials = false;
+if (process.env.NODE_ENV === 'development' && !hasWarnedAboutCredentials) {
   if (!supabaseUrl || !supabaseKey) {
-    console.warn('⚠️  Supabase credentials not found. Supabase API will not be available.');
-    console.warn('   Available env vars:', {
-      hasUrl: !!supabaseUrl,
-      hasKey: !!supabaseKey,
-      hasNextPublicUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-      hasNextPublicKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-    });
+    hasWarnedAboutCredentials = true;
+    // Only warn on server-side (client-side will use fallback anyway)
+    if (typeof window === 'undefined') {
+      console.warn('⚠️  Supabase credentials not found on server. Using Ganjoor API fallback.');
+      console.warn('   Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local for Supabase access.');
+    }
   }
 }
 
@@ -164,11 +157,49 @@ export const supabaseApi = {
           title: category.title,
           description: category.description || '',
           poetId: id,
-          poemCount: category.poem_count || 0,
+          poemCount: category.poem_count || undefined, // Don't default to 0, check if needed
         };
       });
 
-      return { poet, categories };
+      // If poem_count is 0 or missing, calculate it from poems table
+      // First, identify categories that need counting
+      const categoriesNeedingCount = categories.filter(
+        cat => cat.poemCount === undefined || cat.poemCount === 0
+      );
+
+      // If any categories need counting, batch count them
+      let categoriesWithCounts = categories;
+      if (categoriesNeedingCount.length > 0) {
+        const categoryIds = categoriesNeedingCount.map(cat => cat.id);
+        
+        // Get poem counts for all categories at once
+        const { data: poemCounts, error: countError } = await supabase
+          .from('poems')
+          .select('category_id')
+          .eq('poet_id', id)
+          .in('category_id', categoryIds);
+
+        if (!countError && poemCounts) {
+          // Count poems per category
+          const countMap = new Map<number, number>();
+          poemCounts.forEach(poem => {
+            const catId = poem.category_id;
+            countMap.set(catId, (countMap.get(catId) || 0) + 1);
+          });
+
+          // Update categories with counts (create new array)
+          categoriesWithCounts = categories.map(category => {
+            if (category.poemCount === undefined || category.poemCount === 0) {
+              return { ...category, poemCount: countMap.get(category.id) || 0 };
+            }
+            return category;
+          });
+        } else if (countError) {
+          console.warn('Failed to count poems for categories:', countError);
+        }
+      }
+
+      return { poet, categories: categoriesWithCounts };
     }, 30 * 60 * 1000); // Cache for 30 minutes
   },
 
