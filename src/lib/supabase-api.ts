@@ -113,7 +113,6 @@ export const supabaseApi = {
             id,
             title,
             url_slug,
-            description,
             poem_count
           )
         `)
