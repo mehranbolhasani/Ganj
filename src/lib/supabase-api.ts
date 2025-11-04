@@ -144,7 +144,7 @@ export const supabaseApi = {
       };
 
       // Transform categories data
-      const categories: Category[] = ((poetData.categories as unknown[]) || []).map((cat: unknown) => {
+      let categories: Category[] = ((poetData.categories as unknown[]) || []).map((cat: unknown) => {
         const category = cat as {
           id: number;
           title: string;
@@ -161,45 +161,70 @@ export const supabaseApi = {
         };
       });
 
-      // If poem_count is 0 or missing, calculate it from poems table
-      // First, identify categories that need counting
-      const categoriesNeedingCount = categories.filter(
-        cat => cat.poemCount === undefined || cat.poemCount === 0
-      );
+      // Filter out categories that match the poet's name (these are usually parent/root categories)
+      const poetName = poetData.name;
+      categories = categories.filter(category => {
+        // Exclude categories where title exactly matches poet name
+        if (category.title === poetName) {
+          return false;
+        }
+        // Also exclude common variations (with/without spaces)
+        const normalizedTitle = category.title.trim();
+        const normalizedPoetName = poetName.trim();
+        if (normalizedTitle === normalizedPoetName) {
+          return false;
+        }
+        return true;
+      });
 
-      // If any categories need counting, batch count them
-      let categoriesWithCounts = categories;
-      if (categoriesNeedingCount.length > 0) {
-        const categoryIds = categoriesNeedingCount.map(cat => cat.id);
-        
-        // Get poem counts for all categories at once
+      // Always calculate poem counts from poems table to ensure accuracy
+      // This handles cases where poem_count column might be incorrect or missing
+      const categoryIds = categories.map(cat => cat.id);
+      
+      if (categoryIds.length > 0) {
+        // Get poem counts for all categories at once (batch query)
         const { data: poemCounts, error: countError } = await supabase
           .from('poems')
           .select('category_id')
           .eq('poet_id', id)
-          .in('category_id', categoryIds);
+          .in('category_id', categoryIds)
+          .not('category_id', 'is', null); // Exclude poems with null category_id
 
         if (!countError && poemCounts) {
           // Count poems per category
           const countMap = new Map<number, number>();
           poemCounts.forEach(poem => {
-            const catId = poem.category_id;
-            countMap.set(catId, (countMap.get(catId) || 0) + 1);
+            if (poem.category_id) {
+              const catId = poem.category_id;
+              countMap.set(catId, (countMap.get(catId) || 0) + 1);
+            }
           });
 
-          // Update categories with counts (create new array)
-          categoriesWithCounts = categories.map(category => {
-            if (category.poemCount === undefined || category.poemCount === 0) {
-              return { ...category, poemCount: countMap.get(category.id) || 0 };
+          // Update all categories with accurate counts
+          categories = categories.map(category => {
+            // Use calculated count if available, otherwise use stored count, otherwise 0
+            const calculatedCount = countMap.get(category.id);
+            if (calculatedCount !== undefined) {
+              return { ...category, poemCount: calculatedCount };
             }
-            return category;
+            // If we have a stored count > 0, use it
+            if (category.poemCount !== undefined && category.poemCount > 0) {
+              return category;
+            }
+            // Otherwise, return 0
+            return { ...category, poemCount: 0 };
           });
         } else if (countError) {
           console.warn('Failed to count poems for categories:', countError);
+          // Fallback: use stored poem_count if available
+          categories = categories.map(category => ({
+            ...category,
+            poemCount: category.poemCount || 0,
+          }));
         }
       }
 
-      return { poet, categories: categoriesWithCounts };
+      return { poet, categories };
     }, 30 * 60 * 1000); // Cache for 30 minutes
   },
 
