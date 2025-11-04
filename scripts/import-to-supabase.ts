@@ -268,7 +268,7 @@ async function main() {
   console.log('\n' + '='.repeat(60));
   console.log('✅ Import Complete!');
   console.log('='.repeat(60));
-  console.log(`⏱️  Total time: ${duration} minutes\n');
+  console.log(`⏱️  Total time: ${duration} minutes\n`);
 }
 
 main().catch(console.error);
