@@ -6,14 +6,40 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+import { existsSync } from 'fs';
+
+// Load .env.local file
+const envLocalPath = resolve(process.cwd(), '.env.local');
+if (existsSync(envLocalPath)) {
+  config({ path: envLocalPath });
+  console.log('✅ Loaded .env.local');
+} else {
+  console.warn('⚠️  .env.local not found, trying .env');
+  config({ path: resolve(process.cwd(), '.env') });
+}
 
 // Load environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Try service role key first, fallback to anon key
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Missing Supabase credentials');
-  console.error('Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local');
+  console.error('\n❌ Missing Supabase credentials\n');
+  console.error('Missing variables:');
+  if (!supabaseUrl) {
+    console.error('  - NEXT_PUBLIC_SUPABASE_URL');
+  }
+  if (!supabaseKey) {
+    console.error('  - SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+  console.error('\nPlease ensure these are set in .env.local');
+  console.error('Current env file:', envLocalPath);
+  console.error('\nTip: Make sure your .env.local file exists and has the correct variables.');
+  console.error('\nExample .env.local:');
+  console.error('  NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co');
+  console.error('  SUPABASE_SERVICE_ROLE_KEY=your-service-role-key');
   process.exit(1);
 }
 
