@@ -9,11 +9,34 @@ import { Poet, Category, Poem, Chapter } from './types';
 import { withCache } from './api-cache';
 
 // Initialize Supabase client
+// On server: prefer service role key (more permissions)
+// On client: use anon key (public)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+const supabaseKey = typeof window === 'undefined'
+  // Server-side: prefer service role key for full access
+  ? (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  // Client-side: use anon key only
+  : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  console.warn('⚠️  Supabase credentials not found. Supabase API will not be available.');
+// Debug logging (only in development)
+if (process.env.NODE_ENV === 'development') {
+  if (!supabaseUrl) {
+    console.warn('⚠️  Supabase URL not found. Check NEXT_PUBLIC_SUPABASE_URL in .env.local');
+  }
+  if (!supabaseKey) {
+    console.warn('⚠️  Supabase key not found. Check NEXT_PUBLIC_SUPABASE_ANON_KEY or SUPABASE_SERVICE_ROLE_KEY in .env.local');
+  }
+  if (!supabaseUrl || !supabaseKey) {
+    console.warn('⚠️  Supabase credentials not found. Supabase API will not be available.');
+    console.warn('   Available env vars:', {
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseKey,
+      hasNextPublicUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasNextPublicKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    });
+  }
 }
 
 const supabase = supabaseUrl && supabaseKey 
@@ -98,8 +121,17 @@ export const supabaseApi = {
         .single();
 
       if (poetError) {
+        // Log detailed error in development
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Supabase getPoet error:', {
+            code: poetError.code,
+            message: poetError.message,
+            details: poetError.details,
+            hint: poetError.hint,
+          });
+        }
         throw new SupabaseApiError(
-          `Failed to fetch poet ${id} from Supabase`,
+          `Failed to fetch poet ${id} from Supabase: ${poetError.message}`,
           poetError.code,
           poetError
         );
