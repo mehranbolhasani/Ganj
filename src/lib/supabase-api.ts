@@ -92,23 +92,10 @@ export const supabaseApi = {
     }
 
     return withCache(`supabase:/poet/${id}`, async () => {
-      // Fetch poet data with categories in a single query using join
+      // Fetch poet data first
       const { data: poetData, error: poetError } = await supabase
         .from('poets')
-        .select(`
-          id,
-          name,
-          slug,
-          description,
-          birth_year,
-          death_year,
-          categories (
-            id,
-            title,
-            url_slug,
-            poem_count
-          )
-        `)
+        .select('id, name, slug, description, birth_year, death_year')
         .eq('id', id)
         .single();
 
@@ -132,6 +119,18 @@ export const supabaseApi = {
       if (!poetData) {
         throw new SupabaseApiError(`Poet ${id} not found in Supabase`, 'PGRST116');
       }
+      
+      // Fetch categories separately (more reliable than nested query)
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select('id, title, url_slug, poem_count')
+        .eq('poet_id', id)
+        .order('id', { ascending: true });
+
+      if (categoriesError) {
+        console.warn('Failed to fetch categories from Supabase:', categoriesError);
+        // Continue with empty categories array rather than failing
+      }
 
       // Transform poet data
       const poet: Poet = {
@@ -147,23 +146,18 @@ export const supabaseApi = {
       if (process.env.NODE_ENV === 'development') {
         console.log(`[Supabase] Loaded poet: ${poet.name} (ID: ${id})`);
         console.log(`[Supabase] Description: ${poet.description ? 'Yes' : 'No'}`);
+        console.log(`[Supabase] Raw categories from DB:`, categoriesData);
+        console.log(`[Supabase] Categories count:`, categoriesData?.length || 0);
       }
 
       // Transform categories data
-      let categories: Category[] = ((poetData.categories as unknown[]) || []).map((cat: unknown) => {
-        const category = cat as {
-          id: number;
-          title: string;
-          url_slug?: string;
-          description?: string;
-          poem_count?: number;
-        };
+      let categories: Category[] = (categoriesData || []).map((cat) => {
         return {
-          id: category.id,
-          title: category.title,
-          description: category.description || '',
+          id: cat.id,
+          title: cat.title,
+          description: '',
           poetId: id,
-          poemCount: category.poem_count || undefined, // Don't default to 0, check if needed
+          poemCount: cat.poem_count || undefined,
         };
       });
 
@@ -195,9 +189,9 @@ export const supabaseApi = {
       
       // Debug logging for category filtering
       if (process.env.NODE_ENV === 'development') {
-        const originalCount = (poetData.categories as unknown[])?.length || 0;
+        const originalCount = categoriesData?.length || 0;
         console.log(`[Supabase] Filtered categories: ${originalCount} -> ${categories.length}`);
-        console.log(`[Supabase] Categories:`, categories.map(c => c.title));
+        console.log(`[Supabase] Categories after filter:`, categories.map(c => c.title));
       }
 
       // Always calculate poem counts from poems table to ensure accuracy

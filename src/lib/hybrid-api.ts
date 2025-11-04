@@ -141,17 +141,23 @@ export const hybridApi = {
         
         if (hasPoet) {
           const data = await supabaseApi.getPoet(id);
-          const duration = performance.now() - startTime;
           
-          trackPerformance({
-            source: 'supabase',
-            endpoint: 'getPoet',
-            duration,
-            success: true,
-            fallback: false,
-          });
+          // If poet has no categories or data is incomplete, fallback to Ganjoor
+          if (data.categories.length === 0) {
+            console.log(`Poet ${id} has no categories in Supabase, using Ganjoor API`);
+          } else {
+            const duration = performance.now() - startTime;
+            
+            trackPerformance({
+              source: 'supabase',
+              endpoint: 'getPoet',
+              duration,
+              success: true,
+              fallback: false,
+            });
 
-          return data;
+            return data;
+          }
         } else {
           console.log(`Poet ${id} not in Supabase, using Ganjoor API`);
         }
