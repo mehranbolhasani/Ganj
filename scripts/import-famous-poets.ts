@@ -68,17 +68,49 @@ interface GanjoorPoem {
 }
 
 /**
- * Fetch category poems from Ganjoor API
+ * Fetch category with poems from Ganjoor API
+ * This endpoint returns the full category tree with poems
  */
-async function fetchCategoryPoems(poetId: number, catId: number): Promise<GanjoorPoem[]> {
+async function fetchCategoryWithPoems(poetId: number, catId: number): Promise<{ cat: GanjoorCategory & { poems?: GanjoorPoem[] } }> {
   const response = await fetch(
-    `https://api.ganjoor.net/api/ganjoor/poet/${poetId}/category/${catId}?poems=true`
+    `https://api.ganjoor.net/api/ganjoor/poet/${poetId}/category/${catId}?poems=true&mainSections=false`
   );
   if (!response.ok) {
-    throw new Error(`Failed to fetch category ${catId}: ${response.statusText}`);
+    // Try alternative endpoint without poems parameter
+    const altResponse = await fetch(
+      `https://api.ganjoor.net/api/ganjoor/category/${catId}`
+    );
+    if (!altResponse.ok) {
+      throw new Error(`Failed to fetch category ${catId}: ${response.statusText}`);
+    }
+    return altResponse.json();
   }
-  const data = await response.json();
-  return data.cat?.poems || [];
+  return response.json();
+}
+
+/**
+ * Recursively collect all poems from a category tree
+ */
+function collectPoemsFromCategory(category: GanjoorCategory & { poems?: GanjoorPoem[] }, catId: number): GanjoorPoem[] {
+  let poems: GanjoorPoem[] = [];
+  
+  // If this is the target category and has poems, collect them
+  if (category.id === catId && category.poems) {
+    poems = category.poems;
+  }
+  
+  // Recursively search children
+  if (category.children) {
+    for (const child of category.children) {
+      if (child.id === catId && (child as { poems?: GanjoorPoem[] }).poems) {
+        poems = (child as { poems?: GanjoorPoem[] }).poems || [];
+      } else if (child.children) {
+        poems = poems.concat(collectPoemsFromCategory(child as GanjoorCategory & { poems?: GanjoorPoem[] }, catId));
+      }
+    }
+  }
+  
+  return poems;
 }
 
 /**
@@ -200,9 +232,10 @@ async function importPoet(poetId: number, poetName: string) {
       }
       
       try {
-        const poems = await fetchCategoryPoems(poetId, category.id);
+        const data = await fetchCategoryWithPoems(poetId, category.id);
+        const poems = data.cat?.poems || collectPoemsFromCategory(data.cat, category.id);
         
-        if (poems.length === 0) {
+        if (!poems || poems.length === 0) {
           console.log(`  ⚠️  ${category.title}: No poems`);
           continue;
         }
