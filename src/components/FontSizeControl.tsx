@@ -7,11 +7,13 @@ import { Type } from 'lucide-react';
 interface FontSizeControlProps {
   className?: string;
   showLabel?: boolean;
+  vertical?: boolean;
 }
 
 export default function FontSizeControl({ 
   className = '', 
-  showLabel = true 
+  showLabel = true,
+  vertical = false
 }: FontSizeControlProps) {
   const { fontSize } = useFontSize();
   const [isHydrated, setIsHydrated] = useState(false);
@@ -93,11 +95,9 @@ export default function FontSizeControl({
         </div>
       )}
       
-      <div className="flex items-center gap-2">
-        
-
+      <div className={`flex ${vertical ? 'flex-col' : 'items-center'} gap-2`}>
         {/* Size options */}
-        <div className="flex items-center gap-1">
+        <div className={`flex ${vertical ? 'flex-col' : 'items-center'} gap-1`}>
           {(['small', 'medium', 'large'] as const).map((size) => (
             <button
               key={size}

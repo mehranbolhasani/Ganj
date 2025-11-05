@@ -49,6 +49,7 @@ export function trackCoreWebVitals() {
 /**
  * Send metrics to analytics service
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function sendToAnalytics(_metric: PerformanceMetric) {
   // Metrics are now tracked by Vercel Speed Insights
   // If you want to add custom analytics, implement here:

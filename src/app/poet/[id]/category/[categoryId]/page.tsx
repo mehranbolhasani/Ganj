@@ -4,7 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import ChapterList from '@/components/ChapterList';
 import PoemPagination from '@/components/PoemPagination';
 import { CategoryPageSkeleton } from '@/components/LoadingStates';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { hybridApi } from '@/lib/hybrid-api';
 import { notFound } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';
 
@@ -36,9 +36,9 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
   let error: string | null = null;
 
   try {
-    poems = await ganjoorApi.getCategoryPoems(poetId, categoryId);
+    poems = await hybridApi.getCategoryPoems(poetId, categoryId);
     // Get poet name and category title for breadcrumbs
-    const poetData = await ganjoorApi.getPoet(poetId);
+    const poetData = await hybridApi.getPoet(poetId);
     poetName = poetData.poet.name;
     category = poetData.categories.find(cat => cat.id === categoryId);
     categoryTitle = category?.title || 'مجموعه';

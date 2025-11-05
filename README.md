@@ -29,8 +29,9 @@ A modern, minimal web application for reading Persian poetry, built with Next.js
 - **Next.js 14** with App Router
 - **TypeScript** for type safety
 - **Tailwind CSS v4** for styling
+- **Supabase** for fast poem database (6 famous poets, 15K+ poems)
+- **Hybrid API** - Supabase + Ganjoor API fallback
 - **next-themes** for dark/light mode
-- **Ganjoor API** for Persian poetry data
 - **IndexedDB** for view history storage
 - **localStorage** for user preferences and bookmarks
 
@@ -89,11 +90,24 @@ Visit [https://www.ganj.directory](https://www.ganj.directory) to see the live a
 
 ## Performance Features
 
+- **Hybrid API**: Supabase for famous poets (10x faster) + Ganjoor API fallback
+- **Database Caching**: 15,000+ poems cached in Supabase (50-200ms load time)
+- **Smart Fallback**: Automatic fallback to Ganjoor API for comprehensive coverage
 - **API Caching**: Smart caching with TTL and request deduplication
 - **Error Handling**: Exponential backoff retry logic
 - **Canvas Optimization**: Performance-optimized particle backgrounds
 - **Bundle Optimization**: Tree shaking and lazy loading
 - **SEO Optimization**: Dynamic sitemap generation and meta tags
+
+## Supabase Integration
+
+The app uses a hybrid approach for optimal performance:
+
+- **Famous Poets (Supabase)**: Hafez, Saadi, Molavi, Ferdowsi, Attar, Nezami
+- **Other Poets (Ganjoor API)**: 200+ additional poets with fallback
+- **Performance**: 10x faster loading for famous poets (50-200ms vs 800-2000ms)
+
+See [SUPABASE.md](./SUPABASE.md) for complete setup and usage guide.
 
 ## Deployment
 

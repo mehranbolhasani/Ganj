@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { simpleApi } from '@/lib/simple-api';
+import { hybridApi } from '@/lib/hybrid-api';
 import { Poet } from '@/lib/types';
 import FamousPoets from './FamousPoets';
 import AlphabeticalPoets from './AlphabeticalPoets';
@@ -31,10 +31,10 @@ export default function PoetsGrid() {
       try {
         console.log('Starting to load poets...');
         setLoading(true);
-        const poetsData = await simpleApi.getPoets();
+        const poetsData = await hybridApi.getPoets();
         console.log('API response:', poetsData.slice(0, 3)); // Log first 3 poets
         setPoets(poetsData);
-        console.log(`Loaded ${poetsData.length} poets from Ganjoor API`);
+        console.log(`Loaded ${poetsData.length} poets from Hybrid API`);
       } catch (err) {
         console.error('Error loading poets:', err);
         setError(err instanceof Error ? err.message : 'خطا در بارگذاری شاعران');

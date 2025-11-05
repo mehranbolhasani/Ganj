@@ -5,7 +5,7 @@ import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ExpandableDescription from '@/components/ExpandableDescription';
 import { PoetPageSkeleton } from '@/components/LoadingStates';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { hybridApi } from '@/lib/hybrid-api';
 import { notFound } from 'next/navigation';
 import { Poet, Category } from '@/lib/types';
 
@@ -47,7 +47,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
   let error: string | null = null;
 
   try {
-    const result = await ganjoorApi.getPoet(poetId);
+    const result = await hybridApi.getPoet(poetId);
     poet = result.poet;
     categories = result.categories;
   } catch (err) {
