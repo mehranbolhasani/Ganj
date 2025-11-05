@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { Metadata } from 'next';
 import PoemDisplay from '@/components/PoemDisplay';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import HistoryTracker from '@/components/HistoryTracker';
+import { BreadcrumbStructuredData, ArticleStructuredData } from '@/components/StructuredData';
 import { hybridApi } from '@/lib/hybrid-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
@@ -10,6 +12,61 @@ interface PoemPageProps {
   params: {
     id: string;
   };
+}
+
+export async function generateMetadata({ params }: PoemPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const poemId = parseInt(resolvedParams.id);
+  
+  if (isNaN(poemId)) {
+    return {
+      title: 'شعر یافت نشد',
+    };
+  }
+
+  try {
+    const poem = await hybridApi.getPoem(poemId);
+    const firstVerse = poem.verses && poem.verses.length > 0 ? poem.verses[0] : '';
+    const description = firstVerse 
+      ? `${firstVerse.substring(0, 150)}...`
+      : `شعر ${poem.title} از ${poem.poetName}`;
+    
+    const title = `${poem.title} - ${poem.poetName}`;
+
+    return {
+      title,
+      description,
+      keywords: [poem.title, poem.poetName, 'شعر فارسی'],
+      authors: [{ name: poem.poetName }],
+      openGraph: {
+        title: `${title} | دفتر گنج`,
+        description,
+        type: 'article',
+        images: [
+          {
+            url: 'https://ganj.directory/og-image.jpg',
+            width: 1200,
+            height: 675,
+            alt: title,
+          },
+        ],
+        url: `https://ganj.directory/poem/${poem.id}`,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${title} | دفتر گنج`,
+        description,
+        images: ['https://ganj.directory/og-image.jpg'],
+      },
+      alternates: {
+        canonical: `/poem/${poem.id}`,
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'شعر یافت نشد',
+    };
+  }
 }
 
 export default async function PoemPage({ params }: PoemPageProps) {
@@ -63,8 +120,25 @@ export default async function PoemPage({ params }: PoemPageProps) {
     );
   }
 
+  const breadcrumbItems = [
+    { name: poetName, url: `https://ganj.directory/poet/${poem.poetId}` },
+    ...(poem.categoryId ? [{ name: categoryTitle, url: `https://ganj.directory/poet/${poem.poetId}/category/${poem.categoryId}` }] : []),
+    { name: poem.title, url: `https://ganj.directory/poem/${poem.id}` },
+  ];
+
+  const firstVerse = poem.verses && poem.verses.length > 0 ? poem.verses[0] : '';
+  const articleDescription = firstVerse || `${poem.title} از ${poem.poetName}`;
+
   return (
     <>
+      <BreadcrumbStructuredData items={breadcrumbItems} />
+      <ArticleStructuredData
+        headline={poem.title}
+        description={articleDescription}
+        author={{ name: poem.poetName }}
+        url={`https://ganj.directory/poem/${poem.id}`}
+        image="https://ganj.directory/og-image.jpg"
+      />
       <HistoryTracker poem={poem} />
       
       <Breadcrumbs items={[
