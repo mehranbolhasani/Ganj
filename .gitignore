@@ -78,13 +78,27 @@ TESTING-SUPABASE-FIXES.md
 TROUBLESHOOTING-SUPABASE.md
 supabase-migration-plan.md
 SUPABASE-SECURITY-FIX.md
+CLEANUP-SUMMARY.md
+FINAL-STATUS.md
+IMPORT-FIX-STATUS.md
+SUPABASE-IMPORT-SUCCESS.md
+HYBRID-API-IMPLEMENTATION.md
+IMPORT-GUIDE.md
+RUN-AUDIT.md
+TESTING-GUIDE.md
+SUPABASE_SETUP.md
+*-STATUS.md
+*-SUMMARY.md
 
-# Import/migration scripts (keep only the working one)
+# Import/migration scripts (keep only the working ones)
 scripts/import-famous-poets.ts
 scripts/import-to-supabase.ts
 scripts/migrate-to-supabase.ts
 scripts/clear-supabase-data.ts
 scripts/import-famous-poets-simple.ts
+scripts/fix-missing-verses.ts
+scripts/import-remaining-poets.ts
+scripts/import-remaining-poets-fast.ts
 
 # SQL utility scripts
 scripts/*.sql
