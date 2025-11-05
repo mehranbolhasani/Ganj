@@ -59,13 +59,18 @@ CREATE INDEX IF NOT EXISTS idx_poems_verses_trigram ON poems USING gin(verses gi
 CREATE INDEX IF NOT EXISTS idx_poems_poet_category ON poems(poet_id, category_id);
 
 -- Add updated_at trigger
+-- Fixed: Set search_path to prevent security vulnerabilities
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$;
 
 CREATE TRIGGER update_poets_updated_at BEFORE UPDATE ON poets
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -88,12 +93,17 @@ LIMIT 20;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_famous_poets_id ON famous_poets(id);
 
 -- Function to refresh famous poets view
+-- Fixed: Set search_path to prevent security vulnerabilities
 CREATE OR REPLACE FUNCTION refresh_famous_poets()
-RETURNS void AS $$
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     REFRESH MATERIALIZED VIEW CONCURRENTLY famous_poets;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- Comments for documentation
 COMMENT ON TABLE poets IS 'Persian poets metadata';
@@ -101,4 +111,57 @@ COMMENT ON TABLE categories IS 'Poem categories/collections (divan, ghazal, etc)
 COMMENT ON TABLE poems IS 'Individual poems with full verses for search';
 COMMENT ON COLUMN poems.verses IS 'All verses joined as single text for full-text search';
 COMMENT ON COLUMN poems.verses_array IS 'Individual verses as array for display';
+
+-- ============================================================================
+-- ROW LEVEL SECURITY (RLS) POLICIES
+-- ============================================================================
+-- Enable RLS on all tables for security
+-- Public read access for poetry data (anyone can read)
+-- Public insert-only for contact form (anyone can submit, but not read)
+
+-- Enable Row Level Security
+ALTER TABLE poets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE poems ENABLE ROW LEVEL SECURITY;
+
+-- Public read access policies for poetry data
+CREATE POLICY "Allow public read access to poets"
+  ON poets FOR SELECT
+  USING (true);
+
+CREATE POLICY "Allow public read access to categories"
+  ON categories FOR SELECT
+  USING (true);
+
+CREATE POLICY "Allow public read access to poems"
+  ON poems FOR SELECT
+  USING (true);
+
+-- Note: contact_messages table RLS policy should be created separately
+-- if the table exists. See scripts/fix-supabase-security.sql for full setup.
+
+-- ============================================================================
+-- EXTENSION DOCUMENTATION
+-- ============================================================================
+-- Extensions pg_trgm and unaccent are installed in public schema
+-- This is a common practice and acceptable for this use case
+-- These extensions are required for full-text search functionality
+-- Security Advisor warning about extensions in public schema is acceptable
+
+COMMENT ON EXTENSION pg_trgm IS 'Trigram extension for fuzzy text search - required for poem search functionality';
+COMMENT ON EXTENSION unaccent IS 'Unaccent extension for accent-insensitive search - required for Persian text search';
+
+-- ============================================================================
+-- MATERIALIZED VIEW SECURITY
+-- ============================================================================
+-- The famous_poets materialized view is not accessed via PostgREST API
+-- Revoke public access to exclude it from the API
+
+-- Revoke public access to the materialized view
+REVOKE ALL ON famous_poets FROM anon;
+REVOKE ALL ON famous_poets FROM authenticated;
+REVOKE ALL ON famous_poets FROM public;
+
+-- Note: Service role key (used by server-side code) can still access
+-- This only prevents public API access via PostgREST
 

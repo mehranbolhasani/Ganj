@@ -100,5 +100,7 @@ scripts/fix-missing-verses.ts
 scripts/import-remaining-poets.ts
 scripts/import-remaining-poets-fast.ts
 
-# SQL utility scripts
+# SQL utility scripts (except security fix scripts)
 scripts/*.sql
+!scripts/fix-supabase-security.sql
+!scripts/fix-remaining-warnings.sql
