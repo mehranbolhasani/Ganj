@@ -263,6 +263,9 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
     );
   }
 
+  // Check if poem has verses
+  const hasVerses = poem.verses && Array.isArray(poem.verses) && poem.verses.length > 0;
+
   // Normal view
   return (
     <div className="max-w-4xl mx-auto w-full">
@@ -331,16 +334,27 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
       </div>
       
       <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-yellow-900/10 dark:border-yellow-900/40 p-4 sm:p-8 backdrop-blur-md">
-        <div className="prose prose-lg max-w-none text-center">
-          {poem.verses.map((verse, index) => (
-            <p 
-              key={index}
-              className={`text-stone-900 dark:text-stone-300 leading-relaxed mb-3 even:mb-9 text-right mobile-leading-relaxed ${isHydrated ? poemClasses : ''}`}
-            >
-              {verse}
+        {hasVerses ? (
+          <div className="prose prose-lg max-w-none text-center">
+            {poem.verses.map((verse, index) => (
+              <p 
+                key={index}
+                className={`text-stone-900 dark:text-stone-300 leading-relaxed mb-3 even:mb-9 text-right mobile-leading-relaxed ${isHydrated ? poemClasses : ''}`}
+              >
+                {verse}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-stone-600 dark:text-stone-400 text-lg mb-4">
+              متن این شعر در دسترس نیست
             </p>
-          ))}
-        </div>
+            <p className="text-stone-500 dark:text-stone-500 text-sm">
+              ممکن است این شعر در پایگاه داده موجود نباشد یا خطایی در بارگذاری رخ داده باشد.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

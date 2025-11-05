@@ -29,8 +29,19 @@ export default async function PoemPage({ params }: PoemPageProps) {
     poem = await hybridApi.getPoem(poemId);
     poetName = poem.poetName;
     categoryTitle = poem.categoryTitle || 'مجموعه';
+    
+    // Debug: Log poem data in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[PoemPage] Loaded poem ${poemId}:`, {
+        title: poem.title,
+        poetName: poem.poetName,
+        versesCount: poem.verses?.length || 0,
+        hasVerses: !!(poem.verses && poem.verses.length > 0),
+      });
+    }
   } catch (err) {
     error = err instanceof Error ? err.message : 'خطا در بارگذاری شعر';
+    console.error(`[PoemPage] Error loading poem ${poemId}:`, err);
   }
 
   if (error || !poem) {
