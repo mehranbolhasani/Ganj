@@ -110,7 +110,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
           bg: 'bg-[#f4ecd8] dark:bg-[#2d2416]', // Light: warm paper, Dark: warm dark brown
           text: 'text-[#5c4b37] dark:text-[#e8dcc4]', // Light: brown, Dark: light beige
           secondaryText: 'text-[#8b7355] dark:text-[#b8a888]', // Light: lighter brown, Dark: muted beige
-          controlsBg: 'bg-[#e8dcc4]/90 dark:bg-[#3d3220]/90', // Light: light beige, Dark: darker brown
+          controlsBg: 'bg-[#ffffff]/90 dark:bg-[#3d3220]/90', // Light: light beige, Dark: darker brown
           filter: '',
         };
       case 'night':
@@ -126,7 +126,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
           bg: 'bg-stone-50 dark:bg-stone-900',
           text: 'text-stone-900 dark:text-stone-100',
           secondaryText: 'text-stone-500 dark:text-stone-400',
-          controlsBg: 'bg-stone-200/80 dark:bg-stone-800/80',
+          controlsBg: 'bg-white/80 dark:bg-stone-800/80',
           filter: '',
         };
     }
@@ -155,7 +155,6 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
     return (
       <div 
         className={`fixed inset-0 z-50 overflow-y-auto animate-fadeIn distract-free-scroll ${theme.bg}`}
-        style={{ filter: theme.filter }}
       >
         {/* Progress bar at top */}
         <div className="fixed top-0 left-0 right-0 h-1 bg-stone-200/30 dark:bg-stone-700/30 z-50">
@@ -177,16 +176,16 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
 
         {/* Floating controls - bottom left */}
         {isHydrated && (
-          <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-3">
+          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 flex flex-row gap-1 items-stretch justify-center">
             {/* Font size control - vertical layout */}
-            <div className={`${theme.controlsBg} backdrop-blur-sm rounded-xl shadow-lg p-2`}>
-              <FontSizeControl showLabel={false} vertical={true} />
+            <div className={`${theme.controlsBg} backdrop-blur-sm rounded-t-xl p-2`}>
+              <FontSizeControl showLabel={false} vertical={false} />
             </div>
             
             {/* Theme toggle button with color indicators */}
             <button
               onClick={cycleTheme}
-              className={`${theme.controlsBg} backdrop-blur-sm rounded-xl shadow-lg p-3 flex flex-col items-center gap-2 hover:scale-105 transition-all duration-200`}
+              className={`${theme.controlsBg} backdrop-blur-sm rounded-t-xl p-3 flex flex-col items-center gap-2 hover:scale-105 transition-all duration-200`}
               aria-label="تغییر تم"
               title={`تم: ${getThemeLabel()}`}
             >
@@ -226,7 +225,10 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
         )}
 
         {/* Content - centered and spacious */}
-        <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-16 sm:py-20">
+        <div 
+          className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-16 sm:py-20"
+          style={theme.filter ? { filter: theme.filter } : undefined}
+        >
           <div className="max-w-3xl w-full">
             {/* Title */}
             <h1 className={`font-abar abar-wght-700 text-3xl sm:text-5xl ${theme.text} text-center mb-4 sm:mb-6 leading-tight`}>
