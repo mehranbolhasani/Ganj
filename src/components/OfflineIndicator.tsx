@@ -35,8 +35,8 @@ export default function OfflineIndicator() {
   return (
     <div
       className={`
-        fixed top-4 right-4 z-50 max-w-sm w-full transform transition-all duration-300 ease-in-out
-        ${showNotification ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
+        fixed top-4 left-0 z-50 max-w-11/12 w-full transform transition-all duration-300 ease-in-out
+        ${showNotification ? 'translate-x-0 opacity-100' : 'translate-x-1/2 opacity-0'}
       `}
     >
       <div
@@ -44,7 +44,7 @@ export default function OfflineIndicator() {
           flex items-center gap-3 p-4 rounded-lg shadow-lg border
           ${isOnline
             ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-            : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+            : 'bg-red-50 dark:bg-red-900/50 border-red-200 dark:border-red-800'
           }
         `}
       >

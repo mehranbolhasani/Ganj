@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useTransition } from 'react';
 import Link from 'next/link';
-import { Search, X, Clock, ArrowUp, ArrowDown, CornerDownLeft } from 'lucide-react';
+import { Search, X, Clock, ArrowUp, ArrowDown, ArrowLeft, CornerDownLeft } from 'lucide-react';
 import { searchAll } from '@/lib/supabase-search';
 import { Poet, Category, Poem } from '@/lib/types';
 import { useToast } from './Toast';
@@ -35,6 +35,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
   
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const selectedItemRef = useRef<HTMLElement | null>(null);
   const { toast } = useToast();
   
   // Disable body scroll when modal is open
@@ -87,8 +88,8 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
     setIsLoading(true);
     
     try {
-      // Search using Supabase API (instant full-text search) - limited to 20 for performance
-      const { poets, categories, poems } = await searchAll(searchQuery, 20);
+      // Search using Supabase API (instant full-text search) - limited to 30 for modal preview
+      const { poets, categories, poems } = await searchAll(searchQuery, 30);
       
       const searchResults: SearchResult[] = [
         ...poets.map(poet => ({
@@ -135,6 +136,16 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
 
     return () => clearTimeout(timeoutId);
   }, [query, search]);
+
+  // Scroll selected item into view when navigating with arrow keys
+  useEffect(() => {
+    if (selectedItemRef.current && results.length > 0) {
+      selectedItemRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [selectedIndex, results.length]);
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -218,9 +229,22 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
 
   if (!isOpen) return null;
 
+  // Handle click outside modal
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 pt-20">
-      <div className="w-full max-w-2xl bg-white dark:bg-stone-800 rounded-xl shadow-xl">
+    <div 
+      className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 pt-20"
+      onClick={handleBackdropClick}
+    >
+      <div 
+        className="w-full max-w-2xl bg-white dark:bg-stone-800 rounded-xl shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Search Input */}
         <div className="flex items-center gap-3 p-4 border-b border-stone-200 dark:border-stone-700">
           <Search className="w-5 h-5 text-stone-400" />
@@ -243,7 +267,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
         </div>
 
         {/* Results */}
-        <div ref={resultsRef} className="max-h-96 overflow-y-auto">
+        <div ref={resultsRef} className="max-h-[600px] overflow-y-auto">
           {isLoading ? (
             <div className="p-8 text-center">
               <div className="animate-spin w-6 h-6 border-2 border-stone-300 dark:border-stone-600 border-t-stone-600 dark:border-t-stone-300 rounded-full mx-auto mb-3"></div>
@@ -265,8 +289,18 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
           ) : query.trim() ? (
             <>
               {/* Results count */}
-              <div className="px-4 py-3 text-sm text-stone-500 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
-                {results.length} نتیجه
+              <div className="px-4 py-3 flex items-center justify-between text-sm text-stone-500 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
+                <span>{results.length} نتیجه</span>
+                {results.length >= 30 && (
+                  <Link
+                    href={`/search?q=${encodeURIComponent(query)}`}
+                    onClick={onClose}
+                    className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 text-xs flex items-center gap-1 border border-stone-200 dark:border-stone-500 rounded-full py-2 px-2"
+                  >
+                    مشاهده همه نتایج
+                    <ArrowLeft className="w-4 h-4 text-stone-600 dark:text-stone-400" />
+                  </Link>
+                )}
               </div>
               
               {/* Results list */}
@@ -293,35 +327,184 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                     poetName = '';
                   }
                   
-                  // Find the beyt (couplet) that contains the search term
-                  // A beyt = 2 verses (hemistiches)
+                  // Find the verse(s) that contain the search term
+                  // For long texts (>10 verses), show only one line before and after the match
                   let displayVerses: string[] = [];
+                  const isLongText = verses.length > 10;
+                  let foundIndex = -1;
+                  
                   if (verses.length > 0) {
-                    // Try to find which beyt contains the search term
-                    let foundIndex = -1;
+                    const queryLower = query.toLowerCase().trim();
+                    const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
+                    
+                    // First, check if keyword exists anywhere in all verses (for debugging)
+                    const allVersesText = verses.join(' ').toLowerCase();
+                    const keywordExists = allVersesText.includes(queryLower);
+                    
+                    // Try to find which verse contains the search term
+                    // First: exact phrase match (case-insensitive)
                     for (let i = 0; i < verses.length; i++) {
-                      if (verses[i].toLowerCase().includes(query.toLowerCase())) {
+                      const verseLower = verses[i].toLowerCase();
+                      if (verseLower.includes(queryLower)) {
                         foundIndex = i;
                         break;
                       }
                     }
                     
+                    // Second: if multi-word query, try finding verse with all words
+                    if (foundIndex === -1 && queryWords.length > 1) {
+                      for (let i = 0; i < verses.length; i++) {
+                        const verseLower = verses[i].toLowerCase();
+                        const hasAllWords = queryWords.every(word => verseLower.includes(word));
+                        if (hasAllWords) {
+                          foundIndex = i;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    // Third: try finding any word from the query
+                    if (foundIndex === -1 && queryWords.length > 0) {
+                      for (let i = 0; i < verses.length; i++) {
+                        const verseLower = verses[i].toLowerCase();
+                        const hasAnyWord = queryWords.some(word => verseLower.includes(word));
+                        if (hasAnyWord) {
+                          foundIndex = i;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    // Fourth: normalize text (remove diacritics and normalize Persian characters) and try again
+                    if (foundIndex === -1 && queryLower.length > 1) {
+                      const normalizeText = (text: string) => text
+                        .replace(/[\u064B-\u065F\u0670]/g, '') // Remove diacritics
+                        .replace(/[\u200C\u200D]/g, '') // Remove zero-width characters
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                      
+                      const normalizedQuery = normalizeText(queryLower);
+                      for (let i = 0; i < verses.length; i++) {
+                        const normalizedVerse = normalizeText(verses[i].toLowerCase());
+                        if (normalizedVerse.includes(normalizedQuery)) {
+                          foundIndex = i;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    // Fifth: if keyword exists in all verses but we still haven't found it,
+                    // try searching with different Persian character variations
+                    if (foundIndex === -1 && keywordExists && queryLower.length > 1) {
+                      // Try searching character by character for better matching
+                      const queryChars = queryLower.split('');
+                      for (let i = 0; i < verses.length; i++) {
+                        const verseLower = verses[i].toLowerCase();
+                        // Check if all characters of query appear in order in the verse
+                        let charIndex = 0;
+                        for (let j = 0; j < verseLower.length && charIndex < queryChars.length; j++) {
+                          if (verseLower[j] === queryChars[charIndex]) {
+                            charIndex++;
+                          }
+                        }
+                        if (charIndex === queryChars.length) {
+                          foundIndex = i;
+                          break;
+                        }
+                      }
+                    }
+                    
+                    // Check if keyword is in title
+                    const titleContainsKeyword = title.toLowerCase().includes(queryLower);
+                    
                     if (foundIndex >= 0) {
-                      // Show the beyt containing the match (even index = first hemistich, pair it with next)
-                      const beytStart = foundIndex % 2 === 0 ? foundIndex : foundIndex - 1;
-                      displayVerses = [
-                        verses[beytStart] || '',
-                        verses[beytStart + 1] || ''
-                      ].filter(v => v);
+                      // Found keyword in verses - show the matching verse(s)
+                      if (isLongText) {
+                        // For long texts: show one line before, the match, and one line after
+                        displayVerses = [
+                          foundIndex > 0 ? verses[foundIndex - 1] : null,
+                          verses[foundIndex],
+                          foundIndex < verses.length - 1 ? verses[foundIndex + 1] : null
+                        ].filter((v): v is string => v !== null);
+                      } else {
+                        // For short texts: show the beyt containing the match (even index = first hemistich, pair it with next)
+                        const beytStart = foundIndex % 2 === 0 ? foundIndex : foundIndex - 1;
+                        displayVerses = [
+                          verses[beytStart] || '',
+                          verses[beytStart + 1] || ''
+                        ].filter(v => v);
+                      }
+                    } else if (titleContainsKeyword) {
+                      // Keyword is in title but not found in verses_array
+                      // This can happen if verses_array is incomplete or the keyword is in a verse not in the array
+                      // Show first verses as fallback
+                      if (isLongText) {
+                        displayVerses = verses.slice(0, 3);
+                      } else {
+                        displayVerses = [verses[0], verses[1]].filter(v => v);
+                      }
+                    } else if (keywordExists) {
+                      // Keyword exists somewhere in all verses but we couldn't find the exact verse
+                      // This shouldn't happen, but as a fallback, show first verses
+                      // Try to find it by searching more thoroughly
+                      for (let i = 0; i < verses.length; i++) {
+                        const verseText = verses[i].toLowerCase();
+                        // Try fuzzy matching - check if most characters match
+                        const queryChars = queryLower.split('');
+                        let matchCount = 0;
+                        for (const char of queryChars) {
+                          if (verseText.includes(char)) {
+                            matchCount++;
+                          }
+                        }
+                        // If most characters match, consider it a match
+                        if (matchCount >= Math.ceil(queryChars.length * 0.7)) {
+                          foundIndex = i;
+                          break;
+                        }
+                      }
+                      
+                      if (foundIndex >= 0) {
+                        if (isLongText) {
+                          displayVerses = [
+                            foundIndex > 0 ? verses[foundIndex - 1] : null,
+                            verses[foundIndex],
+                            foundIndex < verses.length - 1 ? verses[foundIndex + 1] : null
+                          ].filter((v): v is string => v !== null);
+                        } else {
+                          const beytStart = foundIndex % 2 === 0 ? foundIndex : foundIndex - 1;
+                          displayVerses = [
+                            verses[beytStart] || '',
+                            verses[beytStart + 1] || ''
+                          ].filter(v => v);
+                        }
+                      } else {
+                        // Still couldn't find it - show first verses
+                        if (isLongText) {
+                          displayVerses = verses.slice(0, 3);
+                        } else {
+                          displayVerses = [verses[0], verses[1]].filter(v => v);
+                        }
+                      }
                     } else {
-                      // No match found (might be in title), show first beyt
-                      displayVerses = [verses[0], verses[1]].filter(v => v);
+                      // No match found in verses - might be in title only or verses_array is incomplete
+                      // Still show first verses, but user will see title is highlighted
+                      if (isLongText) {
+                        displayVerses = verses.slice(0, 3);
+                      } else {
+                        displayVerses = [verses[0], verses[1]].filter(v => v);
+                      }
                     }
                   }
                   
                   return (
                     <Link
                       key={`${result.type}-${data.id}`}
+                      ref={(el) => {
+                        if (index === selectedIndex && el) {
+                          selectedItemRef.current = el as HTMLElement;
+                        }
+                      }}
                       href={result.url}
                       onClick={() => handleResultClick(result)}
                       className={`block p-4 hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors group ${
@@ -337,26 +520,50 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                           />
                           
                           {/* Metadata */}
-                          <p className="text-[13px] text-stone-500 dark:text-stone-400 text-right mb-2">
-                            {isPoet && 'شاعر'}
-                            {isCategory && `${poetName}`}
-                            {isPoem && (
-                              <>
-                                {poetName}
-                                {categoryTitle && ` - ${categoryTitle}`}
-                              </>
-                            )}
-                          </p>
+                          <p 
+                            className="text-[13px] text-stone-500 dark:text-stone-400 text-right mb-2"
+                            dangerouslySetInnerHTML={{ 
+                              __html: isPoet 
+                                ? 'شاعر'
+                                : isCategory 
+                                  ? highlightText(poetName, query)
+                                  : isPoem
+                                    ? highlightText(poetName, query) + (categoryTitle ? ` - ${highlightText(categoryTitle, query)}` : '')
+                                    : ''
+                            }}
+                          />
                           
-                          {/* Beyt preview for poems (both hemistiches) */}
+                          {/* Verse preview for poems */}
                           {isPoem && displayVerses.length > 0 && (
                             <div className="text-[13px] text-stone-600 dark:text-stone-300 text-right leading-relaxed space-y-1">
-                              {displayVerses.map((verse, vIndex) => (
-                                <p 
-                                  key={vIndex}
-                                  dangerouslySetInnerHTML={{ __html: highlightText(verse, query) }}
-                                />
-                              ))}
+                              {isLongText && foundIndex > 0 && (
+                                <span className="text-stone-400 dark:text-stone-500 text-xs">...</span>
+                              )}
+                              {displayVerses.map((verse, vIndex) => {
+                                // For long texts, the middle line (index 1) is the match if we have 3 lines
+                                // If we have 2 lines, the first is the match (when foundIndex is 0)
+                                // If we have 2 lines and foundIndex > 0, the second is the match
+                                let isMatchLine = false;
+                                if (isLongText && foundIndex >= 0) {
+                                  if (displayVerses.length === 3) {
+                                    isMatchLine = vIndex === 1; // Middle line is always the match
+                                  } else if (displayVerses.length === 2) {
+                                    isMatchLine = foundIndex === 0 ? vIndex === 0 : vIndex === 1;
+                                  } else {
+                                    isMatchLine = vIndex === 0; // Single line
+                                  }
+                                }
+                                return (
+                                  <p 
+                                    key={vIndex}
+                                    className={isMatchLine ? '' : 'opacity-75'}
+                                    dangerouslySetInnerHTML={{ __html: highlightText(verse, query) }}
+                                  />
+                                );
+                              })}
+                              {isLongText && foundIndex >= 0 && foundIndex < verses.length - 1 && (
+                                <span className="text-stone-400 dark:text-stone-500 text-xs">...</span>
+                              )}
                             </div>
                           )}
                         </div>

@@ -20,10 +20,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <div className="max-w-6xl mx-auto w-full">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-4">
-          نتایج جستجو
+          نتایج جستجو برای
           {query && (
-            <span className="text-stone-600 dark:text-stone-400 font-normal">
-              {' '}برای &quot;{query}&quot;
+            <span className="text-yellow-600 dark:text-yellow-500">
+              {' '}&#xAB;{query}&#xBB;
             </span>
           )}
         </h1>
