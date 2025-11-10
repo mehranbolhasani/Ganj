@@ -190,10 +190,10 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
           // Close tooltip after a short delay to allow navigation
           setTimeout(() => onClose(), 100);
         }}
-        aria-label={`جستجوی معنی "${selectedText.trim()}" در واژه‌یاب`}
+        aria-label="جستجو در واژه‌یاب"
       >
         <span className="text-xs">جستجو در واژه‌یاب</span>
-        <ExternalLink className="w-4 h-4" />
+        <ExternalLink className="w-4 h-4" aria-hidden="true" />
       </a>
       <button
         onClick={(e) => {
@@ -207,7 +207,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
         className="p-2 rounded-md hover:bg-stone-800 dark:hover:bg-stone-200 active:bg-stone-700 dark:active:bg-stone-300 transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
         aria-label="بستن"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>

@@ -40,9 +40,9 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
             className="group flex items-center gap-2 px-4 py-3 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
             aria-label={`شعر قبلی: ${previousPoem.title}`}
           >
-            <ChevronRight className="w-5 h-5 text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200 transition-colors" />
+            <ChevronRight className="w-5 h-5 text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200 transition-colors" aria-hidden="true" />
             <div className="flex-1 text-right min-w-0">
-              <div className="text-xs text-stone-500 dark:text-stone-400 mb-1">قبلی</div>
+              <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">قبلی</div>
               <div className="text-sm font-medium text-stone-900 dark:text-stone-100 truncate">
                 {previousPoem.title}
               </div>
@@ -50,8 +50,8 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
           </Link>
         ) : (
           <div className="px-4 py-3 opacity-50" aria-hidden="true">
-            <div className="text-xs text-stone-500 dark:text-stone-400 mb-1">قبلی</div>
-            <div className="text-sm text-stone-400 dark:text-stone-600">—</div>
+            <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">قبلی</div>
+            <div className="text-sm text-stone-500 dark:text-stone-600">—</div>
           </div>
         )}
       </div>
@@ -66,17 +66,17 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
             aria-label={`شعر بعدی: ${nextPoem.title}`}
           >
             <div className="flex-1 text-left min-w-0">
-              <div className="text-xs text-stone-500 dark:text-stone-400 mb-1">بعدی</div>
+              <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">بعدی</div>
               <div className="text-sm font-medium text-stone-900 dark:text-stone-100 truncate">
                 {nextPoem.title}
               </div>
             </div>
-            <ChevronLeft className="w-5 h-5 text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200 transition-colors" />
+            <ChevronLeft className="w-5 h-5 text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200 transition-colors" aria-hidden="true" />
           </Link>
         ) : (
           <div className="px-4 py-3 opacity-50 text-left" aria-hidden="true">
-            <div className="text-xs text-stone-500 dark:text-stone-400 mb-1">بعدی</div>
-            <div className="text-sm text-stone-400 dark:text-stone-600">—</div>
+            <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">بعدی</div>
+            <div className="text-sm text-stone-500 dark:text-stone-600">—</div>
           </div>
         )}
       </div>

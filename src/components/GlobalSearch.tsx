@@ -247,7 +247,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
       >
         {/* Search Input */}
         <div className="flex items-center gap-3 p-4 border-b border-stone-200 dark:border-stone-700">
-          <Search className="w-5 h-5 text-stone-400" />
+          <Search className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
           <input
             ref={inputRef}
             type="text"
@@ -260,9 +260,10 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           />
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
+            className="p-1 rounded-md text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors"
+            aria-label="بستن جستجو"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -271,11 +272,11 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           {isLoading ? (
             <div className="p-8 text-center">
               <div className="animate-spin w-6 h-6 border-2 border-stone-300 dark:border-stone-600 border-t-stone-600 dark:border-t-stone-300 rounded-full mx-auto mb-3"></div>
-              <p className="text-stone-500 dark:text-stone-400">در حال جستجو...</p>
+              <p className="text-stone-600 dark:text-stone-400">در حال جستجو...</p>
             </div>
           ) : query.trim() && results.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-stone-500 dark:text-stone-400 mb-4">
+              <p className="text-stone-600 dark:text-stone-400 mb-4">
                 هیچ نتیجه‌ای یافت نشد
               </p>
               <Link
@@ -289,7 +290,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           ) : query.trim() ? (
             <>
               {/* Results count */}
-              <div className="px-4 py-3 flex items-center justify-between text-sm text-stone-500 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
+              <div className="px-4 py-3 flex items-center justify-between text-sm text-stone-600 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
                 <span>{results.length} نتیجه</span>
                 {results.length >= 30 && (
                   <Link
@@ -298,7 +299,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                     className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 text-xs flex items-center gap-1 border border-stone-200 dark:border-stone-500 rounded-full py-2 px-2"
                   >
                     مشاهده همه نتایج
-                    <ArrowLeft className="w-4 h-4 text-stone-600 dark:text-stone-400" />
+                    <ArrowLeft className="w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
                   </Link>
                 )}
               </div>
@@ -521,7 +522,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                           
                           {/* Metadata */}
                           <p 
-                            className="text-[13px] text-stone-500 dark:text-stone-400 text-right mb-2"
+                            className="text-[13px] text-stone-600 dark:text-stone-400 text-right mb-2"
                             dangerouslySetInnerHTML={{ 
                               __html: isPoet 
                                 ? 'شاعر'
@@ -570,7 +571,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         
                         {/* Arrow indicator */}
                         <div className="flex-shrink-0 pt-1">
-                          <CornerDownLeft className="w-4 h-4 text-stone-400 dark:text-stone-500 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors" />
+                          <CornerDownLeft className="w-4 h-4 text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-colors" aria-hidden="true" />
                         </div>
                       </div>
                     </Link>
