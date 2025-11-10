@@ -13,6 +13,7 @@
     "dev:reset": "rm -rf .next node_modules package-lock.json && npm install",
     "build:check": "node scripts/build-check.js",
     "build:verify": "node scripts/build-check.js --check-only",
+    "test:cls": "node scripts/test-layout-shifts.js",
     "type-check": "tsc --noEmit",
     "lint:fix": "eslint . --fix",
     "predev": "npm run type-check",
