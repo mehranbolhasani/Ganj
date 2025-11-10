@@ -6,6 +6,8 @@ import React, { useState, useEffect } from 'react';
 export function SmoothLoadingWrapper({ 
   children, 
   delay = 300, // Only show after 300ms (increased for better UX)
+  // minDuration is reserved for future use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   minDuration: _minDuration = 600 // Show for at least 600ms once visible (increased)
 }: { 
   children: React.ReactNode; 

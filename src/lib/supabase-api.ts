@@ -428,6 +428,7 @@ export const supabaseApi = {
   /**
    * Get chapter details (not implemented in Supabase yet, returns empty)
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getChapter(_poetId: number, _categoryId: number, _chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
     throw new SupabaseApiError('Chapters are not yet implemented in Supabase');
   },

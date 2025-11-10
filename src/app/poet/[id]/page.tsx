@@ -152,9 +152,9 @@ export default async function PoetPage({ params }: PoetPageProps) {
                 ? 'border-b border-yellow-900/50' 
                 : 'border-b border-stone-700 p-4'
             }`}>
-            {/* Poet Image - only for famous poets */}
-             {getPoetImage(poet.slug || '') && (
-                 <div className={`relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] border-none md:border-l border-yellow-900/50 p-4 ${
+            {/* Poet Image - only for famous poets - reserve space to prevent layout shift */}
+             {getPoetImage(poet.slug || '') ? (
+                 <div className={`relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] border-none md:border-l border-yellow-900/50 p-4 shrink-0 ${
                    isFamous 
                     //  ? 'bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-700 dark:to-orange-700 ring-4 ring-amber-200/50 dark:ring-amber-600/50' 
                     //  : 'bg-stone-300 dark:bg-stone-600'
@@ -168,6 +168,9 @@ export default async function PoetPage({ params }: PoetPageProps) {
                      priority
                    />
                  </div>
+               ) : (
+                 // Reserve space for non-famous poets to prevent layout shift
+                 <div className="w-[140px] h-[140px] md:w-[160px] md:h-[160px] shrink-0" aria-hidden="true" />
                )}
               <div className={`flex items-center gap-6 flex-row-reverse p-4 ${
                 isFamous ? 'p-4' : 'p-4'

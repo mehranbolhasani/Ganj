@@ -37,22 +37,23 @@ export default function ChangelogPage() {
           </div>
           <div>
             <h2 className="text-xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100">نسخه ۰/۲</h2>
-            <p className="text-stone-600 dark:text-stone-300">آخرین به‌روزرسانی - ۳۱ اکتبر ۲۰۲۵</p>
+            <p className="text-stone-600 dark:text-stone-300">آخرین به‌روزرسانی - ۱۰ نوامبر ۲۰۲۵</p>
           </div>
         </div>
         
-        <div className="grid md:grid-cols-1 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-3">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
               <Plus className="w-4 h-4 text-green-600" />
               ویژگی‌های جدید
             </h3>
             <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
-              <li>• جستجوی پیشرفته در شعرها و شاعران</li>
+              <li>• جستجوی معنی کلمات با انتخاب متن در شعرها (واژه‌یاب)</li>
+              <li>• ناوبری بین اشعار (قبلی/بعدی)</li>
+              <li>• جستجوی نامحدود با پشتیبانی از ۲۷,۰۰۰+ نتیجه</li>
               <li>• سیستم علاقه‌مندی‌ها برای ذخیره شعرهای مورد علاقه</li>
               <li>• تاریخچه بازدیدها برای پیگیری شعرهای خوانده شده</li>
-              <li>• بهینه‌سازی کامل برای موبایل</li>
-              <li>• پشتیبانی از تم تاریک و روشن</li>
+              <li>• اسکریپت تست خودکار برای بررسی Layout Shifts</li>
             </ul>
           </div>
           
@@ -62,10 +63,26 @@ export default function ChangelogPage() {
               بهبودها
             </h3>
             <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <li>• بهبود دسترسی‌پذیری (WCAG 2.1 AA)</li>
+              <li>• رفع Layout Shifts برای تجربه بهتر</li>
+              <li>• بهبود نسبت کنتراست رنگ‌ها</li>
               <li>• سرعت بارگذاری صفحات بهبود یافت</li>
               <li>• رابط کاربری زیباتر و کاربردی‌تر</li>
-              <li>• پشتیبانی بهتر از زبان فارسی</li>
               <li>• تجربه کاربری بهتر در موبایل</li>
+            </ul>
+          </div>
+          
+          <div className="space-y-3">
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <Bug className="w-4 h-4 text-red-600" />
+              رفع مشکلات
+            </h3>
+            <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <li>• رفع مشکلات دسترسی‌پذیری در Vercel</li>
+              <li>• رفع Layout Shifts در صفحات شعر و شاعر</li>
+              <li>• رفع خطاهای ESLint و TypeScript</li>
+              <li>• بهبود نام‌های دسترسی برای دکمه‌ها</li>
+              <li>• رفع مشکلات موبایل</li>
             </ul>
           </div>
         </div>

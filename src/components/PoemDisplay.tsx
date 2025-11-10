@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Poem } from '@/lib/types';
 import { useFontSize } from '@/lib/user-preferences';
 import FontSizeControl from './FontSizeControl';
 import BookmarkButton from './BookmarkButton';
+import TextSelectionTooltip from './TextSelectionTooltip';
 import { BookOpen, X, Palette } from 'lucide-react';
 
 interface PoemDisplayProps {
@@ -13,12 +14,15 @@ interface PoemDisplayProps {
 
 type ReadingTheme = 'default' | 'sepia' | 'night';
 
-export default function PoemDisplay({ poem }: PoemDisplayProps) {
+const PoemDisplay = ({ poem }: PoemDisplayProps) => {
   const { poemClasses, fontSize } = useFontSize();
   const [isHydrated, setIsHydrated] = useState(false);
   const [isDistractFree, setIsDistractFree] = useState(false);
   const [readingTheme, setReadingTheme] = useState<ReadingTheme>('default');
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [selectedText, setSelectedText] = useState<string>('');
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+  const poemContentRef = useRef<HTMLDivElement>(null);
 
   // Get distract-free mode font sizes (larger than normal)
   const getDistractFreeFontSize = () => {
@@ -39,6 +43,114 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
     const timer = setTimeout(() => setIsHydrated(true), 0);
     return () => clearTimeout(timer);
   }, []);
+
+  // Handle text selection for Vajehyab search
+  useEffect(() => {
+    const handleTextSelection = () => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) {
+        setTooltipPosition(null);
+        setSelectedText('');
+        return;
+      }
+
+      // Check if selection is within poem content
+      if (!poemContentRef.current) {
+        setTooltipPosition(null);
+        setSelectedText('');
+        return;
+      }
+      
+      // Check if selection is within our poem content area
+      const range = selection.getRangeAt(0);
+      const selectionContainer = range.commonAncestorContainer;
+      const isInPoemContent = poemContentRef.current.contains(
+        selectionContainer.nodeType === Node.TEXT_NODE 
+          ? selectionContainer.parentElement 
+          : selectionContainer
+      );
+      
+      if (!isInPoemContent) {
+        setTooltipPosition(null);
+        setSelectedText('');
+        return;
+      }
+
+      const selectedText = selection.toString().trim();
+      if (selectedText.length < 2) {
+        // Only show tooltip for meaningful selections (at least 2 characters)
+        setTooltipPosition(null);
+        setSelectedText('');
+        return;
+      }
+
+      // Get selection position (range already defined above)
+      const rect = range.getBoundingClientRect();
+      
+      // Validate rect dimensions
+      if (rect.width === 0 || rect.height === 0) {
+        setTooltipPosition(null);
+        setSelectedText('');
+        return;
+      }
+      
+      // Calculate center X and top Y of selection
+      // getBoundingClientRect() returns viewport coordinates
+      const centerX = rect.left + rect.width / 2;
+      const topY = rect.top;
+      
+      // Validate position values are within reasonable bounds
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      if (centerX < 0 || centerX > viewportWidth || topY < 0 || topY > viewportHeight) {
+        // Position is outside viewport, don't show tooltip
+        setTooltipPosition(null);
+        setSelectedText('');
+        return;
+      }
+      
+      // Debug in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Selection position:', {
+          rect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+          centerX,
+          topY,
+          viewport: { width: viewportWidth, height: viewportHeight }
+        });
+      }
+      
+      setSelectedText(selectedText);
+      setTooltipPosition({
+        x: centerX,
+        y: topY,
+      });
+    };
+
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      // Close tooltip if clicking/touching outside
+      if (tooltipPosition && poemContentRef.current) {
+        const target = e.target as Node;
+        if (!poemContentRef.current.contains(target)) {
+          setTooltipPosition(null);
+          setSelectedText('');
+        }
+      }
+    };
+
+    // Handle text selection changes
+    document.addEventListener('selectionchange', handleTextSelection);
+    
+    // Handle clicks/touches outside (for both desktop and mobile)
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: true });
+
+    return () => {
+      document.removeEventListener('selectionchange', handleTextSelection);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [tooltipPosition]);
 
   // Handle keyboard shortcuts for distract-free mode
   useEffect(() => {
@@ -241,7 +353,10 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
             </p>
 
             {/* Verses - large, spacious, centered */}
-            <div className="space-y-4 sm:space-y-6">
+            <div 
+              ref={poemContentRef}
+              className="space-y-4 sm:space-y-6 select-text"
+            >
               {poem.verses.map((verse, index) => (
                 <p 
                   key={index}
@@ -254,6 +369,19 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
                 </p>
               ))}
             </div>
+            
+            {/* Text Selection Tooltip */}
+            {tooltipPosition && selectedText && (
+              <TextSelectionTooltip
+                selectedText={selectedText}
+                position={tooltipPosition}
+                onClose={() => {
+                  setTooltipPosition(null);
+                  setSelectedText('');
+                  window.getSelection()?.removeAllRanges();
+                }}
+              />
+            )}
 
             {/* Subtle hint at bottom */}
             <p className={`text-center text-xs sm:text-sm ${theme.secondaryText} mt-16 sm:mt-20 font-normal opacity-60`}>
@@ -284,27 +412,27 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
         <div className="flex flex-col-reverse sm:flex-row-reverse gap-8 sm:gap-2 justify-between w-full align-end">
           {/* Controls - Mobile: full width, Desktop: right side */}
           <div className="flex flex-row gap-1 bg-white/75 dark:bg-yellow-900/20 rounded-xl shadow-sm p-1 h-fit w-fit sm:w-auto justify-center sm:justify-end self-end backdrop-blur-sm">
-            {/* Font Size Control - only show after hydration */}
-            {isHydrated && (
-              <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
-                <FontSizeControl showLabel={false} />
-              </div>
-            )}
+            {/* Font Size Control - reserve space to prevent layout shift */}
+            <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
+              <FontSizeControl showLabel={false} />
+            </div>
 
             <div className="flex gap-1 justify-center sm:justify-end">
-              {/* Distract-free mode button */}
-              {isHydrated && (
+              {/* Distract-free mode button - reserve space */}
+              {isHydrated ? (
                 <button
                   onClick={() => setIsDistractFree(true)}
                   className="flex items-center justify-center w-10 h-10 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-600 transition-all duration-200 cursor-pointer touch-target"
                   aria-label="حالت تمرکز (بدون حواس‌پرتی)"
                   title="حالت تمرکز (F)"
                 >
-                  <BookOpen className="w-4 h-4" />
+                  <BookOpen className="w-4 h-4" aria-hidden="true" />
                 </button>
+              ) : (
+                <div className="w-10 h-10" aria-hidden="true" />
               )}
 
-              {/* Bookmark button */}
+              {/* Bookmark button - reserve space */}
               {isHydrated ? (
                 <BookmarkButton
                   poemId={poem.id}
@@ -316,7 +444,7 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
                   className="touch-target"
                 />
               ) : (
-                <div className="w-10 h-10" /> 
+                <div className="w-10 h-10" aria-hidden="true" />
               )}
             </div>
           </div>
@@ -337,7 +465,10 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
       
       <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-yellow-900/10 dark:border-yellow-900/40 p-4 sm:p-8 backdrop-blur-md">
         {hasVerses ? (
-          <div className="prose prose-lg max-w-none text-center">
+          <div 
+            ref={poemContentRef}
+            className="prose prose-lg max-w-none text-center select-text"
+          >
             {poem.verses.map((verse, index) => (
               <p 
                 key={index}
@@ -357,7 +488,22 @@ export default function PoemDisplay({ poem }: PoemDisplayProps) {
             </p>
           </div>
         )}
+        
+        {/* Text Selection Tooltip */}
+        {tooltipPosition && selectedText && (
+          <TextSelectionTooltip
+            selectedText={selectedText}
+            position={tooltipPosition}
+            onClose={() => {
+              setTooltipPosition(null);
+              setSelectedText('');
+              window.getSelection()?.removeAllRanges();
+            }}
+          />
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default PoemDisplay;

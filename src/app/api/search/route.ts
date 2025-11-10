@@ -24,6 +24,8 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('q');
     const type = searchParams.get('type') || 'all'; // 'poets', 'categories', 'poems', or 'all'
     const limit = parseInt(searchParams.get('limit') || '20');
+    const offset = parseInt(searchParams.get('offset') || '0');
+    const getCount = searchParams.get('count') === 'true'; // Whether to get total count
     
     if (!query || query.trim().length < 2) {
       return NextResponse.json({
@@ -45,26 +47,42 @@ export async function GET(request: NextRequest) {
       poets?: PoetResult[];
       categories?: CategoryResult[];
       poems?: PoemResult[];
+      totalPoets?: number;
+      totalCategories?: number;
+      totalPoems?: number;
     } = {};
     
     // Search poets (if requested)
     if (type === 'all' || type === 'poets') {
-      const { data: poets, error: poetsError } = await supabase
+      // Build query
+      let poetsQuery = supabase
         .from('poets')
-        .select('id, name, slug, description, birth_year, death_year')
-        .or(`name.ilike.%${cleanQuery}%,description.ilike.%${cleanQuery}%`)
-        .limit(limit);
+        .select('id, name, slug, description, birth_year, death_year', { count: getCount ? 'exact' : undefined })
+        .or(`name.ilike.%${cleanQuery}%,description.ilike.%${cleanQuery}%`);
+      
+      // Apply pagination
+      if (offset > 0) {
+        poetsQuery = poetsQuery.range(offset, offset + limit - 1);
+      } else {
+        poetsQuery = poetsQuery.limit(limit);
+      }
+      
+      const { data: poets, error: poetsError, count: poetsCount } = await poetsQuery;
       
       if (poetsError) {
         console.error('Error searching poets:', poetsError);
       } else {
         results.poets = poets || [];
+        if (getCount && poetsCount !== null) {
+          results.totalPoets = poetsCount;
+        }
       }
     }
     
     // Search categories (if requested)
     if (type === 'all' || type === 'categories') {
-      const { data: categories, error: categoriesError } = await supabase
+      // Build query
+      let categoriesQuery = supabase
         .from('categories')
         .select(`
           id,
@@ -76,9 +94,17 @@ export async function GET(request: NextRequest) {
             id,
             name
           )
-        `)
-        .ilike('title', `%${cleanQuery}%`)
-        .limit(limit);
+        `, { count: getCount ? 'exact' : undefined })
+        .ilike('title', `%${cleanQuery}%`);
+      
+      // Apply pagination
+      if (offset > 0) {
+        categoriesQuery = categoriesQuery.range(offset, offset + limit - 1);
+      } else {
+        categoriesQuery = categoriesQuery.limit(limit);
+      }
+      
+      const { data: categories, error: categoriesError, count: categoriesCount } = await categoriesQuery;
       
       if (categoriesError) {
         console.error('Error searching categories:', categoriesError);
@@ -95,13 +121,17 @@ export async function GET(request: NextRequest) {
             poemCount: cat.poem_count || 0,
           };
         }) || [];
+        if (getCount && categoriesCount !== null) {
+          results.totalCategories = categoriesCount;
+        }
       }
     }
     
     // Search poems (if requested) - using full-text search
     if (type === 'all' || type === 'poems') {
       // Use both title match and full-text search on verses
-      const { data: poems, error: poemsError } = await supabase
+      // Build query
+      let poemsQuery = supabase
         .from('poems')
         .select(`
           id,
@@ -117,10 +147,18 @@ export async function GET(request: NextRequest) {
             id,
             title
           )
-        `)
+        `, { count: getCount ? 'exact' : undefined })
         .or(`title.ilike.%${cleanQuery}%,verses.ilike.%${cleanQuery}%`)
-        .order('id', { ascending: false }) // Recent poems first
-        .limit(limit);
+        .order('id', { ascending: false }); // Recent poems first
+      
+      // Apply pagination
+      if (offset > 0) {
+        poemsQuery = poemsQuery.range(offset, offset + limit - 1);
+      } else {
+        poemsQuery = poemsQuery.limit(limit);
+      }
+      
+      const { data: poems, error: poemsError, count: poemsCount } = await poemsQuery;
       
       if (poemsError) {
         console.error('Error searching poems:', poemsError);
@@ -141,6 +179,9 @@ export async function GET(request: NextRequest) {
             categoryTitle: category?.title || '',
           };
         }) || [];
+        if (getCount && poemsCount !== null) {
+          results.totalPoems = poemsCount;
+        }
       }
     }
     

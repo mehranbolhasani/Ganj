@@ -17,7 +17,7 @@ const FAMOUS_POET_SLUGS = [
   'nezami'
 ];
 
-export default function PoetsGrid() {
+const PoetsGrid = () => {
   const [poets, setPoets] = useState<Poet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,4 +112,6 @@ export default function PoetsGrid() {
       />
     </div>
   );
-}
+};
+
+export default PoetsGrid;

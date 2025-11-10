@@ -8,6 +8,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Text Selection & Dictionary Integration**
+  - Text selection tooltip with Vajehyab search integration
+  - Tooltip appears above selected text with search link
+  - Mobile-friendly touch support for text selection
+  - Automatic tooltip positioning with viewport boundary detection
+  - Scroll-aware tooltip that follows selected text
+
+- **Poem Navigation**
+  - Next/Previous poem navigation links on poem pages
+  - Automatic scroll to top when navigating between poems
+  - Navigation based on category/chapter order
+  - Smooth scroll behavior for better UX
+
+- **Search System Enhancements**
+  - Server-side pagination for unlimited search results
+  - Support for 27,000+ search results (e.g., "عشق" search)
+  - Total count display for each result type
+  - Proper pagination with offset-based queries
+  - Improved performance with per-page fetching (20 items per page)
+
+- **Accessibility Improvements (WCAG 2.1 AA Compliance)**
+  - Skip navigation link for keyboard users
+  - Enhanced ARIA labels throughout the application
+  - Improved keyboard navigation support
+  - Better focus management
+  - Fixed accessible names to match visible text
+  - Added aria-hidden to decorative icons
+  - Improved color contrast ratios (WCAG AA compliant)
+  - Ensured single main landmark per page
+  - All interactive elements have proper ARIA labels
+
+- **Performance & Layout Stability**
+  - Layout shift prevention on poem pages
+  - Reserved space for conditionally rendered components
+  - Fixed CLS (Cumulative Layout Shift) issues
+  - Improved image loading with proper dimensions
+  - Layout shift testing script for automated testing
+
+- **Development Tools**
+  - Automated layout shift testing script (`test-layout-shifts.js`)
+  - Lighthouse-based CLS testing across all pages
+  - Performance monitoring and reporting
+
+- **Code Quality Improvements**
+  - Converted all function declarations to const arrow functions
+  - Enabled React Strict Mode
+  - Added dynamic imports for modals (performance optimization)
+  - Improved component organization and consistency
 - **Development Workflow Improvements**
   - Automated development setup scripts (`dev-setup.js`, `start-dev.sh`, `dev-start.sh`)
   - One-click development environment setup
@@ -44,6 +92,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved mobile responsiveness across all components
   - Better visual hierarchy and component organization
   - Streamlined header navigation
+  - Search results now support unlimited pagination (was limited to 100 results)
+  - Improved search API with offset and count parameters
 
 - **Development Experience**
   - Simplified development startup process
@@ -52,10 +102,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved build and deployment workflows
 
 ### Fixed
+- **Accessibility Issues**
+  - Fixed "Elements must have their visible text as part of their accessible name" errors
+  - Fixed "Elements must meet minimum color contrast ratio thresholds" warnings
+  - Fixed "ARIA hidden element must not be focusable" issues
+  - Fixed "Document should have one main landmark" requirement
+  - Improved accessible names for all header buttons
+  - Added proper aria-hidden attributes to decorative icons
+  - Enhanced color contrast for better readability
+
+- **Layout Shift Issues (CLS)**
+  - Fixed layout shifts on poem pages (FontSizeControl, control buttons)
+  - Fixed layout shifts on poet pages (poet image placeholder)
+  - Reserved space for all conditionally rendered components
+  - Prevented main content area from shifting during load
+  - Improved CLS scores across all pages
+
+- **Build & Code Quality**
+  - Fixed ESLint errors (setState in effects, unused variables)
+  - Fixed TypeScript errors
+  - Resolved Vercel build failures
+  - Improved code consistency and maintainability
+
 - **Mobile Responsiveness**
   - Fixed mobile dropdown width and positioning issues
   - Resolved alphabetical navigation mobile layout problems
   - Improved touch targets and mobile interaction patterns
+  - Fixed tooltip positioning issues (now uses React portal)
+  - Fixed initial tooltip position jump on text selection
+
+- **Search & Navigation**
+  - Fixed search results limitation (now supports unlimited results)
+  - Fixed pagination to work with server-side queries
+  - Fixed scroll position when navigating between poems
 
 - **Data Display Issues**
   - Fixed poem count display for categories

@@ -79,9 +79,17 @@ export default function FontSizeControl({
     }
   };
 
-  // Don't render until hydrated to prevent hydration mismatch
+  // Reserve space to prevent layout shift
   if (!isHydrated) {
-    return null;
+    return (
+      <div className={`flex align-center font-size-control ${className}`} aria-hidden="true">
+        <div className="flex items-center gap-1">
+          <div className="w-10 h-10" />
+          <div className="w-10 h-10" />
+          <div className="w-10 h-10" />
+        </div>
+      </div>
+    );
   }
 
   return (

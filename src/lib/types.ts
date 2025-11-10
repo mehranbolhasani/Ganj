@@ -42,3 +42,15 @@ export interface ApiResponse<T> {
   success: boolean;
   message?: string;
 }
+
+export interface SearchResponse {
+  poets: Poet[];
+  categories: Category[];
+  poems: Poem[];
+  message?: string;
+  // Pagination metadata
+  totalPoets?: number;
+  totalCategories?: number;
+  totalPoems?: number;
+  hasMore?: boolean;
+}

@@ -8,6 +8,7 @@ import { ToastProvider } from "@/components/Toast";
 import PreloadInitializer from "@/components/PreloadInitializer";
 import OfflineIndicator from "@/components/OfflineIndicator";
 import RouteProgress from "@/components/RouteProgress";
+import ScrollToTop from "@/components/ScrollToTop";
 import Layout from "@/components/Layout";
 
 import { Analytics } from "@vercel/analytics/next"
@@ -101,6 +102,7 @@ export default function RootLayout({
         />
         <WebsiteStructuredData url="https://ganj.directory" />
         <RouteProgress />
+        <ScrollToTop />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

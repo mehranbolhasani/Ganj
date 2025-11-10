@@ -15,7 +15,7 @@ const PERSIAN_LETTERS = [
   'الف', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ک', 'گ', 'ل', 'م', 'ن', 'و', 'ه', 'ی'
 ];
 
-export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableLettersChange }: AlphabeticalPoetsProps) {
+const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }: AlphabeticalPoetsProps) => {
   const [, setActiveLetter] = useState<string>('');
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -120,4 +120,6 @@ export default function AlphabeticalPoets({ poets, famousPoetSlugs, onAvailableL
       </div>
     </div>
   );
-}
+};
+
+export default AlphabeticalPoets;

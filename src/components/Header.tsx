@@ -2,16 +2,24 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import PoetsDropdown from './PoetsDropdown';
-import ViewHistory from './ViewHistory';
-import GlobalSearch from './GlobalSearch';
 import { useViewHistory } from '@/lib/history-manager';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { History, Heart, Menu, X, Search } from 'lucide-react';
 import { simpleApi } from '@/lib/simple-api';
 import { Poet } from '@/lib/types';
 
-export default function Header() {
+// Dynamic imports for heavy modal components
+const ViewHistory = dynamic(() => import('./ViewHistory'), {
+  loading: () => null, // No loading state needed for modals
+});
+
+const GlobalSearch = dynamic(() => import('./GlobalSearch'), {
+  loading: () => null, // No loading state needed for modals
+});
+
+const Header = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -86,18 +94,18 @@ export default function Header() {
         <button
           onClick={() => setIsSearchOpen(true)}
           className="p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
-          aria-label="جستجو"
         >
-          <Search className="w-6 h-6" />
+          <Search className="w-6 h-6" aria-hidden="true" />
+          <span className="sr-only">جستجو</span>
         </button>
         
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
           className="p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
-          aria-label="منوی موبایل"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-6 h-6" aria-hidden="true" />
+          <span className="sr-only">منوی موبایل</span>
         </button>
       </div>
 
@@ -109,11 +117,11 @@ export default function Header() {
           <button
             onClick={() => setIsSearchOpen(true)}
             className="px-2 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors flex items-center gap-2 cursor-pointer"
-            aria-label="جستجو"
           >
-            <Search className="w-4 h-4" />
-            {/* <span>جستجو</span> */}
-            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-mono bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded">
+            <Search className="w-4 h-4" aria-hidden="true" />
+            <span className="sr-only">جستجو</span>
+            <span className="hidden sm:inline">جستجو</span>
+            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-mono bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded" aria-hidden="true">
               ⌘K
             </kbd>
           </button>
@@ -123,12 +131,11 @@ export default function Header() {
             onClick={() => setIsHistoryOpen(true)}
             data-history-trigger
             className="relative px-2 py-2 rounded-md text-sm font-semibold text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-600/20 dark:active:bg-red-800 transition-colors flex items-center gap-1 cursor-pointer"
-            aria-label="تاریخچه بازدیدها"
           >
-            <History className="w-4 h-4" />
+            <History className="w-4 h-4" aria-hidden="true" />
             <span>تاریخچه</span>
             {items.length > 0 && (
-              <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
+              <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer" aria-label={`${items.length} مورد`}>
                 {items.length > 9 ? '9+' : items.length}
               </span>
             )}
@@ -139,9 +146,8 @@ export default function Header() {
             href="/bookmarks"
             data-bookmark-trigger
             className="relative px-2 py-2 rounded-md text-sm font-semibold text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-600/20 dark:active:bg-red-800 transition-colors flex items-center gap-1 cursor-pointer"
-            aria-label="علاقه‌مندی‌ها"
           >
-            <Heart className="w-4 h-4" />
+            <Heart className="w-4 h-4" aria-hidden="true" />
             <span>علاقه‌مندی‌ها</span>
             {bookmarks.length > 0 && (
               <span className="relative bg-red-200 text-red-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
@@ -187,16 +193,19 @@ export default function Header() {
             className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white/95 dark:bg-stone-800/95 backdrop-blur-sm shadow-xl transform transition-transform duration-300 ease-in-out mobile-optimize"
             style={{ transition: 'transform 0.3s ease-in-out' }}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-menu-title"
           >
             {/* Mobile Menu Header */}
             <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
-              <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">منو</h2>
+              <h2 id="mobile-menu-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">منو</h2>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="p-3 rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
                 aria-label="بستن منو"
               >
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6" aria-hidden="true" />
               </button>
             </div>
 
@@ -209,6 +218,7 @@ export default function Header() {
                         placeholder="جستجو در شاعران..."
                         value={mobileSearchQuery}
                         onChange={(e) => setMobileSearchQuery(e.target.value)}
+                        aria-label="جستجو در شاعران"
                         className="w-full pr-12 pl-4 py-3 text-base border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent touch-manipulation"
                         autoComplete="off"
                         autoCorrect="off"
@@ -252,6 +262,7 @@ export default function Header() {
                     setIsHistoryOpen(true);
                     setIsMobileMenuOpen(false);
                   }}
+                  aria-label="تاریخچه بازدیدها"
                   className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
                 >
                   <div className="flex items-center gap-3">
@@ -324,4 +335,6 @@ export default function Header() {
       )}
     </header>
   );
-}
+};
+
+export default Header;

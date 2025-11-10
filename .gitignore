@@ -53,6 +53,7 @@ Ganjeh.code-workspace
 .cursor/
 past-chat.md
 pas-chat.md
+CHAT_SUMMARY.md
 
 # Development and migration logs
 *.log

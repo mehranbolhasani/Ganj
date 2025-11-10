@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { WifiOff, CheckCircle } from 'lucide-react';
 
-export default function OfflineIndicator() {
+const OfflineIndicator = () => {
   const [isOnline, setIsOnline] = useState(() => typeof navigator !== 'undefined' ? navigator.onLine : true);
   const [showNotification, setShowNotification] = useState(false);
 
@@ -80,4 +80,6 @@ export default function OfflineIndicator() {
       </div>
     </div>
   );
-}
+};
+
+export default OfflineIndicator;
