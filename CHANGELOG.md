@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Text Selection & Dictionary Integration**
+  - Text selection tooltip with Vajehyab search integration
+  - Tooltip appears above selected text with search link
+  - Mobile-friendly touch support for text selection
+  - Automatic tooltip positioning with viewport boundary detection
+  - Scroll-aware tooltip that follows selected text
+
+- **Poem Navigation**
+  - Next/Previous poem navigation links on poem pages
+  - Automatic scroll to top when navigating between poems
+  - Navigation based on category/chapter order
+  - Smooth scroll behavior for better UX
+
+- **Search System Enhancements**
+  - Server-side pagination for unlimited search results
+  - Support for 27,000+ search results (e.g., "عشق" search)
+  - Total count display for each result type
+  - Proper pagination with offset-based queries
+  - Improved performance with per-page fetching (20 items per page)
+
+- **Accessibility Improvements**
+  - Skip navigation link for keyboard users
+  - Enhanced ARIA labels throughout the application
+  - Improved keyboard navigation support
+  - Better focus management
+
+- **Code Quality Improvements**
+  - Converted all function declarations to const arrow functions
+  - Enabled React Strict Mode
+  - Added dynamic imports for modals (performance optimization)
+  - Improved component organization and consistency
 - **Development Workflow Improvements**
   - Automated development setup scripts (`dev-setup.js`, `start-dev.sh`, `dev-start.sh`)
   - One-click development environment setup
@@ -44,6 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved mobile responsiveness across all components
   - Better visual hierarchy and component organization
   - Streamlined header navigation
+  - Search results now support unlimited pagination (was limited to 100 results)
+  - Improved search API with offset and count parameters
 
 - **Development Experience**
   - Simplified development startup process
@@ -56,6 +89,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed mobile dropdown width and positioning issues
   - Resolved alphabetical navigation mobile layout problems
   - Improved touch targets and mobile interaction patterns
+  - Fixed tooltip positioning issues (now uses React portal)
+  - Fixed initial tooltip position jump on text selection
+
+- **Search & Navigation**
+  - Fixed search results limitation (now supports unlimited results)
+  - Fixed pagination to work with server-side queries
+  - Fixed scroll position when navigating between poems
 
 - **Data Display Issues**
   - Fixed poem count display for categories
