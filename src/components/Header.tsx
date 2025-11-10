@@ -94,18 +94,18 @@ const Header = () => {
         <button
           onClick={() => setIsSearchOpen(true)}
           className="p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
-          aria-label="جستجو"
         >
-          <Search className="w-6 h-6" />
+          <Search className="w-6 h-6" aria-hidden="true" />
+          <span className="sr-only">جستجو</span>
         </button>
         
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
           className="p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
-          aria-label="منوی موبایل"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-6 h-6" aria-hidden="true" />
+          <span className="sr-only">منوی موبایل</span>
         </button>
       </div>
 
@@ -117,11 +117,11 @@ const Header = () => {
           <button
             onClick={() => setIsSearchOpen(true)}
             className="px-2 py-2 rounded-md text-sm font-normal text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors flex items-center gap-2 cursor-pointer"
-            aria-label="جستجو"
           >
-            <Search className="w-4 h-4" />
-            {/* <span>جستجو</span> */}
-            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-mono bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded">
+            <Search className="w-4 h-4" aria-hidden="true" />
+            <span className="sr-only">جستجو</span>
+            <span className="hidden sm:inline">جستجو</span>
+            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-mono bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded" aria-hidden="true">
               ⌘K
             </kbd>
           </button>
@@ -131,12 +131,11 @@ const Header = () => {
             onClick={() => setIsHistoryOpen(true)}
             data-history-trigger
             className="relative px-2 py-2 rounded-md text-sm font-semibold text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-600/20 dark:active:bg-red-800 transition-colors flex items-center gap-1 cursor-pointer"
-            aria-label="تاریخچه بازدیدها"
           >
-            <History className="w-4 h-4" />
+            <History className="w-4 h-4" aria-hidden="true" />
             <span>تاریخچه</span>
             {items.length > 0 && (
-              <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
+              <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer" aria-label={`${items.length} مورد`}>
                 {items.length > 9 ? '9+' : items.length}
               </span>
             )}
@@ -147,9 +146,8 @@ const Header = () => {
             href="/bookmarks"
             data-bookmark-trigger
             className="relative px-2 py-2 rounded-md text-sm font-semibold text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-600/20 dark:active:bg-red-800 transition-colors flex items-center gap-1 cursor-pointer"
-            aria-label="علاقه‌مندی‌ها"
           >
-            <Heart className="w-4 h-4" />
+            <Heart className="w-4 h-4" aria-hidden="true" />
             <span>علاقه‌مندی‌ها</span>
             {bookmarks.length > 0 && (
               <span className="relative bg-red-200 text-red-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
