@@ -28,11 +28,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Proper pagination with offset-based queries
   - Improved performance with per-page fetching (20 items per page)
 
-- **Accessibility Improvements**
+- **Accessibility Improvements (WCAG 2.1 AA Compliance)**
   - Skip navigation link for keyboard users
   - Enhanced ARIA labels throughout the application
   - Improved keyboard navigation support
   - Better focus management
+  - Fixed accessible names to match visible text
+  - Added aria-hidden to decorative icons
+  - Improved color contrast ratios (WCAG AA compliant)
+  - Ensured single main landmark per page
+  - All interactive elements have proper ARIA labels
+
+- **Performance & Layout Stability**
+  - Layout shift prevention on poem pages
+  - Reserved space for conditionally rendered components
+  - Fixed CLS (Cumulative Layout Shift) issues
+  - Improved image loading with proper dimensions
+  - Layout shift testing script for automated testing
+
+- **Development Tools**
+  - Automated layout shift testing script (`test-layout-shifts.js`)
+  - Lighthouse-based CLS testing across all pages
+  - Performance monitoring and reporting
 
 - **Code Quality Improvements**
   - Converted all function declarations to const arrow functions
@@ -85,6 +102,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved build and deployment workflows
 
 ### Fixed
+- **Accessibility Issues**
+  - Fixed "Elements must have their visible text as part of their accessible name" errors
+  - Fixed "Elements must meet minimum color contrast ratio thresholds" warnings
+  - Fixed "ARIA hidden element must not be focusable" issues
+  - Fixed "Document should have one main landmark" requirement
+  - Improved accessible names for all header buttons
+  - Added proper aria-hidden attributes to decorative icons
+  - Enhanced color contrast for better readability
+
+- **Layout Shift Issues (CLS)**
+  - Fixed layout shifts on poem pages (FontSizeControl, control buttons)
+  - Fixed layout shifts on poet pages (poet image placeholder)
+  - Reserved space for all conditionally rendered components
+  - Prevented main content area from shifting during load
+  - Improved CLS scores across all pages
+
+- **Build & Code Quality**
+  - Fixed ESLint errors (setState in effects, unused variables)
+  - Fixed TypeScript errors
+  - Resolved Vercel build failures
+  - Improved code consistency and maintainability
+
 - **Mobile Responsiveness**
   - Fixed mobile dropdown width and positioning issues
   - Resolved alphabetical navigation mobile layout problems
