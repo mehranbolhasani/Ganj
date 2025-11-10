@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, Users, BookOpen, FileText, Heart } from 'lucide-react';
 import { searchAll } from '@/lib/supabase-search';
-import { Poet, Category, Poem } from '@/lib/types';
+import { Poet, Category, Poem, SearchResponse } from '@/lib/types';
 import { PoemCardSkeleton } from './LoadingStates';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 
@@ -16,19 +16,24 @@ interface SearchResultsProps {
 
 const ITEMS_PER_PAGE = 20;
 
-function SearchResults({ query, type, page }: SearchResultsProps) {
+const SearchResults = ({ query, type, page }: SearchResultsProps) => {
   const [results, setResults] = useState<{
     poets: Poet[];
     categories: Category[];
     poems: Poem[];
   }>({ poets: [], categories: [], poems: [] });
+  const [totalCounts, setTotalCounts] = useState<{
+    poets: number;
+    categories: number;
+    poems: number;
+  }>({ poets: 0, categories: 0, poems: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'poets' | 'categories' | 'poems'>(type);
   
   const { bookmarks } = useBookmarks();
 
-  // Search function using Supabase
+  // Search function using Supabase with server-side pagination
   const search = useCallback(async () => {
     if (!query.trim()) return;
 
@@ -36,15 +41,56 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
     setError(null);
 
     try {
-      const results = await searchAll(query, 100);
-      setResults(results);
+      let searchResults: SearchResponse;
+      
+      if (activeTab === 'all') {
+        // For "all" tab, fetch larger batches and paginate client-side
+        // Fetch enough items to cover multiple pages
+        const batchSize = ITEMS_PER_PAGE * 5; // Fetch 5 pages worth
+        const batchPage = Math.floor((page - 1) / 5) + 1; // Which batch we're in
+        const offset = (batchPage - 1) * batchSize;
+        
+        searchResults = await searchAll(
+          query, 
+          batchSize, 
+          'all',
+          offset,
+          batchPage === 1 // Get counts only on first batch
+        );
+      } else {
+        // For specific tabs, use proper server-side pagination
+        const offset = (page - 1) * ITEMS_PER_PAGE;
+        
+        searchResults = await searchAll(
+          query, 
+          ITEMS_PER_PAGE, 
+          activeTab,
+          offset,
+          page === 1 // Get counts only on first page
+        );
+      }
+      
+      setResults({
+        poets: searchResults.poets || [],
+        categories: searchResults.categories || [],
+        poems: searchResults.poems || [],
+      });
+      
+      // Update total counts if available
+      if (page === 1) {
+        setTotalCounts({
+          poets: searchResults.totalPoets || searchResults.poets?.length || 0,
+          categories: searchResults.totalCategories || searchResults.categories?.length || 0,
+          poems: searchResults.totalPoems || searchResults.poems?.length || 0,
+        });
+      }
     } catch (err) {
       console.error('Search failed:', err);
       setError('خطا در جستجو. لطفاً دوباره تلاش کنید.');
     } finally {
       setIsLoading(false);
     }
-  }, [query]);
+  }, [query, page, activeTab]);
 
   useEffect(() => {
     search();
@@ -83,20 +129,38 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
     }
   }, [activeTab, results]);
 
-  // Pagination
-  const totalResults = filteredResults.poets.length + filteredResults.categories.length + filteredResults.poems.length;
+  // Pagination - now using server-side pagination
+  // Calculate total results based on active tab
+  let totalResults = 0;
+  if (activeTab === 'all') {
+    totalResults = totalCounts.poets + totalCounts.categories + totalCounts.poems;
+  } else if (activeTab === 'poets') {
+    totalResults = totalCounts.poets;
+  } else if (activeTab === 'categories') {
+    totalResults = totalCounts.categories;
+  } else if (activeTab === 'poems') {
+    totalResults = totalCounts.poems;
+  }
+  
   const totalPages = Math.ceil(totalResults / ITEMS_PER_PAGE);
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
 
-  // Combine and paginate results
+  // Combine results
   const allResults = [
     ...filteredResults.poets.map(item => ({ type: 'poet' as const, data: item })),
     ...filteredResults.categories.map(item => ({ type: 'category' as const, data: item })),
     ...filteredResults.poems.map(item => ({ type: 'poem' as const, data: item })),
   ];
-
-  const paginatedResults = allResults.slice(startIndex, endIndex);
+  
+  // For "all" tab, paginate client-side from the fetched batch
+  // For specific tabs, results are already paginated from server
+  let paginatedResults = allResults;
+  if (activeTab === 'all') {
+    const batchPage = Math.floor((page - 1) / 5) + 1;
+    const pageInBatch = ((page - 1) % 5) + 1;
+    const startIndex = (pageInBatch - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    paginatedResults = allResults.slice(startIndex, endIndex);
+  }
 
   // Generate page URLs
   const generatePageUrl = (newPage: number) => {
@@ -164,9 +228,9 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
         <div className="flex gap-2 border-b border-stone-200 dark:border-stone-700 min-w-max sm:min-w-0">
           {[
             { key: 'all', label: 'همه', count: totalResults, icon: Search },
-            { key: 'poets', label: 'شاعران', count: results.poets.length, icon: Users },
-            { key: 'categories', label: 'مجموعه‌ها', count: results.categories.length, icon: BookOpen },
-            { key: 'poems', label: 'اشعار', count: results.poems.length, icon: FileText },
+            { key: 'poets', label: 'شاعران', count: totalCounts.poets, icon: Users },
+            { key: 'categories', label: 'مجموعه‌ها', count: totalCounts.categories, icon: BookOpen },
+            { key: 'poems', label: 'اشعار', count: totalCounts.poems, icon: FileText },
           ].map(({ key, label, count, icon: Icon }) => {
             const handleTabClick = () => {
               setActiveTab(key as 'all' | 'poets' | 'categories' | 'poems');
@@ -284,16 +348,16 @@ function SearchResults({ query, type, page }: SearchResultsProps) {
       )}
     </div>
   );
-}
+};
 
-function PoetResultCard({ poet, query, highlightText }: { poet: Poet; query: string; highlightText: (text: string, highlight: string) => string }) {
+const PoetResultCard = ({ poet, query, highlightText }: { poet: Poet; query: string; highlightText: (text: string, highlight: string) => string }) => {
   return (
     <Link
       href={`/poet/${poet.id}`}
       className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 transition-all duration-200"
     >
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-full flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-full flex items-center justify-center shrink-0">
           <Users className="w-6 h-6 text-stone-600 dark:text-stone-400" />
         </div>
         <div className="flex-1 min-w-0">
@@ -311,16 +375,16 @@ function PoetResultCard({ poet, query, highlightText }: { poet: Poet; query: str
       </div>
     </Link>
   );
-}
+};
 
-function CategoryResultCard({ category, query, highlightText }: { category: Category; query: string; highlightText: (text: string, highlight: string) => string }) {
+const CategoryResultCard = ({ category, query, highlightText }: { category: Category; query: string; highlightText: (text: string, highlight: string) => string }) => {
   return (
     <Link
       href={`/poet/${category.poetId}/category/${category.id}`}
       className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 transition-all duration-200"
     >
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-lg flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-lg flex items-center justify-center shrink-0">
           <BookOpen className="w-6 h-6 text-stone-600 dark:text-stone-400" />
         </div>
         <div className="flex-1 min-w-0">
@@ -340,7 +404,7 @@ function CategoryResultCard({ category, query, highlightText }: { category: Cate
   );
 }
 
-function PoemResultCard({ poem, isBookmarked, query, highlightText }: { poem: Poem; isBookmarked: boolean; query: string; highlightText: (text: string, highlight: string) => string }) {
+const PoemResultCard = ({ poem, isBookmarked, query, highlightText }: { poem: Poem; isBookmarked: boolean; query: string; highlightText: (text: string, highlight: string) => string }) => {
   // Find the verse that contains the search keyword (same logic as GlobalSearch)
   const findMatchingVerse = (verses: string[], searchQuery: string): string => {
     if (verses.length === 0) return '';
@@ -457,7 +521,7 @@ function PoemResultCard({ poem, isBookmarked, query, highlightText }: { poem: Po
       className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 active:scale-[0.98] transition-all duration-200 touch-manipulation backdrop-blur-md"
     >
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 bg-yellow-800/40 dark:bg-yellow-800/30 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 bg-yellow-800/40 dark:bg-yellow-800/30 rounded-xl flex items-center justify-center shrink-0">
           <FileText className="w-6 h-6 sm:w-7 sm:h-7 text-yellow-700 dark:text-yellow-700" />
         </div>
         <div className="flex-1 min-w-0">
@@ -467,7 +531,7 @@ function PoemResultCard({ poem, isBookmarked, query, highlightText }: { poem: Po
               dangerouslySetInnerHTML={{ __html: highlightText(poem.title, query) }}
             />
             {isBookmarked && (
-              <Heart className="w-5 h-5 text-red-500 fill-current flex-shrink-0" />
+              <Heart className="w-5 h-5 text-red-500 fill-current shrink-0" />
             )}
           </div>
           <p className="text-sm sm:text-base text-stone-600 dark:text-stone-400 text-right mb-2 font-medium">
@@ -484,5 +548,6 @@ function PoemResultCard({ poem, isBookmarked, query, highlightText }: { poem: Po
       </div>
     </Link>
   );
-}
+};
+
 export default SearchResults;

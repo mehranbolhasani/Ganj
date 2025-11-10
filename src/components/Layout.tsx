@@ -5,9 +5,17 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-stone-100 dark:bg-stone-900 transition-colors duration-300">
+      {/* Skip Navigation Link for Accessibility */}
+      <a
+        href="#main-content"
+        className="absolute -top-full focus:top-4 focus:right-4 z-50 px-4 py-2 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg outline-none ring-2 ring-yellow-500 focus:ring-offset-2 transition-all"
+      >
+        پرش به محتوای اصلی
+      </a>
+
       {/* Grid background with fade-out effect */}
       <div className="grid-background" />
 
@@ -19,11 +27,13 @@ export default function Layout({ children }: LayoutProps) {
       {/* Content Container - Mobile optimized */}
       <div className="relative z-10 flex flex-col items-center container-responsive min-h-dvh gap-4 sm:gap-8">
         <Header />
-        <main className="w-full flex flex-col gap-4 sm:gap-8">
+        <main id="main-content" className="w-full flex flex-col gap-4 sm:gap-8">
           {children}
         </main>
         <Footer />
       </div>
     </div>
   );
-}
+};
+
+export default Layout;

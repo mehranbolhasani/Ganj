@@ -23,7 +23,7 @@ interface GlobalSearchProps {
   onClose: () => void;
 }
 
-export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
+const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -623,4 +623,6 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
       </div>
     </div>
   );
-}
+};
+
+export default GlobalSearch;

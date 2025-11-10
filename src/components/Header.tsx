@@ -2,16 +2,24 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import PoetsDropdown from './PoetsDropdown';
-import ViewHistory from './ViewHistory';
-import GlobalSearch from './GlobalSearch';
 import { useViewHistory } from '@/lib/history-manager';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { History, Heart, Menu, X, Search } from 'lucide-react';
 import { simpleApi } from '@/lib/simple-api';
 import { Poet } from '@/lib/types';
 
-export default function Header() {
+// Dynamic imports for heavy modal components
+const ViewHistory = dynamic(() => import('./ViewHistory'), {
+  loading: () => null, // No loading state needed for modals
+});
+
+const GlobalSearch = dynamic(() => import('./GlobalSearch'), {
+  loading: () => null, // No loading state needed for modals
+});
+
+const Header = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -187,10 +195,13 @@ export default function Header() {
             className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white/95 dark:bg-stone-800/95 backdrop-blur-sm shadow-xl transform transition-transform duration-300 ease-in-out mobile-optimize"
             style={{ transition: 'transform 0.3s ease-in-out' }}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-menu-title"
           >
             {/* Mobile Menu Header */}
             <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
-              <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">منو</h2>
+              <h2 id="mobile-menu-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">منو</h2>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="p-3 rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
@@ -209,6 +220,7 @@ export default function Header() {
                         placeholder="جستجو در شاعران..."
                         value={mobileSearchQuery}
                         onChange={(e) => setMobileSearchQuery(e.target.value)}
+                        aria-label="جستجو در شاعران"
                         className="w-full pr-12 pl-4 py-3 text-base border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent touch-manipulation"
                         autoComplete="off"
                         autoCorrect="off"
@@ -252,6 +264,7 @@ export default function Header() {
                     setIsHistoryOpen(true);
                     setIsMobileMenuOpen(false);
                   }}
+                  aria-label="تاریخچه بازدیدها"
                   className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
                 >
                   <div className="flex items-center gap-3">
@@ -324,4 +337,6 @@ export default function Header() {
       )}
     </header>
   );
-}
+};
+
+export default Header;
