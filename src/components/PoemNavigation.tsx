@@ -11,7 +11,7 @@ interface PoemNavigationProps {
   nextPoem: Poem | null;
 }
 
-const PoemNavigation = ({ currentPoem, previousPoem, nextPoem }: PoemNavigationProps) => {
+const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
   const router = useRouter();
 
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, poemId: number) => {

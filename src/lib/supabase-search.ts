@@ -1,4 +1,4 @@
-import { Poet, Category, Poem, SearchResponse } from './types';
+import { SearchResponse } from './types';
 
 // Simple in-memory cache for search results
 const searchCache = new Map<string, { data: SearchResponse; timestamp: number }>();

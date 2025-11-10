@@ -155,7 +155,6 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
   // For specific tabs, results are already paginated from server
   let paginatedResults = allResults;
   if (activeTab === 'all') {
-    const batchPage = Math.floor((page - 1) / 5) + 1;
     const pageInBatch = ((page - 1) % 5) + 1;
     const startIndex = (pageInBatch - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;

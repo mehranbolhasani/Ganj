@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { ExternalLink } from 'lucide-react';
 
@@ -12,9 +12,9 @@ interface TextSelectionTooltipProps {
 
 const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelectionTooltipProps) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number | null>(null);
   const [adjustedPosition, setAdjustedPosition] = useState<{ x: number; y: number } | null>(null);
   const [isPositioned, setIsPositioned] = useState(false);
-  const rafIdRef = useRef<number | null>(null);
 
   const calculatePosition = useCallback((pos: { x: number; y: number }, useActualDimensions: boolean = false) => {
     const padding = 10;
@@ -60,19 +60,22 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
   }, []);
 
   // Calculate position when position prop changes
-  useEffect(() => {
+  // Using useLayoutEffect and requestAnimationFrame to avoid synchronous setState issues
+  useLayoutEffect(() => {
     // Cancel any pending RAF
     if (rafIdRef.current !== null) {
       cancelAnimationFrame(rafIdRef.current);
     }
 
-    // First, set position with estimated dimensions (hidden)
+    // Calculate initial position with estimated dimensions
     const initialPos = calculatePosition(position, false);
-    setAdjustedPosition(initialPos);
-    setIsPositioned(false);
-
-    // Then refine with actual dimensions using double RAF for accurate measurement
+    
+    // Use requestAnimationFrame to defer state updates
     rafIdRef.current = requestAnimationFrame(() => {
+      setAdjustedPosition(initialPos);
+      setIsPositioned(false);
+
+      // Then refine with actual dimensions using double RAF for accurate measurement
       rafIdRef.current = requestAnimationFrame(() => {
         const finalPos = calculatePosition(position, true);
         setAdjustedPosition(finalPos);
@@ -133,7 +136,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
               const adjustedPos = calculatePosition(newPos, true);
               setAdjustedPosition(adjustedPos);
             }
-          } catch (e) {
+          } catch {
             // Selection might have changed, ignore
           }
         }
@@ -154,12 +157,6 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
   // Encode selected text for Vajehyab URL
   const vajehyabUrl = `https://vajehyab.com/?q=${encodeURIComponent(selectedText.trim())}`;
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Don't render until position is calculated
   if (!adjustedPosition) return null;
 
@@ -176,7 +173,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
       role="tooltip"
       aria-label="جستجوی معنی در واژه‌یاب"
       onMouseDown={(e) => e.stopPropagation()}
-      onTouchStart={(e) => e.stopPropagation()}
+      onTouchStart={(e: React.TouchEvent) => e.stopPropagation()}
     >
       <a
         href={vajehyabUrl}
@@ -218,7 +215,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
   );
 
   // Render tooltip in a portal to body to avoid CSS filter issues
-  if (!mounted) return null;
+  if (typeof window === 'undefined') return null;
   
   return createPortal(tooltipContent, document.body);
 };

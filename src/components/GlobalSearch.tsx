@@ -197,7 +197,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
   }, [isOpen]);
 
   // Handle result click
-  const handleResultClick = (_result: SearchResult) => {
+  const handleResultClick = () => {
     saveSearchHistory(query);
     onClose();
   };
@@ -506,7 +506,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         }
                       }}
                       href={result.url}
-                      onClick={() => handleResultClick(result)}
+                      onClick={handleResultClick}
                       className={`block p-4 hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors group ${
                         index === selectedIndex ? 'bg-stone-100 dark:bg-yellow-800/30' : ''
                       }`}
