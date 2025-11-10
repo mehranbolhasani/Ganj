@@ -412,27 +412,27 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         <div className="flex flex-col-reverse sm:flex-row-reverse gap-8 sm:gap-2 justify-between w-full align-end">
           {/* Controls - Mobile: full width, Desktop: right side */}
           <div className="flex flex-row gap-1 bg-white/75 dark:bg-yellow-900/20 rounded-xl shadow-sm p-1 h-fit w-fit sm:w-auto justify-center sm:justify-end self-end backdrop-blur-sm">
-            {/* Font Size Control - only show after hydration */}
-            {isHydrated && (
-              <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
-                <FontSizeControl showLabel={false} />
-              </div>
-            )}
+            {/* Font Size Control - reserve space to prevent layout shift */}
+            <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
+              <FontSizeControl showLabel={false} />
+            </div>
 
             <div className="flex gap-1 justify-center sm:justify-end">
-              {/* Distract-free mode button */}
-              {isHydrated && (
+              {/* Distract-free mode button - reserve space */}
+              {isHydrated ? (
                 <button
                   onClick={() => setIsDistractFree(true)}
                   className="flex items-center justify-center w-10 h-10 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-600 transition-all duration-200 cursor-pointer touch-target"
                   aria-label="حالت تمرکز (بدون حواس‌پرتی)"
                   title="حالت تمرکز (F)"
                 >
-                  <BookOpen className="w-4 h-4" />
+                  <BookOpen className="w-4 h-4" aria-hidden="true" />
                 </button>
+              ) : (
+                <div className="w-10 h-10" aria-hidden="true" />
               )}
 
-              {/* Bookmark button */}
+              {/* Bookmark button - reserve space */}
               {isHydrated ? (
                 <BookmarkButton
                   poemId={poem.id}
@@ -444,7 +444,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
                   className="touch-target"
                 />
               ) : (
-                <div className="w-10 h-10" /> 
+                <div className="w-10 h-10" aria-hidden="true" />
               )}
             </div>
           </div>
