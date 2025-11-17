@@ -141,22 +141,59 @@ export const hybridApi = {
         
         if (hasPoet) {
           const data = await supabaseApi.getPoet(id);
-          
-          // If poet has no categories or data is incomplete, fallback to Ganjoor
           if (data.categories.length === 0) {
             console.log(`Poet ${id} has no categories in Supabase, using Ganjoor API`);
           } else {
-            const duration = performance.now() - startTime;
-            
-            trackPerformance({
-              source: 'supabase',
-              endpoint: 'getPoet',
-              duration,
-              success: true,
-              fallback: false,
-            });
-
-            return data;
+            const specialCats = SPECIAL_NESTED_CATEGORIES[id] || [];
+            if (specialCats.length > 0) {
+              try {
+                const ganData = await ganjoorApi.getPoet(id);
+                const chaptersByCat = new Map<number, { poemCount?: number; chapters?: Chapter[] }>();
+                ganData.categories.forEach(c => {
+                  chaptersByCat.set(c.id, { poemCount: c.poemCount, chapters: c.chapters });
+                });
+                const enriched: { poet: Poet; categories: Category[] } = {
+                  poet: data.poet,
+                  categories: data.categories.map((c): Category => {
+                    const g = chaptersByCat.get(c.id);
+                    const isSpecial = specialCats.includes(c.id);
+                    if (isSpecial && g && g.chapters && g.chapters.length > 0) {
+                      return { ...c, poemCount: g.poemCount, hasChapters: true, chapters: g.chapters };
+                    }
+                    return c;
+                  }),
+                };
+                const duration = performance.now() - startTime;
+                trackPerformance({
+                  source: 'supabase',
+                  endpoint: 'getPoet',
+                  duration,
+                  success: true,
+                  fallback: false,
+                });
+                return enriched;
+              } catch {
+                const duration = performance.now() - startTime;
+                trackPerformance({
+                  source: 'supabase',
+                  endpoint: 'getPoet',
+                  duration,
+                  success: true,
+                  fallback: false,
+                });
+                return data;
+              }
+            } else {
+              const duration = performance.now() - startTime;
+              trackPerformance({
+                source: 'supabase',
+                endpoint: 'getPoet',
+                duration,
+                success: true,
+                fallback: false,
+              });
+              return data;
+            }
           }
         } else {
           console.log(`Poet ${id} not in Supabase, using Ganjoor API`);
@@ -244,17 +281,18 @@ export const hybridApi = {
         
         if (hasPoem) {
           const poem = await supabaseApi.getPoem(id);
-          const duration = performance.now() - startTime;
-          
-          trackPerformance({
-            source: 'supabase',
-            endpoint: 'getPoem',
-            duration,
-            success: true,
-            fallback: false,
-          });
-
-          return poem;
+          if (poem.verses && poem.verses.length > 0) {
+            const duration = performance.now() - startTime;
+            trackPerformance({
+              source: 'supabase',
+              endpoint: 'getPoem',
+              duration,
+              success: true,
+              fallback: false,
+            });
+            return poem;
+          }
+          console.log(`Poem ${id} has no verses in Supabase, using Ganjoor API`);
         } else {
           console.log(`Poem ${id} not in Supabase, using Ganjoor API`);
         }
@@ -322,4 +360,7 @@ export const hybridApi = {
  * Export for monitoring and debugging
  */
 export { performanceMetrics };
-
+// Special-case nested categories that contain sub-categories (multi-level)
+const SPECIAL_NESTED_CATEGORIES: Record<number, number[]> = {
+  9: [152], // Attar: Divan-e Ashaar
+};

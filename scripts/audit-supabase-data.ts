@@ -45,7 +45,7 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function auditSupabaseData() {
+async function auditSupabaseData(): Promise<{ totals: { poets: number; categories: number; poems: number }, famous: Record<string, number> }> {
   console.log('\n📊 Auditing Supabase Data...\n');
   console.log('='.repeat(60));
 
@@ -60,9 +60,14 @@ async function auditSupabaseData() {
       supabase.from('poems').select('id', { count: 'exact', head: true }),
     ]);
 
-    console.log(`Poets:      ${poetsCount.count || 0}`);
-    console.log(`Categories: ${categoriesCount.count || 0}`);
-    console.log(`Poems:      ${poemsCount.count || 0}`);
+    const totals = {
+      poets: poetsCount.count || 0,
+      categories: categoriesCount.count || 0,
+      poems: poemsCount.count || 0,
+    };
+    console.log(`Poets:      ${totals.poets}`);
+    console.log(`Categories: ${totals.categories}`);
+    console.log(`Poems:      ${totals.poems}`);
 
     // 2. List all poets
     console.log('\n📚 Poets in Supabase:');
@@ -155,6 +160,28 @@ async function auditSupabaseData() {
         });
     }
 
+    // 4b. Exact counts for famous poets
+    console.log('\n🏷️ Famous Poets (Exact Counts):');
+    console.log('-'.repeat(60));
+    const famousPoets = [
+      { id: 2, name: 'حافظ شیرازی' },
+      { id: 7, name: 'سعدی شیرازی' },
+      { id: 5, name: 'جلال الدین محمد مولوی' },
+      { id: 4, name: 'ابوالقاسم فردوسی' },
+      { id: 9, name: 'عطار نیشابوری' },
+      { id: 6, name: 'نظامی گنجوی' },
+    ];
+    const famousCounts: Record<string, number> = {};
+    for (const poet of famousPoets) {
+      const { count } = await supabase
+        .from('poems')
+        .select('id', { count: 'exact', head: true })
+        .eq('poet_id', poet.id);
+      const c = count || 0;
+      famousCounts[poet.name] = c;
+      console.log(`${poet.name}: ${c} poems`);
+    }
+
     // 5. Data completeness check
     console.log('\n✅ Data Completeness:');
     console.log('-'.repeat(60));
@@ -214,10 +241,11 @@ async function auditSupabaseData() {
     console.log('\n' + '='.repeat(60));
     console.log('\n✅ Audit complete!');
     console.log('\n💡 Summary:');
-    console.log(`   - ${poetsCount.count || 0} poets in Supabase`);
-    console.log(`   - ${categoriesCount.count || 0} categories in Supabase`);
-    console.log(`   - ${poemsCount.count || 0} poems in Supabase`);
+    console.log(`   - ${totals.poets} poets in Supabase`);
+    console.log(`   - ${totals.categories} categories in Supabase`);
+    console.log(`   - ${totals.poems} poems in Supabase`);
     console.log('\n');
+    return { totals, famous: famousCounts };
 
   } catch (error) {
     console.error('\n❌ Error during audit:', error);
@@ -225,6 +253,34 @@ async function auditSupabaseData() {
   }
 }
 
-// Run audit
-auditSupabaseData();
+const args = process.argv.slice(2);
+const watch = args.includes('--watch');
+const intervalArg = args.find(a => a.startsWith('--interval='));
+const intervalSec = intervalArg ? Math.max(15, parseInt(intervalArg.split('=')[1], 10) || 120) : 120;
 
+async function watchLoop() {
+  console.log(`\n⏱️  Watch mode: every ${intervalSec} seconds`);
+  let prev: { totals: { poets: number; categories: number; poems: number }, famous: Record<string, number> } | null = null;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const res = await auditSupabaseData();
+    if (prev) {
+      console.log('📈 Delta since last audit:');
+      const deltaTotalPoems = res.totals.poems - prev.totals.poems;
+      console.log(`   Total poems: ${res.totals.poems} (${deltaTotalPoems >= 0 ? '+' : ''}${deltaTotalPoems})`);
+      Object.keys(res.famous).forEach(name => {
+        const prevCount = prev!.famous[name] || 0;
+        const diff = res.famous[name] - prevCount;
+        console.log(`   ${name}: ${res.famous[name]} (${diff >= 0 ? '+' : ''}${diff})`);
+      });
+    }
+    prev = res;
+    await new Promise(r => setTimeout(r, intervalSec * 1000));
+  }
+}
+
+if (watch) {
+  watchLoop();
+} else {
+  auditSupabaseData();
+}
