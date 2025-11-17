@@ -219,55 +219,10 @@ export const supabaseApi = {
         console.log(`[Supabase] Final categories:`, categories.map(c => `${c.title} (${c.poemCount || 0})`));
       }
 
-      // Always calculate poem counts from poems table to ensure accuracy
-      // This handles cases where poem_count column might be incorrect or missing
-      const categoryIds = categories.map(cat => cat.id);
-      
-      if (categoryIds.length > 0) {
-        // Get poem counts for all categories at once (batch query)
-        const { data: poemCounts, error: countError } = await supabase
-          .from('poems')
-          .select('category_id')
-          .eq('poet_id', id)
-          .in('category_id', categoryIds);
-
-        if (!countError && poemCounts) {
-          // Count poems per category
-          const countMap = new Map<number, number>();
-          poemCounts.forEach(poem => {
-            if (poem.category_id) {
-              const catId = poem.category_id;
-              countMap.set(catId, (countMap.get(catId) || 0) + 1);
-            }
-          });
-
-          // Update all categories with accurate counts
-          categories = categories.map(category => {
-            // Use calculated count if available, otherwise use stored count, otherwise 0
-            const calculatedCount = countMap.get(category.id);
-            if (calculatedCount !== undefined) {
-              return { ...category, poemCount: calculatedCount };
-            }
-            // If we have a stored count > 0, use it
-            if (category.poemCount !== undefined && category.poemCount > 0) {
-              return category;
-            }
-            // Otherwise, return 0
-            return { ...category, poemCount: 0 };
-          });
-          
-          // Debug logging for poem counts
-          console.log(`[Supabase] POEM COUNTS CALCULATED:`, categories.map(c => `${c.title}: ${c.poemCount}`));
-          console.log(`[Supabase] Total poems fetched for counting:`, poemCounts?.length || 0);
-        } else if (countError) {
-          console.warn('Failed to count poems for categories:', countError);
-          // Fallback: use stored poem_count if available
-          categories = categories.map(category => ({
-            ...category,
-            poemCount: category.poemCount || 0,
-          }));
-        }
-      }
+      categories = categories.map(category => ({
+        ...category,
+        poemCount: category.poemCount || 0,
+      }));
 
       return { poet, categories };
     }, 30 * 60 * 1000); // Cache for 30 minutes

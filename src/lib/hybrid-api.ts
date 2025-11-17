@@ -144,34 +144,46 @@ export const hybridApi = {
           if (data.categories.length === 0) {
             console.log(`Poet ${id} has no categories in Supabase, using Ganjoor API`);
           } else {
-            try {
-              const ganData = await ganjoorApi.getPoet(id);
-              const chaptersByCat = new Map<number, { poemCount?: number; chapters?: Chapter[] }>();
-              ganData.categories.forEach(c => {
-                chaptersByCat.set(c.id, { poemCount: c.poemCount, chapters: c.chapters });
-              });
-              const enriched: { poet: Poet; categories: Category[] } = {
-                poet: data.poet,
-                categories: data.categories.map((c): Category => {
-                  const g = chaptersByCat.get(c.id);
-                  const specialCats = SPECIAL_NESTED_CATEGORIES[id] || [];
-                  const isSpecial = specialCats.includes(c.id);
-                  if (isSpecial && g && g.chapters && g.chapters.length > 0) {
-                    return { ...c, poemCount: g.poemCount, hasChapters: true, chapters: g.chapters };
-                  }
-                  return c;
-                }),
-              };
-              const duration = performance.now() - startTime;
-              trackPerformance({
-                source: 'supabase',
-                endpoint: 'getPoet',
-                duration,
-                success: true,
-                fallback: false,
-              });
-              return enriched;
-            } catch {
+            const specialCats = SPECIAL_NESTED_CATEGORIES[id] || [];
+            if (specialCats.length > 0) {
+              try {
+                const ganData = await ganjoorApi.getPoet(id);
+                const chaptersByCat = new Map<number, { poemCount?: number; chapters?: Chapter[] }>();
+                ganData.categories.forEach(c => {
+                  chaptersByCat.set(c.id, { poemCount: c.poemCount, chapters: c.chapters });
+                });
+                const enriched: { poet: Poet; categories: Category[] } = {
+                  poet: data.poet,
+                  categories: data.categories.map((c): Category => {
+                    const g = chaptersByCat.get(c.id);
+                    const isSpecial = specialCats.includes(c.id);
+                    if (isSpecial && g && g.chapters && g.chapters.length > 0) {
+                      return { ...c, poemCount: g.poemCount, hasChapters: true, chapters: g.chapters };
+                    }
+                    return c;
+                  }),
+                };
+                const duration = performance.now() - startTime;
+                trackPerformance({
+                  source: 'supabase',
+                  endpoint: 'getPoet',
+                  duration,
+                  success: true,
+                  fallback: false,
+                });
+                return enriched;
+              } catch {
+                const duration = performance.now() - startTime;
+                trackPerformance({
+                  source: 'supabase',
+                  endpoint: 'getPoet',
+                  duration,
+                  success: true,
+                  fallback: false,
+                });
+                return data;
+              }
+            } else {
               const duration = performance.now() - startTime;
               trackPerformance({
                 source: 'supabase',
