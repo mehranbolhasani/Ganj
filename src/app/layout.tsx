@@ -13,6 +13,7 @@ import Layout from "@/components/Layout";
 
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { OrganizationStructuredData, WebsiteStructuredData } from "@/components/StructuredData"
 
 
 export const metadata: Metadata = {
@@ -34,6 +35,20 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    other: [
+      { rel: 'android-chrome', url: '/android-chrome-192x192.png', sizes: '192x192' },
+      { rel: 'android-chrome', url: '/android-chrome-512x512.png', sizes: '512x512' },
+    ],
+  },
   openGraph: {
     type: 'website',
     locale: 'fa_IR',
@@ -45,7 +60,7 @@ export const metadata: Metadata = {
       {
         url: '/og-image.jpg',
         width: 1200,
-        height: 630,
+        height: 675,
         alt: 'دفتر گنج',
       },
     ],
@@ -78,8 +93,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
+      <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body className="antialiased" style={{ fontFamily: 'Estedad, Abar VF, Vazirmatn, Vazir, Tahoma, Arial, sans-serif' }}>
+        <OrganizationStructuredData
+          name="دفتر گنج"
+          url="https://ganj.directory"
+          description="مجموعه‌ای از بهترین اشعار فارسی"
+        />
+        <WebsiteStructuredData url="https://ganj.directory" />
         <RouteProgress />
         <ScrollToTop />
         <ThemeProvider

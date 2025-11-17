@@ -82,6 +82,23 @@ Verify data integrity and see what's in the database.
 npx tsx scripts/audit-supabase-data.ts
 ```
 
+### `test-security-policies.ts`
+Test Row Level Security policies to ensure security is working correctly.
+
+```bash
+npx tsx scripts/test-security-policies.ts
+```
+
+### `fix-supabase-security.sql`
+SQL script to fix all security issues (RLS, function search_path, etc.).
+
+Run this in Supabase SQL Editor if Security Advisor shows errors.
+
+### `fix-remaining-warnings.sql`
+SQL script to fix remaining warnings (materialized view, extensions).
+
+Run this after `fix-supabase-security.sql` if Security Advisor still shows warnings.
+
 ---
 
 ## 🔧 How It Works
@@ -171,6 +188,83 @@ The import script uses `upsert`, so it's safe to run multiple times.
 
 ---
 
+## 🔒 Security
+
+### Row Level Security (RLS)
+
+All tables in Supabase have Row Level Security enabled to protect your data while allowing public read access for poetry content.
+
+#### RLS Policies
+
+**Public Read Access (Poetry Data):**
+- ✅ **poets**: Anyone can read (public read-only)
+- ✅ **categories**: Anyone can read (public read-only)
+- ✅ **poems**: Anyone can read (public read-only)
+
+**Contact Form:**
+- ✅ **contact_messages**: Anyone can insert (submit form), but **cannot read** (privacy protection)
+
+**Server-Side Access:**
+- The application uses `SUPABASE_SERVICE_ROLE_KEY` on the server, which bypasses RLS for admin operations (imports, etc.)
+- Client-side code uses `NEXT_PUBLIC_SUPABASE_ANON_KEY`, which respects RLS policies
+
+#### Applying Security Fixes
+
+If you see security warnings in Supabase Security Advisor:
+
+1. **Run the security fix script:**
+   ```bash
+   # Copy contents of scripts/fix-supabase-security.sql
+   # Run in Supabase SQL Editor
+   ```
+
+2. **Or apply manually:**
+   - The main schema file (`supabase-schema.sql`) includes RLS policies
+   - Run the updated schema to enable security
+
+#### Testing Security Policies
+
+Test that RLS policies are working correctly:
+
+```bash
+npx tsx scripts/test-security-policies.ts
+```
+
+This script verifies:
+- ✅ Public read access works (anon key)
+- ✅ Public write is blocked (anon key)
+- ✅ Contact form insert works (anon key)
+- ✅ Contact form read is blocked (anon key)
+- ✅ Service role key still has full access
+
+#### Security Warnings Explained
+
+**Function Search Path Warnings:**
+- Fixed by setting `SET search_path = public` in functions
+- Prevents SQL injection vulnerabilities
+
+**Extension Warnings:**
+- `pg_trgm` and `unaccent` in public schema are acceptable
+- These extensions are required for full-text search
+- Common practice for PostgreSQL extensions
+- **Note:** These warnings are informational and can be safely ignored
+- The extensions are documented with comments explaining their purpose
+
+**Materialized View Warning:**
+- `famous_poets` view is not accessed via PostgREST API
+- **Fix:** Run `fix-remaining-warnings.sql` to revoke public access
+- This will remove the warning from Security Advisor
+
+#### Backup Tables
+
+If you have backup tables (`*_backup`), they should be:
+- **Option A**: Dropped (if not needed) - recommended
+- **Option B**: Secured with RLS policies (if needed for recovery)
+
+The security fix script handles this automatically.
+
+---
+
 ## 🆘 Support
 
 If you encounter issues:
@@ -178,6 +272,7 @@ If you encounter issues:
 2. Run audit script
 3. Check Supabase dashboard for errors
 4. Re-run import if data is corrupted
+5. Test security policies if access issues occur
 
 For questions or issues, check the code comments in:
 - `src/lib/hybrid-api.ts` - Main hybrid logic

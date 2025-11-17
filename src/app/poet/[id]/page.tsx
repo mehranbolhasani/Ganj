@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Suspense } from 'react';
+import { Metadata } from 'next';
 import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ExpandableDescription from '@/components/ExpandableDescription';
@@ -32,6 +33,66 @@ interface PoetPageProps {
   params: {
     id: string;
   };
+}
+
+export async function generateMetadata({ params }: PoetPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const poetId = parseInt(resolvedParams.id);
+  
+  if (isNaN(poetId)) {
+    return {
+      title: 'شاعر یافت نشد',
+    };
+  }
+
+  try {
+    const result = await hybridApi.getPoet(poetId);
+    const poet = result.poet;
+    const categories = result.categories;
+    const totalPoems = categories.reduce((sum, cat) => sum + (cat.poemCount || 0), 0);
+    
+    const description = poet.description 
+      ? `${poet.description.substring(0, 150)}...`
+      : `اشعار ${poet.name} - ${totalPoems} شعر در ${categories.length} دسته‌بندی`;
+    
+    const poetImage = getPoetImage(poet.slug || '');
+    const ogImage = poetImage 
+      ? `https://ganj.directory/images/${poetImage}`
+      : 'https://ganj.directory/og-image.jpg';
+
+    return {
+      title: poet.name,
+      description,
+      keywords: [poet.name, 'شعر فارسی', 'شاعران ایرانی'],
+      openGraph: {
+        title: `${poet.name} | دفتر گنج`,
+        description,
+        type: 'profile',
+        images: [
+          {
+            url: ogImage,
+            width: poetImage ? 320 : 1200,
+            height: poetImage ? 320 : 675,
+            alt: poet.name,
+          },
+        ],
+        url: `https://ganj.directory/poet/${poet.id}`,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${poet.name} | دفتر گنج`,
+        description,
+        images: [ogImage],
+      },
+      alternates: {
+        canonical: `/poet/${poet.id}`,
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'شاعر یافت نشد',
+    };
+  }
 }
 
 export default async function PoetPage({ params }: PoetPageProps) {
