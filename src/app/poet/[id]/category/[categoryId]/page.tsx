@@ -34,6 +34,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
   let categoryTitle: string = '';
   let category: Category | undefined;
   let error: string | null = null;
+  let chaptersOverride: Category['chapters'] | undefined;
 
   try {
     poems = await hybridApi.getCategoryPoems(poetId, categoryId);
@@ -42,6 +43,13 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
     poetName = poetData.poet.name;
     category = poetData.categories.find(cat => cat.id === categoryId);
     categoryTitle = category?.title || 'مجموعه';
+    const SPECIAL_NESTED_CATEGORIES: Record<number, number[]> = { 9: [152] };
+    const isSpecial = (SPECIAL_NESTED_CATEGORIES[poetId] || []).includes(categoryId);
+    if (isSpecial && (!category?.chapters || category.chapters.length === 0)) {
+      const ganPoet = await (await import('@/lib/ganjoor-api')).ganjoorApi.getPoet(poetId);
+      const ganCategory = ganPoet.categories.find(cat => cat.id === categoryId);
+      chaptersOverride = ganCategory?.chapters;
+    }
   } catch (err) {
     error = err instanceof Error ? err.message : 'خطا در بارگذاری اشعار';
   }
@@ -66,7 +74,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
       
     );
   }
-
+  const effectiveChapters = chaptersOverride ?? (category?.chapters ?? []);
   return (
     <Suspense fallback={<CategoryPageSkeleton />}>
       <Breadcrumbs items={[
@@ -84,9 +92,9 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
        </div>
 
        {/* Show chapters if available */}
-       {category?.chapters && category.chapters.length > 0 && (
+       {effectiveChapters.length > 0 && (
          <ChapterList 
-           chapters={category.chapters} 
+           chapters={effectiveChapters} 
            categoryTitle={categoryTitle}
            poetId={poetId}
            categoryId={categoryId}
@@ -94,13 +102,13 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
        )}
 
       {/* Show poems only if there are no chapters, or if there are direct poems */}
-      {category?.chapters && category.chapters.length > 0 ? (
+      {effectiveChapters.length > 0 ? (
         <div className="text-center py-8">
           <p className="text-stone-600 dark:text-stone-400 text-right mb-4">
             برای مشاهده اشعار، روی یکی از فصول بالا کلیک کنید
           </p>
           <p className="text-sm text-stone-500 dark:text-stone-500 text-right">
-            این مجموعه شامل {category.chapters.length} فصل است
+            این مجموعه شامل {effectiveChapters.length} فصل است
           </p>
         </div>
       ) : poems.length === 0 ? (

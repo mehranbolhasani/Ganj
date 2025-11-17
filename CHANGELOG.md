@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2025-11-17)
+- Hybrid chapter enrichment for Attar’s nested category only (`poetId 9`, `categoryId 152`).
+- Robust Ganjoor poem parser that falls back to HTML/plain fields when `verses[]` is missing.
+- Project runtime rule: always `await` `params` and `searchParams` in Next.js App Router pages.
+
+### Fixed (2025-11-17)
+- Resolved 404s on category and chapter pages caused by accessing `params` synchronously.
+  - References: `src/app/poet/[id]/category/[categoryId]/page.tsx:22`, `src/app/poet/[id]/category/[categoryId]/chapter/[chapterId]/page.tsx:18`.
+- Restored poem content for Attar’s sub-cat poems by parsing alternative Ganjoor response fields.
+  - References: `src/lib/ganjoor-api.ts:322`.
+
+### Security (2025-11-17)
+- Wrapped verbose Supabase logs with development guards; no payloads printed in production.
+  - References: `src/lib/supabase-api.ts:98`, `src/lib/supabase-api.ts:119`, `src/lib/supabase-api.ts:170`.
+- Confirmed service role key is server-only; client uses anon key.
+
+### Changed (2025-11-17)
+- Special-case gating for nested chapters preserved only for Attar `152`.
+  - References: `src/lib/hybrid-api.ts:151`.
+- Updated Cursor project rules to codify hybrid data strategy, security, and Next.js params handling.
+
 ### Added
 - **Text Selection & Dictionary Integration**
   - Text selection tooltip with Vajehyab search integration

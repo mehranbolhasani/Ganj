@@ -136,31 +136,36 @@ export const ganjoorApi = {
               poemCount += response.cat.poems.length;
             }
             
-            // If category has chapters (children), count poems from chapters too
+            // If category has chapters (children), count poems recursively
             if (response.cat.children && response.cat.children.length > 0) {
               hasChapters = true;
               chapters = response.cat.children.map(chapter => ({
                 id: chapter.id,
                 title: chapter.title,
                 categoryId: category.id,
-                poemCount: 0, // Will be calculated separately if needed
+                poemCount: 0,
               }));
-              
-              // Calculate total poem count from all chapters
-              for (const chapter of response.cat.children) {
+
+              const countPoemsRecursive = async (catId: number): Promise<number> => {
                 try {
-                  const chapterResponse = await fetchApi<{cat: {poems: Array<{id: number; title: string}>}}>(`/cat/${chapter.id}`);
-                  const chapterPoemCount = chapterResponse.cat?.poems?.length || 0;
-                  poemCount += chapterPoemCount;
-                  
-                  // Update chapter poem count
-                  const chapterIndex = chapters.findIndex(c => c.id === chapter.id);
-                  if (chapterIndex !== -1) {
-                    chapters[chapterIndex].poemCount = chapterPoemCount;
+                  const node = await fetchApi<{ cat: { poems: Array<{ id: number; title: string }>; children?: Array<{ id: number }> } }>(`/cat/${catId}`);
+                  let count = node.cat.poems?.length || 0;
+                  if (node.cat.children && node.cat.children.length > 0) {
+                    for (const child of node.cat.children) {
+                      count += await countPoemsRecursive(child.id);
+                    }
                   }
-                } catch (error) {
-                  console.warn(`Failed to get poem count for chapter ${chapter.id}:`, error);
+                  return count;
+                } catch {
+                  return 0;
                 }
+              };
+
+              for (const chapter of response.cat.children) {
+                const c = await countPoemsRecursive(chapter.id);
+                poemCount += c;
+                const idx = chapters.findIndex(x => x.id === chapter.id);
+                if (idx !== -1) chapters[idx].poemCount = c;
               }
             }
             
@@ -189,13 +194,13 @@ export const ganjoorApi = {
   async getCategoryPoems(poetId: number, categoryId: number): Promise<Poem[]> {
     return withCache(`/cat/${categoryId}`, async () => {
       const data = await fetchApi<{
-        poet: {name: string};
+        poet: { name: string };
         cat: {
           title: string;
           poems: Array<{
             id: number;
             title: string;
-            verses?: Array<{text: string}>;
+            verses?: Array<{ text: string }>;
           }>;
           children?: Array<{
             id: number;
@@ -205,61 +210,58 @@ export const ganjoorApi = {
           }>;
         };
       }>(`/cat/${categoryId}`);
-      
-      // The API returns {poet: {...}, cat: {...}} structure
-      const catData = data.cat;
-      
+
       const allPoems: Poem[] = [];
-      
-      // If category has direct poems, add them
-      if (catData.poems && catData.poems.length > 0) {
-        const directPoems = catData.poems.map((poem) => ({
-          id: poem.id,
-          title: poem.title,
-          verses: poem.verses?.map(verse => verse.text) || [],
-          poetId: poetId,
-          poetName: data.poet.name || '',
-          categoryId: categoryId,
-          categoryTitle: catData.title,
-        }));
-        allPoems.push(...directPoems);
-      }
-      
-      // If category has chapters (children), get poems from all chapters
-      if (catData.children && catData.children.length > 0) {
-        for (const chapter of catData.children) {
-          try {
-            const chapterData = await fetchApi<{
-              poet: {name: string};
-              cat: {
-                title: string;
-                poems: Array<{
-                  id: number;
-                  title: string;
-                  verses?: Array<{text: string}>;
-                }>;
-              };
-            }>(`/cat/${chapter.id}`);
-            
-            const chapterPoems = chapterData.cat.poems?.map((poem) => ({
-              id: poem.id,
-              title: poem.title,
-              verses: poem.verses?.map(verse => verse.text) || [],
-              poetId: poetId,
-              poetName: data.poet.name || '',
-              categoryId: categoryId,
-              categoryTitle: catData.title,
-              chapterId: chapter.id,
-              chapterTitle: chapter.title,
-            })) || [];
-            
-            allPoems.push(...chapterPoems);
-          } catch (error) {
-            console.warn(`Failed to get poems from chapter ${chapter.id}:`, error);
+
+      const addPoems = (poems: Array<{ id: number; title: string; verses?: Array<{ text: string }> }>, meta: { categoryTitle: string; chapterId?: number; chapterTitle?: string }) => {
+        for (const p of poems) {
+          allPoems.push({
+            id: p.id,
+            title: p.title,
+            verses: p.verses?.map(v => v.text) || [],
+            poetId,
+            poetName: data.poet.name || '',
+            categoryId,
+            categoryTitle: meta.categoryTitle,
+            chapterId: meta.chapterId,
+            chapterTitle: meta.chapterTitle,
+          });
+        }
+      };
+
+      const traverse = async (catId: number, parentTitle: string, parentChapter?: { id: number; title: string }) => {
+        const node = await fetchApi<{
+          cat: {
+            title: string;
+            poems: Array<{ id: number; title: string; verses?: Array<{ text: string }> }>;
+            children?: Array<{ id: number; title: string }>;
+          };
+        }>(`/cat/${catId}`);
+
+        const title = node.cat.title || parentTitle;
+        if (node.cat.poems && node.cat.poems.length > 0) {
+          addPoems(node.cat.poems, {
+            categoryTitle: title,
+            chapterId: parentChapter?.id,
+            chapterTitle: parentChapter?.title,
+          });
+        }
+        if (node.cat.children && node.cat.children.length > 0) {
+          for (const child of node.cat.children) {
+            await traverse(child.id, title, parentChapter || { id: child.id, title: child.title });
           }
         }
+      };
+
+      if (data.cat.poems && data.cat.poems.length > 0) {
+        addPoems(data.cat.poems, { categoryTitle: data.cat.title });
       }
-      
+      if (data.cat.children && data.cat.children.length > 0) {
+        for (const child of data.cat.children) {
+          await traverse(child.id, data.cat.title, { id: child.id, title: child.title });
+        }
+      }
+
       return allPoems;
     });
   },
@@ -267,38 +269,69 @@ export const ganjoorApi = {
   // Get chapter details
   async getChapter(poetId: number, categoryId: number, chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
     return withCache(`/chapter/${chapterId}`, async () => {
-      // Get the chapter data
-      const chapterData = await fetchApi<{
-        poet: {name: string};
+      const root = await fetchApi<{
+        poet: { name: string };
         cat: {
           title: string;
-          poems: Array<{
-            id: number;
-            title: string;
-            verses?: Array<{text: string}>;
-          }>;
+          poems: Array<{ id: number; title: string; verses?: Array<{ text: string }> }>;
+          children?: Array<{ id: number; title: string }>;
         };
       }>(`/cat/${chapterId}`);
-      
+
       const chapter: Chapter = {
         id: chapterId,
-        title: chapterData.cat.title,
-        categoryId: categoryId,
-        poemCount: chapterData.cat.poems?.length || 0,
+        title: root.cat.title,
+        categoryId,
+        poemCount: 0,
       };
-      
-      const poems: Poem[] = chapterData.cat.poems?.map((poem) => ({
-        id: poem.id,
-        title: poem.title,
-        verses: poem.verses?.map(verse => verse.text) || [],
-        poetId: poetId,
-        poetName: chapterData.poet.name || '',
-        categoryId: categoryId,
-        categoryTitle: '', // Will be filled by the calling code
-        chapterId: chapterId,
-        chapterTitle: chapter.title,
-      })) || [];
-      
+
+      const poems: Poem[] = [];
+
+      const addPoems = (poemsInput: Array<{ id: number; title: string; verses?: Array<{ text: string }> }>, metaTitle: string) => {
+        for (const p of poemsInput) {
+          poems.push({
+            id: p.id,
+            title: p.title,
+            verses: p.verses?.map(v => v.text) || [],
+            poetId,
+            poetName: root.poet.name || '',
+            categoryId,
+            categoryTitle: '',
+            chapterId: chapterId,
+            chapterTitle: metaTitle,
+          });
+        }
+      };
+
+      const traverse = async (catId: number, title: string) => {
+        const node = await fetchApi<{
+          cat: {
+            title: string;
+            poems: Array<{ id: number; title: string; verses?: Array<{ text: string }> }>;
+            children?: Array<{ id: number; title: string }>;
+          };
+        }>(`/cat/${catId}`);
+        const currentTitle = node.cat.title || title;
+        if (node.cat.poems && node.cat.poems.length > 0) {
+          addPoems(node.cat.poems, currentTitle);
+        }
+        if (node.cat.children && node.cat.children.length > 0) {
+          for (const child of node.cat.children) {
+            await traverse(child.id, currentTitle);
+          }
+        }
+      };
+
+      if (root.cat.poems && root.cat.poems.length > 0) {
+        addPoems(root.cat.poems, root.cat.title);
+      }
+      if (root.cat.children && root.cat.children.length > 0) {
+        for (const child of root.cat.children) {
+          await traverse(child.id, root.cat.title);
+        }
+      }
+
+      chapter.poemCount = poems.length;
       return { chapter, poems };
     });
   },
@@ -306,33 +339,69 @@ export const ganjoorApi = {
   // Get individual poem
   async getPoem(id: number): Promise<Poem> {
     return withCache(`/poem/${id}`, async () => {
-      const data = await fetchApi<{
-        id: number;
-        title: string;
-        verses: {text: string}[];
-        category: {
-          poet: {
-            id: number;
-            name: string;
-          };
-          cat: {
-            id: number;
-            title: string;
-          };
-        };
-      }>(`/poem/${id}`);
-      
-      // Extract verses text from the complex structure
-      const verses = data.verses?.map((verse: {text: string}) => verse.text).filter((text: string) => text) || [];
+      const data = await fetchApi<unknown>(`/poem/${id}`);
+
+      const obj = data as Record<string, unknown>;
+      const idNum = typeof obj.id === 'number' ? obj.id : id;
+      const titleStr = typeof obj.title === 'string' ? obj.title : '';
+
+      const category = obj.category as Record<string, unknown> | undefined;
+      const poetObj = category?.poet as Record<string, unknown> | undefined;
+      const catObj = category?.cat as Record<string, unknown> | undefined;
+
+      const poetId = typeof poetObj?.id === 'number' ? (poetObj?.id as number) : 0;
+      const poetName = typeof poetObj?.name === 'string' ? (poetObj?.name as string) : '';
+      const catId = typeof catObj?.id === 'number' ? (catObj?.id as number) : undefined;
+      const catTitle = typeof catObj?.title === 'string' ? (catObj?.title as string) : '';
+
+      let verses: string[] = [];
+      const versesArr = obj.verses as unknown;
+      if (Array.isArray(versesArr)) {
+        verses = (versesArr as Array<{ text?: string }>).map(v => (typeof v.text === 'string' ? v.text : '')).filter(Boolean);
+      }
+
+      if (verses.length === 0) {
+        const htmlCandidates = ['poemHtml', 'html', 'poemHTML', 'poem_body', 'poem'];
+        let html: string | undefined;
+        for (const key of htmlCandidates) {
+          const val = obj[key];
+          if (typeof val === 'string' && val.length > 50) { html = val; break; }
+        }
+        if (!html && typeof obj['fullText'] === 'string') {
+          html = obj['fullText'] as string;
+        }
+        if (!html && typeof obj['plainText'] === 'string') {
+          const plain = obj['plainText'] as string;
+          verses = plain.split(/\r?\n+/).map(s => s.trim()).filter(Boolean);
+        }
+        if (!html && verses.length === 0 && typeof obj['body'] === 'string') {
+          const plain = obj['body'] as string;
+          verses = plain.split(/\r?\n+/).map(s => s.trim()).filter(Boolean);
+        }
+        if (html) {
+          const cleaned = html
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/<div[^>]*>/gi, '\n')
+            .replace(/<\/div>/gi, '\n')
+            .replace(/<p[^>]*>/gi, '\n')
+            .replace(/<\/p>/gi, '\n')
+            .replace(/<[^>]+>/g, '')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&quot;/g, '"')
+            .replace(/&apos;/g, "'")
+            .replace(/&amp;/g, '&');
+          verses = cleaned.split(/\n+/).map(s => s.trim()).filter(Boolean);
+        }
+      }
       
       return {
-        id: data.id,
-        title: data.title,
+        id: idNum,
+        title: titleStr,
         verses: verses,
-        poetId: data.category.poet.id,
-        poetName: data.category.poet.name,
-        categoryId: data.category.cat.id,
-        categoryTitle: data.category.cat.title,
+        poetId: poetId,
+        poetName: poetName,
+        categoryId: catId,
+        categoryTitle: catTitle,
       };
     });
   },

@@ -132,17 +132,18 @@ export const supabaseApi = {
         // Continue with empty categories array rather than failing
       }
       
-      // AGGRESSIVE LOGGING - See exactly what we got
-      console.log('='.repeat(60));
-      console.log(`[Supabase] POET ID: ${id}`);
-      console.log(`[Supabase] Categories error:`, categoriesError);
-      console.log(`[Supabase] Categories data:`, categoriesData);
-      console.log(`[Supabase] Categories count:`, categoriesData?.length || 0);
-      if (categoriesData && categoriesData.length > 0) {
-        console.log(`[Supabase] First category:`, categoriesData[0]);
-        console.log(`[Supabase] All category titles:`, categoriesData.map(c => c.title));
+      // Verbose logs (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('='.repeat(60));
+        console.log(`[Supabase] POET ID: ${id}`);
+        console.log(`[Supabase] Categories error:`, categoriesError);
+        console.log(`[Supabase] Categories count:`, categoriesData?.length || 0);
+        if (categoriesData && categoriesData.length > 0) {
+          console.log(`[Supabase] First category:`, categoriesData[0]);
+          console.log(`[Supabase] All category titles:`, categoriesData.map(c => c.title));
+        }
+        console.log('='.repeat(60));
       }
-      console.log('='.repeat(60));
 
       // Transform poet data
       const poet: Poet = {
@@ -154,14 +155,16 @@ export const supabaseApi = {
         deathYear: poetData.death_year || undefined,
       };
       
-      // Debug logging
-      console.log(`[Supabase] Poet data:`, {
-        name: poet.name,
-        hasDescription: !!poet.description,
-        descriptionLength: poet.description?.length || 0,
-        birthYear: poet.birthYear,
-        deathYear: poet.deathYear,
-      });
+      // Debug logging (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Supabase] Poet data:`, {
+          name: poet.name,
+          hasDescription: !!poet.description,
+          descriptionLength: poet.description?.length || 0,
+          birthYear: poet.birthYear,
+          deathYear: poet.deathYear,
+        });
+      }
 
       // Transform categories data
       let categories: Category[] = (categoriesData || []).map((cat) => {
@@ -206,13 +209,15 @@ export const supabaseApi = {
         return true;
       });
       
-      // Debug logging for category filtering
-      const originalCount = categoriesData?.length || 0;
-      console.log(`[Supabase] FILTERED: ${originalCount} -> ${categories.length}`);
-      if (originalCount !== categories.length) {
-        console.log(`[Supabase] Removed poet name category from list`);
+      // Debug logging for category filtering (development only)
+      if (process.env.NODE_ENV === 'development') {
+        const originalCount = categoriesData?.length || 0;
+        console.log(`[Supabase] FILTERED: ${originalCount} -> ${categories.length}`);
+        if (originalCount !== categories.length) {
+          console.log(`[Supabase] Removed poet name category from list`);
+        }
+        console.log(`[Supabase] Final categories:`, categories.map(c => `${c.title} (${c.poemCount || 0})`));
       }
-      console.log(`[Supabase] Final categories:`, categories.map(c => `${c.title} (${c.poemCount || 0})`));
 
       // Always calculate poem counts from poems table to ensure accuracy
       // This handles cases where poem_count column might be incorrect or missing
@@ -473,4 +478,3 @@ export async function getSupabaseStats() {
     };
   }
 }
-
