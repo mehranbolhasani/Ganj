@@ -12,11 +12,12 @@ interface SearchResultsProps {
   query: string;
   type: 'all' | 'poets' | 'categories' | 'poems';
   page: number;
+  poetId?: number;
 }
 
 const ITEMS_PER_PAGE = 20;
 
-const SearchResults = ({ query, type, page }: SearchResultsProps) => {
+const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
   const [results, setResults] = useState<{
     poets: Poet[];
     categories: Category[];
@@ -43,7 +44,10 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
     try {
       let searchResults: SearchResponse;
       
-      if (activeTab === 'all') {
+      // If poetId is provided, only search poems
+      const searchType = poetId ? 'poems' : activeTab;
+      
+      if (activeTab === 'all' && !poetId) {
         // For "all" tab, fetch larger batches and paginate client-side
         // Fetch enough items to cover multiple pages
         const batchSize = ITEMS_PER_PAGE * 5; // Fetch 5 pages worth
@@ -55,7 +59,8 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
           batchSize, 
           'all',
           offset,
-          batchPage === 1 // Get counts only on first batch
+          batchPage === 1, // Get counts only on first batch
+          poetId
         );
       } else {
         // For specific tabs, use proper server-side pagination
@@ -64,9 +69,10 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
         searchResults = await searchAll(
           query, 
           ITEMS_PER_PAGE, 
-          activeTab,
+          searchType,
           offset,
-          page === 1 // Get counts only on first page
+          page === 1, // Get counts only on first page
+          poetId
         );
       }
       
@@ -98,7 +104,13 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
 
   // Filter results based on active tab
   // Also filter out categories that match poet names (these are usually parent/root categories)
+  // If poetId filter is active, only show poems
   const filteredResults = useMemo(() => {
+    // If poet filter is active, only return poems
+    if (poetId) {
+      return { poets: [], categories: [], poems: results.poems };
+    }
+    
     // Normalize text for comparison (remove extra spaces, diacritics, etc.)
     const normalizeText = (text: string) => text
       .toLowerCase()
@@ -127,7 +139,7 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
       default:
         return { ...results, categories: filteredCategories };
     }
-  }, [activeTab, results]);
+  }, [activeTab, results, poetId]);
 
   // Pagination - now using server-side pagination
   // Calculate total results based on active tab
@@ -167,6 +179,7 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
     params.set('q', query);
     if (activeTab !== 'all') params.set('type', activeTab);
     if (newPage > 1) params.set('page', newPage.toString());
+    if (poetId) params.set('poetId', poetId.toString());
     return `/search?${params.toString()}`;
   };
 
@@ -222,15 +235,16 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
   return (
     <div className="space-y-6">
       {/* Tabs - Always show tabs so users can switch even when current tab has no results */}
-      {/* Mobile: Horizontal scrollable, Desktop: Normal flex */}
-      <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="flex gap-2 border-b border-stone-200 dark:border-stone-700 min-w-max sm:min-w-0">
-          {[
-            { key: 'all', label: 'همه', count: totalResults, icon: Search },
-            { key: 'poets', label: 'شاعران', count: totalCounts.poets, icon: Users },
-            { key: 'categories', label: 'مجموعه‌ها', count: totalCounts.categories, icon: BookOpen },
-            { key: 'poems', label: 'اشعار', count: totalCounts.poems, icon: FileText },
-          ].map(({ key, label, count, icon: Icon }) => {
+      {/* Hide tabs if poet filter is active (only poems are shown) */}
+      {!poetId && (
+        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex gap-2 border-b border-stone-200 dark:border-stone-700 min-w-max sm:min-w-0">
+            {[
+              { key: 'all', label: 'همه', count: totalResults, icon: Search },
+              { key: 'poets', label: 'شاعران', count: totalCounts.poets, icon: Users },
+              { key: 'categories', label: 'مجموعه‌ها', count: totalCounts.categories, icon: BookOpen },
+              { key: 'poems', label: 'اشعار', count: totalCounts.poems, icon: FileText },
+            ].map(({ key, label, count, icon: Icon }) => {
             const handleTabClick = () => {
               setActiveTab(key as 'all' | 'poets' | 'categories' | 'poems');
               // Update URL without page parameter when switching tabs
@@ -258,8 +272,18 @@ const SearchResults = ({ query, type, page }: SearchResultsProps) => {
               </button>
             );
           })}
+          </div>
         </div>
-      </div>
+      )}
+      
+      {/* Show poet filter indicator */}
+      {poetId && results.poems.length > 0 && (
+        <div className="mb-4 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-800 rounded-lg">
+          <p className="text-sm text-stone-700 dark:text-stone-300 text-right">
+            نمایش نتایج فقط برای اشعار <strong>{results.poems[0].poetName}</strong>
+          </p>
+        </div>
+      )}
 
       {/* Results or Empty State */}
       {totalResults === 0 ? (

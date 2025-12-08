@@ -9,7 +9,8 @@ export async function searchAll(
   limit: number = 20,
   type: 'all' | 'poets' | 'categories' | 'poems' = 'all',
   offset: number = 0,
-  getCount: boolean = false
+  getCount: boolean = false,
+  poetId?: number
 ): Promise<SearchResponse> {
   if (!query || query.trim().length < 2) {
     return { poets: [], categories: [], poems: [], message: 'Query too short' };
@@ -17,7 +18,8 @@ export async function searchAll(
 
   // Check cache first (only for first page without offset)
   if (offset === 0) {
-    const cacheKey = `${query}-${limit}-${type}-${getCount}`;
+    // Include poetId in cache key to prevent cross-poet cache hits
+    const cacheKey = `${query}-${limit}-${type}-${getCount}-${poetId !== undefined ? `poet-${poetId}` : 'all-poets'}`;
     const cached = searchCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
       return cached.data;
@@ -34,6 +36,10 @@ export async function searchAll(
   if (getCount) {
     params.set('count', 'true');
   }
+  
+  if (poetId !== undefined) {
+    params.set('poetId', poetId.toString());
+  }
 
   const response = await fetch(`/api/search?${params.toString()}`);
   if (!response.ok) {
@@ -45,7 +51,8 @@ export async function searchAll(
   
   // Store in cache (only for first page)
   if (offset === 0) {
-    const cacheKey = `${query}-${limit}-${type}-${getCount}`;
+    // Include poetId in cache key to prevent cross-poet cache hits
+    const cacheKey = `${query}-${limit}-${type}-${getCount}-${poetId !== undefined ? `poet-${poetId}` : 'all-poets'}`;
     searchCache.set(cacheKey, { data, timestamp: Date.now() });
     
     // Clean old cache entries (keep last 50)

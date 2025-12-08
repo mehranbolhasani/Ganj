@@ -7,6 +7,7 @@ interface SearchPageProps {
     q?: string;
     type?: 'all' | 'poets' | 'categories' | 'poems';
     page?: string;
+    poetId?: string;
   }>;
 }
 
@@ -15,6 +16,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = params.q || '';
   const type = params.type || 'all';
   const page = parseInt(params.page || '1');
+  const poetId = params.poetId ? parseInt(params.poetId) : undefined;
 
   return (
     <div className="max-w-6xl mx-auto w-full">
@@ -31,7 +33,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
           {query ? (
             <Suspense fallback={<SearchPageSkeleton />}>
-              <SearchResults query={query} type={type} page={page} />
+              <SearchResults query={query} type={type} page={page} poetId={poetId} />
             </Suspense>
           ) : (
         <div className="text-center py-12">

@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback, useTransition } from 'react';
 import Link from 'next/link';
-import { Search, X, Clock, ArrowUp, ArrowDown, ArrowLeft, CornerDownLeft } from 'lucide-react';
+import { Search, X, Clock, ArrowUp, ArrowDown, ArrowLeft, CornerDownLeft, Filter } from 'lucide-react';
 import { searchAll } from '@/lib/supabase-search';
 import { Poet, Category, Poem } from '@/lib/types';
 import { useToast } from './Toast';
+import { simpleApi } from '@/lib/simple-api';
+import PoetSelector from './PoetSelector';
 
 interface SearchResult {
   type: 'poet' | 'category' | 'poem';
@@ -30,6 +32,8 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedPoetId, setSelectedPoetId] = useState<number | undefined>(undefined);
+  const [poets, setPoets] = useState<Poet[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPending, startTransition] = useTransition();
   
@@ -63,6 +67,19 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     }
   }, []);
 
+  // Load poets for filter dropdown
+  useEffect(() => {
+    const loadPoets = async () => {
+      try {
+        const poetsData = await simpleApi.getPoets();
+        setPoets(poetsData);
+      } catch (error) {
+        console.error('Failed to load poets:', error);
+      }
+    };
+    loadPoets();
+  }, []);
+
   // Save search history to localStorage
   const saveSearchHistory = useCallback((query: string) => {
     if (!query.trim()) return;
@@ -89,25 +106,43 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     
     try {
       // Search using Supabase API (instant full-text search) - limited to 30 for modal preview
-      const { poets, categories, poems } = await searchAll(searchQuery, 30);
+      // If poet filter is selected, only search poems for that poet
+      const searchType = selectedPoetId ? 'poems' : 'all';
+      const { poets, categories, poems } = await searchAll(
+        searchQuery, 
+        30, 
+        searchType,
+        0,
+        false,
+        selectedPoetId
+      );
       
-      const searchResults: SearchResult[] = [
-        ...poets.map(poet => ({
-          type: 'poet' as const,
-          data: poet,
-          url: `/poet/${poet.id}`,
-        })),
-        ...categories.map(category => ({
-          type: 'category' as const,
-          data: category,
-          url: `/poet/${category.poetId}/category/${category.id}`,
-        })),
+      const searchResults: SearchResult[] = [];
+      
+      // Only include poets if no poet filter is selected
+      if (!selectedPoetId) {
+        searchResults.push(
+          ...poets.map(poet => ({
+            type: 'poet' as const,
+            data: poet,
+            url: `/poet/${poet.id}`,
+          })),
+          ...categories.map(category => ({
+            type: 'category' as const,
+            data: category,
+            url: `/poet/${category.poetId}/category/${category.id}`,
+          }))
+        );
+      }
+      
+      // Always include poems (filtered by poet if selected)
+      searchResults.push(
         ...poems.map(poem => ({
           type: 'poem' as const,
           data: poem,
           url: `/poem/${poem.id}`,
-        })),
-      ];
+        }))
+      );
 
       // Use startTransition to make updates non-blocking
       startTransition(() => {
@@ -120,7 +155,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, [toast, selectedPoetId]);
 
   // Debounced search - increased to 500ms for better performance
   useEffect(() => {
@@ -135,7 +170,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     }, 500); // Increased from 300ms to 500ms for better INP
 
     return () => clearTimeout(timeoutId);
-  }, [query, search]);
+  }, [query, selectedPoetId, search]);
 
   // Scroll selected item into view when navigating with arrow keys
   useEffect(() => {
@@ -172,7 +207,8 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           onClose();
         } else if (query.trim()) {
           saveSearchHistory(query);
-          window.location.href = `/search?q=${encodeURIComponent(query)}`;
+          const url = `/search?q=${encodeURIComponent(query)}${selectedPoetId ? `&poetId=${selectedPoetId}` : ''}`;
+          window.location.href = url;
           onClose();
         }
         break;
@@ -193,6 +229,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
       setResults([]);
       setSelectedIndex(0);
       setShowHistory(false);
+      setSelectedPoetId(undefined);
     }
   }, [isOpen]);
 
@@ -246,25 +283,46 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}
-        <div className="flex items-center gap-3 p-4 border-b border-stone-200 dark:border-stone-700">
-          <Search className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="جستجو در شاعران، مجموعه‌ها و اشعار..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setShowHistory(query === '')}
-            className="flex-1 bg-transparent text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none"
-          />
-          <button
-            onClick={onClose}
-            className="p-1 rounded-md text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors"
-            aria-label="بستن جستجو"
-          >
-            <X className="w-5 h-5" aria-hidden="true" />
-          </button>
+        <div className="p-4 border-b border-stone-200 dark:border-stone-700 space-y-3">
+          <div className="flex items-center gap-3">
+            <Search className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder={selectedPoetId ? `جستجو در اشعار ${poets.find(p => p.id === selectedPoetId)?.name || ''}...` : "جستجو در شاعران، مجموعه‌ها و اشعار..."}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setShowHistory(query === '')}
+              className="flex-1 bg-transparent text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none"
+            />
+            
+            {/* Poet Filter */}
+            <div className="flex items-center gap-2 w-56">
+              <Filter className="w-4 h-4 text-stone-500 dark:text-stone-400 shrink-0" />
+              <PoetSelector
+                poets={poets}
+                selectedPoetId={selectedPoetId}
+                onSelect={(poetId) => {
+                  setSelectedPoetId(poetId);
+                  // Trigger search again with new filter
+                  if (query.trim()) {
+                    search(query);
+                  }
+                }}
+                placeholder="همه شاعران"
+              />
+            </div>
+
+            <button
+              onClick={onClose}
+              className="p-1 rounded-md text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors"
+              aria-label="بستن جستجو"
+            >
+              <X className="w-5 h-5" aria-hidden="true" />
+            </button>
+            
+          </div>
         </div>
 
         {/* Results */}
@@ -291,10 +349,17 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
             <>
               {/* Results count */}
               <div className="px-4 py-3 flex items-center justify-between text-sm text-stone-600 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
-                <span>{results.length} نتیجه</span>
+                <span>
+                  {results.length} نتیجه
+                  {selectedPoetId && (
+                    <span className="text-stone-500 dark:text-stone-400">
+                      {' '}در اشعار {poets.find(p => p.id === selectedPoetId)?.name}
+                    </span>
+                  )}
+                </span>
                 {results.length >= 30 && (
                   <Link
-                    href={`/search?q=${encodeURIComponent(query)}`}
+                    href={`/search?q=${encodeURIComponent(query)}${selectedPoetId ? `&poetId=${selectedPoetId}` : ''}`}
                     onClick={onClose}
                     className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 text-xs flex items-center gap-1 border border-stone-200 dark:border-stone-500 rounded-full py-2 px-2"
                   >

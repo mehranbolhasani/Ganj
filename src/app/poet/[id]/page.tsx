@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ExpandableDescription from '@/components/ExpandableDescription';
+import PoetSearch from '@/components/PoetSearch';
 import { PoetPageSkeleton } from '@/components/LoadingStates';
 import { hybridApi } from '@/lib/hybrid-api';
 import { notFound } from 'next/navigation';
@@ -211,6 +212,9 @@ export default async function PoetPage({ params }: PoetPageProps) {
       </div>
 
       <div>
+        {/* Poet Search - key prop ensures fresh instance on navigation */}
+        <PoetSearch key={poetId} poetId={poetId} poetName={poet.name} />
+        
         <h2 className={`font-abar text-2xl font-semibold mb-6 text-right ${
           isFamous 
             ? 'text-amber-900 dark:text-amber-100' 
