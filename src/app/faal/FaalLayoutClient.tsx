@@ -86,7 +86,7 @@ export default function FaalLayoutClient({
   }, [isMounted]);
 
   // Calculate the actual minHeight to use (for both className fallback and inline)
-  const rightPanelMinHeightValue = rightPanelMinHeight || '80vh';
+  const rightPanelMinHeightValue = rightPanelMinHeight || '70vh';
   const leftPanelMinHeightValue = leftPanelMinHeight || '80px';
 
   return (
@@ -103,9 +103,9 @@ export default function FaalLayoutClient({
           // Mobile: always use minHeight (no className fallback needed)
           ...(isMobile && { minHeight: rightPanelMinHeightValue }),
           // Desktop fallback when not mounted
-          ...(!isMobile && !isMounted && { minHeight: '80vh' }),
+          ...(!isMobile && !isMounted && { minHeight: '70vh' }),
           // Always include all transitions - browser ignores properties that don't apply
-          transition: 'width 1000ms ease-in-out, height 500ms linear, min-height 500ms linear'
+          transition: 'width 1000ms ease-in-out, height 1000ms ease-in-out, min-height 1000ms ease-in-out'
         }}
       >
         {/* Particles Background - Only render if WebGL is supported */}
