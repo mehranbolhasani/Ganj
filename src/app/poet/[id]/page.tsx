@@ -89,7 +89,7 @@ export async function generateMetadata({ params }: PoetPageProps): Promise<Metad
         canonical: `/poet/${poet.id}`,
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: 'شاعر یافت نشد',
     };

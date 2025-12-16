@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PoemPageProps): Promise<Metad
         canonical: `/poem/${poem.id}`,
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: 'شعر یافت نشد',
     };

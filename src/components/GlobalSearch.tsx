@@ -213,7 +213,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
         }
         break;
     }
-  }, [isOpen, results, selectedIndex, query, onClose, saveSearchHistory]);
+  }, [isOpen, results, selectedIndex, query, selectedPoetId, onClose, saveSearchHistory]);
 
   // Focus input when modal opens
   useEffect(() => {

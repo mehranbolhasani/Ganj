@@ -96,7 +96,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, [query, page, activeTab]);
+  }, [query, page, activeTab, poetId]);
 
   useEffect(() => {
     search();

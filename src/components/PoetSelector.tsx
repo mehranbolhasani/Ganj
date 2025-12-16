@@ -68,7 +68,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
     });
     
     // Sort poets within each group
-    sortedGroups.forEach(([_, poetsList]) => {
+    sortedGroups.forEach(([, poetsList]) => {
       poetsList.sort((a, b) => a.name.localeCompare(b.name, 'fa'));
     });
     

@@ -1,14 +1,21 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { userPreferences } from '@/lib/user-preferences';
 
 export default function ThemeSync() {
   const { setTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Initialize theme on mount
   useEffect(() => {
-    // Sync user preferences with next-themes
+    // Mark as mounted in next tick to avoid synchronous setState in effect
+    requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+    
+    // Sync user preferences with next-themes on initial mount
     const preferences = userPreferences.getPreferences();
     
     if (preferences.theme === 'auto') {
@@ -18,8 +25,10 @@ export default function ThemeSync() {
     }
   }, [setTheme]);
 
+  // Set up listener for theme changes from user preferences
   useEffect(() => {
-    // Set up listener for theme changes
+    if (!isMounted) return;
+
     const unsubscribe = userPreferences.addListener((preferences) => {
       if (preferences.theme === 'auto') {
         setTheme('system');
@@ -29,7 +38,7 @@ export default function ThemeSync() {
     });
 
     return unsubscribe;
-  }, [setTheme]);
+  }, [setTheme, isMounted]);
 
   return null; // This component doesn't render anything
 }

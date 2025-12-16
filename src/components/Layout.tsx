@@ -1,3 +1,6 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -6,8 +9,18 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const pathname = usePathname();
+  const isFaalPage = pathname === '/faal';
+
+  // For faal page, render children directly without any wrapper
+  // This allows the faal page's own layout to control all backgrounds
+  if (isFaalPage) {
+    return <>{children}</>;
+  }
+
+  // For other pages, render full layout with header, footer, backgrounds
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-stone-900 transition-colors duration-300">
+    <div className="min-h-screen transition-colors duration-300 bg-stone-100 dark:bg-stone-900">
       {/* Skip Navigation Link for Accessibility */}
       <a
         href="#main-content"
@@ -25,7 +38,7 @@ const Layout = ({ children }: LayoutProps) => {
       </div>
       
       {/* Content Container - Mobile optimized */}
-      <div className="relative z-10 flex flex-col items-center container-responsive min-h-dvh gap-4 sm:gap-8">
+      <div className="relative z-10 flex flex-col items-center min-h-dvh gap-4 sm:gap-8 container-responsive">
         <Header />
         <main id="main-content" className="w-full flex flex-col gap-4 sm:gap-8">
           {children}

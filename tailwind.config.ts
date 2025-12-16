@@ -12,6 +12,7 @@ const config: Config = {
       fontFamily: {
         'abar': ['Abar VF', 'sans-serif'],
         'estedad': ['Estedad', 'sans-serif'],
+        'hafez': ['Hafez', 'serif'],
       },
     },
   },
