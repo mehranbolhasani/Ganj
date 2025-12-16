@@ -485,11 +485,8 @@ html:has([data-faal-page]) .grid-background {
 
 /* Mobile Performance Optimizations */
 @media (max-width: 640px) {
-  /* Reduce animations on mobile for better performance */
-  * {
-    animation-duration: 0.2s !important;
-    transition-duration: 0.2s !important;
-  }
+  /* Note: Removed global transition override - let components control their own transitions */
+  /* Global overrides cause janky animations and prevent smooth transitions */
 
   /* Optimize scrolling on mobile */
   .mobile-scroll {

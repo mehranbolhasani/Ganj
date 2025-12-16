@@ -41,12 +41,13 @@ export default function FaalHafez() {
       startTransition(() => {
         setShowSpinner(false);
       });
-      // Show poem after a delay
+      // Show poem after a delay - longer on mobile to allow layout to stabilize
+      const delay = typeof window !== 'undefined' && window.innerWidth < 768 ? 800 : 600;
       const timer = setTimeout(() => {
         startTransition(() => {
           setShowPoem(true);
         });
-      }, 500);
+      }, delay);
       return () => {
         clearTimeout(timer);
         startTransition(() => {
@@ -132,14 +133,14 @@ export default function FaalHafez() {
   // Result State - Display the poem with animation
   if (state === 'result' && poem) {
     return (
-      <div className="flex flex-col items-center pt-24 pb-8 md:py-4 px-6 md:px-4 flex-1 justify-center md:gap-12 gap-6 min-h-[60vh] transition-all duration-300 ease-out">
+      <div className="flex flex-col items-end pt-24 pb-8 md:py-4 px-6 md:px-4 flex-1 justify-center md:gap-12 gap-6 min-h-[60vh]">
         {/* Header with title - animated */}
         <div 
-          className={`text-center w-full max-w-2xl transition-all duration-400 ease-out ${
+          className={`text-center w-full max-w-4xl transition-opacity duration-1000 md:duration-700 ease-out will-change-opacity ${
             showPoem 
               ? 'opacity-100' 
               : 'opacity-0'
-          }`}
+          }`} 
         >
           <span className="block text-amber-600 dark:text-amber-400 font-medium mb-4">فال شما</span>
           <h2 className="font-hafez text-3xl md:text-5xl text-amber-100 dark:text-amber-100">
@@ -149,23 +150,35 @@ export default function FaalHafez() {
 
         {/* Poem content - animated with stagger */}
         <div 
-          className={`faal-card w-full max-w-2xl transition-all duration-700 ease-out delay-150 ${
+          className={`faal-card w-full max-w-4xl will-change-transform ${
             showPoem 
               ? 'opacity-100 translate-y-0' 
               : 'opacity-0 translate-y-6'
           }`}
+          style={{
+            transition: 'opacity 1200ms ease-out, transform 1200ms ease-out',
+            transitionDelay: '200ms'
+          }}
         >
           <div className="space-y-5 md:space-y-1">
-            {verseGroups.map(({ beytIndex, firstVerseIndex, secondVerseIndex }) => (
+            {verseGroups.map(({ beytIndex, firstVerseIndex, secondVerseIndex }) => {
+              // Staggered delay: each beyt appears after the previous one
+              const baseDelay = 300;
+              const staggerDelay = beytIndex * 120; // 120ms between each beyt
+              const totalDelay = baseDelay + staggerDelay;
+              
+              return (
               <div 
                 key={beytIndex} 
-                className={`flex flex-col md:flex-row md:gap-4 gap-0 justify-center transition-all duration-500 ease-out  ${
+                className={`flex flex-col md:flex-row md:gap-4 gap-0 justify-center will-change-transform ${
                   showPoem 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-2'
+                    ? 'opacity-100' 
+                    : 'opacity-0'
                 }`}
                 style={{ 
-                  transitionDelay: `${200 + beytIndex * 50}ms` 
+                  transition: 'opacity 800ms ease-out, transform 800ms ease-out',
+                  transitionDelay: `${totalDelay}ms`,
+                  transform: showPoem ? 'translate3d(0, 0, 0)' : 'translate3d(0, 12px, 0)'
                 }}
               >
                 <p
@@ -183,7 +196,8 @@ export default function FaalHafez() {
                   </p>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

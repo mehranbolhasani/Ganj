@@ -85,18 +85,27 @@ export default function FaalLayoutClient({
     return isWebGLSupported();
   }, [isMounted]);
 
+  // Calculate the actual minHeight to use (for both className fallback and inline)
+  const rightPanelMinHeightValue = rightPanelMinHeight || '80vh';
+  const leftPanelMinHeightValue = leftPanelMinHeight || '80px';
+
   return (
     <div 
-      className="w-full mx-auto my-0 md:my-0 min-h-screen md:h-screen relative flex flex-col md:flex-row items-center justify-center bg-stone-950 dark:bg-stone-900 z-10 transition-colors duration-300"
+      className="w-full mx-auto my-0 md:my-0 min-h-screen md:h-screen relative flex flex-col md:flex-row items-center justify-start md:justify-center bg-stone-950 dark:bg-stone-900 z-10 transition-colors duration-300 pt-4 md:pt-0"
     >
       {/* Right panel - main content area */}
       <div id="faalRight"
-        className={`flex flex-col items-center justify-between bg-amber-900/50 backdrop-blur-xl relative overflow-hidden rounded-[2rem] md:rounded-[4rem] ml-0 md:-ml-8 z-20 w-[90%] md:w-[70%] min-h-[90vh] md:min-h-0 md:h-3/4 mt-4 md:mt-0 transition-opacity duration-300 opacity-100`}
+        className="flex flex-col items-center justify-between bg-amber-900/50 backdrop-blur-xl relative overflow-hidden rounded-[2rem] md:rounded-[4rem] ml-0 md:-ml-8 z-20 w-[90%] md:w-[90%] md:h-3/4"
         style={{
           ...(isMounted && rightPanelWidth && { width: rightPanelWidth }),
-          ...(isMounted && rightPanelHeight && { height: rightPanelHeight }),
-          ...(isMounted && rightPanelMinHeight && { minHeight: rightPanelMinHeight }),
-          transition: 'width 1000ms ease-in-out, height 1000ms ease-in-out, min-height 1000ms ease-in-out, opacity 300ms ease-in-out'
+          // Desktop: use height
+          ...(isMounted && !isMobile && rightPanelHeight && { height: rightPanelHeight }),
+          // Mobile: always use minHeight (no className fallback needed)
+          ...(isMobile && { minHeight: rightPanelMinHeightValue }),
+          // Desktop fallback when not mounted
+          ...(!isMobile && !isMounted && { minHeight: '80vh' }),
+          // Always include all transitions - browser ignores properties that don't apply
+          transition: 'width 1000ms ease-in-out, height 500ms linear, min-height 500ms linear'
         }}
       >
         {/* Particles Background - Only render if WebGL is supported */}
@@ -136,13 +145,18 @@ export default function FaalLayoutClient({
 
       {/* Left panel - page content */}
       <div 
-        className={`flex items-center justify-center bg-amber-800/40 backdrop-blur-sm relative overflow-hidden rounded-b-[2rem] md:rounded-l-[4rem] mr-0 -mt-10 md:mt-0 md:-mr-24 z-10 w-[90%] md:w-[10%] min-h-[80px] md:min-h-0 md:h-3/4 mb-4 md:mb-0 transition-opacity duration-300 ${
+        className={`flex items-center justify-center bg-amber-800/10 backdrop-blur-sm relative overflow-hidden rounded-b-[2rem] md:rounded-l-[4rem] mr-0 -mt-10 md:mt-0 md:-mr-24 z-10 w-[90%] md:w-[10%] mb-4 md:mb-0 md:h-3/4 transition-opacity duration-300 ${
           isMounted ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           ...(isMounted && leftPanelWidth && { width: leftPanelWidth }),
-          ...(isMounted && leftPanelHeight && { height: leftPanelHeight }),
-          ...(isMounted && leftPanelMinHeight && { minHeight: leftPanelMinHeight }),
+          // Desktop: use height
+          ...(isMounted && !isMobile && leftPanelHeight && { height: leftPanelHeight }),
+          // Mobile: always use minHeight
+          ...(isMobile && { minHeight: leftPanelMinHeightValue }),
+          // Desktop fallback when not mounted
+          ...(!isMobile && !isMounted && { minHeight: '80px' }),
+          // Always include all transitions
           transition: 'width 1000ms ease-in-out, height 1000ms ease-in-out, min-height 1000ms ease-in-out, opacity 300ms ease-in-out'
         }}
       >

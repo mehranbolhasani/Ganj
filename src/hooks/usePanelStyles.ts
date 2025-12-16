@@ -23,11 +23,11 @@ export function usePanelStyles(
     // Custom width for right/left panels on medium+ screens
     const rightPanelWidth =
       isMounted && !isMobile
-        ? (shouldResize ? '30%' : '70%')
+        ? (shouldResize ? '25%' : '90%')
         : undefined;
     const leftPanelWidth =
       isMounted && !isMobile
-        ? (shouldResize ? '65%' : '10%')
+        ? (shouldResize ? '70%' : '10%')
         : undefined;
 
     // Custom height for right/left panels on mobile screens
@@ -35,9 +35,10 @@ export function usePanelStyles(
       isMounted && isMobile
         ? (shouldResize ? 'auto' : '80vh')
         : undefined;
+    // Always provide min-height on mobile for smooth transitions
     const rightPanelMinHeight =
-      isMounted && isMobile && shouldResize
-        ? '300px'
+      isMounted && isMobile
+        ? (shouldResize ? '300px' : '80vh')
         : undefined;
     const leftPanelHeight =
       isMounted && isMobile
