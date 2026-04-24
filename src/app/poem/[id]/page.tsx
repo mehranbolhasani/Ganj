@@ -177,22 +177,24 @@ export default async function PoemPage({ params }: PoemPageProps) {
         image="https://ganj.directory/og-image.jpg"
       />
       <HistoryTracker poem={poem} />
-      
-      <Breadcrumbs items={[
-        { label: poetName, href: `/poet/${poem.poetId}` },
-        { label: categoryTitle, href: poem.categoryId ? `/poet/${poem.poetId}/category/${poem.categoryId}` : undefined },
-        { label: poem.title }
-      ]} />
 
-      <PoemDisplay poem={poem} />
-      
-      <div className="w-full max-w-full min-w-0 sm:max-w-4xl sm:mx-auto">
-        <PoemNavigation 
-          currentPoem={poem}
-          previousPoem={previousPoem}
-          nextPoem={nextPoem}
-        />
-      </div>
+      <article className="w-full min-w-0 max-w-full overflow-x-clip">
+        <Breadcrumbs items={[
+          { label: poetName, href: `/poet/${poem.poetId}` },
+          { label: categoryTitle, href: poem.categoryId ? `/poet/${poem.poetId}/category/${poem.categoryId}` : undefined },
+          { label: poem.title }
+        ]} />
+
+        <PoemDisplay poem={poem} />
+
+        <div className="w-full max-w-full min-w-0 sm:max-w-4xl sm:mx-auto">
+          <PoemNavigation 
+            currentPoem={poem}
+            previousPoem={previousPoem}
+            nextPoem={nextPoem}
+          />
+        </div>
+      </article>
     </>
   );
 }

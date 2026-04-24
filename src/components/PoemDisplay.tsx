@@ -398,20 +398,20 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
 
   // Normal view
   return (
-    <div className="w-full max-w-full min-w-0 sm:max-w-4xl sm:mx-auto">
-      <div className="text-center mb-4 sm:mb-8">
-        <div className="flex items-center mb-4 flex-row w-full">
-          <div className="flex text-right justify-between w-full">
-            <h1 className="font-hafez text-2xl sm:text-4xl font-normal text-stone-900 dark:text-stone-300 text-right leading-tight sm:leading-14">
+    <div className="w-full min-w-0 max-w-full overflow-x-clip sm:mx-auto sm:max-w-4xl">
+      <div className="mb-4 text-center sm:mb-8">
+        <div className="mb-4 flex w-full min-w-0 flex-row items-center">
+          <div className="flex w-full min-w-0 justify-between text-right">
+            <h1 className="min-w-0 max-w-full break-words font-hafez text-2xl font-normal leading-tight text-stone-900 dark:text-stone-300 [overflow-wrap:anywhere] sm:text-4xl sm:leading-14">
               {poem.title}
             </h1>
           </div>
         </div>
 
         {/* Mobile-first responsive layout */}
-        <div className="flex flex-col-reverse sm:flex-row-reverse gap-8 sm:gap-2 justify-between w-full align-end">
+        <div className="flex w-full min-w-0 max-w-full flex-col-reverse justify-between gap-8 align-end sm:flex-row-reverse sm:gap-2">
           {/* Controls - Mobile: full width, Desktop: right side */}
-          <div className="flex flex-row gap-1 bg-white/75 dark:bg-yellow-900/20 rounded-xl shadow-sm p-1 h-fit w-fit sm:w-auto justify-center sm:justify-end self-end backdrop-blur-sm">
+          <div className="flex h-fit w-fit shrink-0 flex-row gap-1 self-end justify-center rounded-xl bg-white/75 p-1 shadow-sm backdrop-blur-sm dark:bg-yellow-900/20 sm:w-auto sm:justify-end">
             {/* Font Size Control - reserve space to prevent layout shift */}
             <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
               <FontSizeControl showLabel={false} />
@@ -450,12 +450,12 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
           </div>
           
           {/* Poet info - Mobile: below controls, Desktop: left side */}
-          <div className="text-right">
-            <p className="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-normal">
+          <div className="min-w-0 max-w-full text-right">
+            <p className="break-words text-base font-normal text-stone-600 [overflow-wrap:anywhere] dark:text-stone-300 sm:text-lg">
               {poem.poetName}
             </p>
             {poem.categoryTitle && (
-              <p className="text-sm text-stone-500 dark:text-stone-300 mt-1 font-normal">
+              <p className="mt-1 break-words text-sm font-normal text-stone-500 [overflow-wrap:anywhere] dark:text-stone-300">
                 از مجموعه: {poem.categoryTitle}
               </p>
             )}
@@ -463,16 +463,16 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         </div>
       </div>
       
-      <div className="bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-yellow-900/10 dark:border-yellow-900/40 p-4 sm:p-8 backdrop-blur-md">
+      <div className="min-w-0 max-w-full rounded-2xl border border-white bg-white/50 p-4 shadow-lg/5 backdrop-blur-md dark:border-yellow-900/40 dark:bg-yellow-900/10 sm:p-8">
         {hasVerses ? (
           <div 
             ref={poemContentRef}
-            className="prose prose-lg max-w-none text-center select-text"
+            className="prose prose-lg min-w-0 max-w-full select-text text-center"
           >
             {poem.verses.map((verse, index) => (
               <p 
                 key={index}
-                className={`text-stone-900 dark:text-stone-300 leading-relaxed mb-3 even:mb-9 text-right mobile-leading-relaxed ${isHydrated ? poemClasses : ''}`}
+                className={`break-words text-right text-stone-900 [overflow-wrap:anywhere] [word-break:break-word] leading-relaxed mobile-leading-relaxed dark:text-stone-300 mb-3 even:mb-9 ${isHydrated ? poemClasses : ''}`}
               >
                 {verse}
               </p>
