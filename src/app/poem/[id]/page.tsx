@@ -186,7 +186,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
 
       <PoemDisplay poem={poem} />
       
-      <div className="max-w-4xl mx-auto w-full">
+      <div className="w-full max-w-full min-w-0 sm:max-w-4xl sm:mx-auto">
         <PoemNavigation 
           currentPoem={poem}
           previousPoem={previousPoem}

@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { hybridApi } from '@/lib/hybrid-api';
 import { Poet } from '@/lib/types';
+import { normalizedPoetSlug } from '@/lib/ganjoor-slug';
+import { FEATURED_POETS_FALLBACK } from '@/lib/featured-poets-fallback';
 import FamousPoets from './FamousPoets';
 import AlphabeticalPoets from './AlphabeticalPoets';
 import AlphabeticalNav from './AlphabeticalNav';
@@ -62,12 +64,27 @@ const PoetsGrid = () => {
 
   // Memoize famous poets to prevent unnecessary recalculations
   const famousPoets = useMemo(() => {
-    return poets.filter(poet => poet.slug && FAMOUS_POET_SLUGS.includes(poet.slug));
+    const matched = poets.filter((poet) => {
+      const slug = normalizedPoetSlug(poet.slug);
+      return slug && FAMOUS_POET_SLUGS.includes(slug);
+    });
+    if (matched.length > 0) {
+      return matched;
+    }
+    if (poets.length === 0) {
+      return FEATURED_POETS_FALLBACK;
+    }
+    const byId = new Map(poets.map((p) => [p.id, p]));
+    const fromFallback = FEATURED_POETS_FALLBACK.map((fb) => byId.get(fb.id) ?? fb);
+    return fromFallback;
   }, [poets]);
 
   // Memoize other poets (non-famous)
   const otherPoets = useMemo(() => {
-    return poets.filter(poet => !poet.slug || !FAMOUS_POET_SLUGS.includes(poet.slug));
+    return poets.filter((poet) => {
+      const slug = normalizedPoetSlug(poet.slug);
+      return !slug || !FAMOUS_POET_SLUGS.includes(slug);
+    });
   }, [poets]);
 
   if (loading) {
@@ -83,12 +100,10 @@ const PoetsGrid = () => {
   if (error) {
     return (
       <div className="relative w-full">
-        <div className="text-center py-8">
-          <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">
-            خطا در بارگذاری
-          </h2>
-          <p className="text-stone-600 dark:text-stone-200">{error}</p>
-        </div>
+        <p className="text-center text-sm text-stone-600 dark:text-stone-400 mb-6">
+          فهرست شاعران از سرور بارگذاری نشد؛ شاعرهای پرمخاطب به صورت آفلاین نمایش داده می‌شوند.
+        </p>
+        <FamousPoets poets={FEATURED_POETS_FALLBACK} />
       </div>
     );
   }
