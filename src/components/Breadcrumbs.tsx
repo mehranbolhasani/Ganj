@@ -18,29 +18,32 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   });
 
   return (
-    <nav className="flex items-center gap-2 text-sm text-[#82827c] dark:text-gray-400 mb-6">
+    <nav
+      className="mb-6 flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[#82827c] dark:text-gray-400"
+      aria-label="مسیر صفحه"
+    >
       {/* Home icon */}
       <Link 
         href="/" 
-        className="flex items-center gap-1 hover:text-[#21201c] dark:hover:text-white transition-colors"
+        className="flex shrink-0 items-center gap-1 hover:text-[#21201c] dark:hover:text-white transition-colors"
       >
-        <Home className="w-4 h-4" />
+        <Home className="w-4 h-4 shrink-0" />
         <span>خانه</span>
       </Link>
 
       {/* Breadcrumb items */}
       {breadcrumbItems.map((item, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <ChevronLeft className="w-4 h-4" />
+        <div key={index} className="flex min-w-0 max-w-full items-center gap-2">
+          <ChevronLeft className="h-4 w-4 shrink-0" aria-hidden />
           {item.href ? (
             <Link 
               href={item.href}
-              className="hover:text-[#21201c] dark:hover:text-white transition-colors"
+              className="min-w-0 max-w-full break-words [overflow-wrap:anywhere] hover:text-[#21201c] dark:hover:text-white transition-colors"
             >
               {item.label}
             </Link>
           ) : (
-            <span className="text-[#21201c] dark:text-white font-medium">
+            <span className="min-w-0 max-w-full break-words [overflow-wrap:anywhere] font-medium text-[#21201c] dark:text-white">
               {item.label}
             </span>
           )}

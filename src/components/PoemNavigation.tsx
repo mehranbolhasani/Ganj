@@ -28,22 +28,22 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
 
   return (
     <nav 
-      className="flex items-stretch justify-between gap-2 sm:gap-4 mt-8 pt-8 border-t border-stone-200 dark:border-stone-700 w-full min-w-0 max-w-full overflow-x-hidden"
+      className="mt-8 flex w-full min-w-0 max-w-full flex-col gap-3 overflow-x-clip border-t border-stone-200 pt-8 dark:border-stone-700 md:flex-row md:items-stretch md:justify-between md:gap-4"
       aria-label="ناوبری بین اشعار"
     >
       {/* Previous Poem */}
-      <div className="min-w-0 flex-1 basis-0 shrink">
+      <div className="w-full min-w-0 shrink-0 md:flex-1 md:basis-0">
         {previousPoem ? (
           <Link
             href={`/poem/${previousPoem.id}`}
             onClick={(e) => handleNavigation(e, previousPoem.id)}
-            className="group flex min-w-0 w-full max-w-full items-center gap-2 px-3 py-3 sm:px-4 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors overflow-hidden"
+            className="group flex w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-lg bg-stone-100 px-3 py-3 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 sm:px-4"
             aria-label={`شعر قبلی: ${previousPoem.title}`}
           >
-            <ChevronRight className="h-5 w-5 shrink-0 text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200 transition-colors" aria-hidden="true" />
+            <ChevronRight className="h-5 w-5 shrink-0 text-stone-600 transition-colors group-hover:text-stone-900 dark:text-stone-400 dark:group-hover:text-stone-200" aria-hidden="true" />
             <div className="min-w-0 flex-1 text-right">
-              <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">قبلی</div>
-              <div className="text-sm font-medium text-stone-900 dark:text-stone-100 break-words [overflow-wrap:anywhere] line-clamp-2">
+              <div className="mb-1 text-xs text-stone-600 dark:text-stone-400">قبلی</div>
+              <div className="break-words text-sm font-medium text-stone-900 [overflow-wrap:anywhere] line-clamp-3 dark:text-stone-100">
                 {previousPoem.title}
               </div>
             </div>
@@ -57,21 +57,21 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
       </div>
 
       {/* Next Poem */}
-      <div className="min-w-0 flex-1 basis-0 shrink">
+      <div className="w-full min-w-0 shrink-0 md:flex-1 md:basis-0">
         {nextPoem ? (
           <Link
             href={`/poem/${nextPoem.id}`}
             onClick={(e) => handleNavigation(e, nextPoem.id)}
-            className="group flex min-w-0 w-full max-w-full items-center gap-2 px-3 py-3 sm:px-4 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors overflow-hidden"
+            className="group flex w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-lg bg-stone-100 px-3 py-3 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 sm:px-4"
             aria-label={`شعر بعدی: ${nextPoem.title}`}
           >
             <div className="min-w-0 flex-1 text-left">
-              <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">بعدی</div>
-              <div className="text-sm font-medium text-stone-900 dark:text-stone-100 break-words [overflow-wrap:anywhere] line-clamp-2">
+              <div className="mb-1 text-xs text-stone-600 dark:text-stone-400">بعدی</div>
+              <div className="break-words text-sm font-medium text-stone-900 [overflow-wrap:anywhere] line-clamp-3 dark:text-stone-100">
                 {nextPoem.title}
               </div>
             </div>
-            <ChevronLeft className="h-5 w-5 shrink-0 text-stone-600 dark:text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-200 transition-colors" aria-hidden="true" />
+            <ChevronLeft className="h-5 w-5 shrink-0 text-stone-600 transition-colors group-hover:text-stone-900 dark:text-stone-400 dark:group-hover:text-stone-200" aria-hidden="true" />
           </Link>
         ) : (
           <div className="px-4 py-3 opacity-50 text-left" aria-hidden="true">
