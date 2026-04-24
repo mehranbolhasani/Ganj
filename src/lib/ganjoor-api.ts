@@ -1,6 +1,7 @@
 import { Poet, Category, Poem, Chapter } from './types';
 import { withCache } from './api-cache';
 import { withRetry } from './retry-utils';
+import { slugFromGanjoorFullUrl } from './ganjoor-slug';
 
 const API_BASE_URL = 'https://api.ganjoor.net/api/ganjoor';
 
@@ -56,7 +57,7 @@ export const ganjoorApi = {
       return data.map(poet => ({
         id: poet.id,
         name: poet.name,
-        slug: poet.fullUrl?.replace('/', '') || '',
+        slug: slugFromGanjoorFullUrl(poet.fullUrl),
         description: poet.description,
         birthYear: poet.birthYearInLHijri,
         deathYear: poet.deathYearInLHijri,
@@ -93,7 +94,7 @@ export const ganjoorApi = {
       const poet: Poet = {
         id: poetData.id,
         name: poetData.name,
-        slug: poetData.fullUrl?.replace('/', '') || '',
+        slug: slugFromGanjoorFullUrl(poetData.fullUrl),
         description: poetData.description,
         birthYear: poetData.birthYearInLHijri,
         deathYear: poetData.deathYearInLHijri,

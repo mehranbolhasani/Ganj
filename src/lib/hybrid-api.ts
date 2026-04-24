@@ -11,6 +11,7 @@
 import { Poet, Category, Poem, Chapter } from './types';
 import { supabaseApi, isSupabaseAvailable } from './supabase-api';
 import { ganjoorApi } from './ganjoor-api';
+import { FEATURED_POETS_FALLBACK } from './featured-poets-fallback';
 
 // Performance tracking
 interface PerformanceMetric {
@@ -105,7 +106,10 @@ export const hybridApi = {
           fallback: false,
         });
 
-        return poets;
+        if (poets.length > 0) {
+          return poets;
+        }
+        console.warn('Supabase getPoets returned empty list, falling back to Ganjoor API');
       } catch (error) {
         console.warn('Supabase getPoets failed, falling back to Ganjoor API:', error);
       }
@@ -113,18 +117,35 @@ export const hybridApi = {
 
     // Fallback to Ganjoor API
     const fallbackStartTime = performance.now();
-    const poets = await ganjoorApi.getPoets();
-    const duration = performance.now() - fallbackStartTime;
+    try {
+      const poets = await ganjoorApi.getPoets();
+      const duration = performance.now() - fallbackStartTime;
 
-    trackPerformance({
-      source: 'ganjoor',
-      endpoint: 'getPoets',
-      duration,
-      success: true,
-      fallback: true,
-    });
+      trackPerformance({
+        source: 'ganjoor',
+        endpoint: 'getPoets',
+        duration,
+        success: true,
+        fallback: true,
+      });
 
-    return poets;
+      if (poets.length > 0) {
+        return poets;
+      }
+      console.warn('Ganjoor getPoets returned empty list, using static featured poets');
+      return [...FEATURED_POETS_FALLBACK];
+    } catch (error) {
+      const duration = performance.now() - fallbackStartTime;
+      console.warn('Ganjoor getPoets failed, using static featured poets list:', error);
+      trackPerformance({
+        source: 'ganjoor',
+        endpoint: 'getPoets',
+        duration,
+        success: false,
+        fallback: true,
+      });
+      return [...FEATURED_POETS_FALLBACK];
+    }
   },
 
   /**

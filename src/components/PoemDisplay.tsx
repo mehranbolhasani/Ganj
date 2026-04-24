@@ -398,7 +398,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
 
   // Normal view
   return (
-    <div className="max-w-4xl mx-auto w-full">
+    <div className="w-full max-w-full min-w-0 sm:max-w-4xl sm:mx-auto">
       <div className="text-center mb-4 sm:mb-8">
         <div className="flex items-center mb-4 flex-row w-full">
           <div className="flex text-right justify-between w-full">

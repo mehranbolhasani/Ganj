@@ -28,7 +28,7 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
 
   return (
     <nav 
-      className="flex items-center justify-between gap-4 mt-8 pt-8 border-t border-stone-200 dark:border-stone-700"
+      className="flex items-stretch justify-between gap-2 sm:gap-4 mt-8 pt-8 border-t border-stone-200 dark:border-stone-700 w-full min-w-0"
       aria-label="ناوبری بین اشعار"
     >
       {/* Previous Poem */}

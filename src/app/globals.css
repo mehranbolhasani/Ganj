@@ -365,9 +365,11 @@ html:has([data-faal-page]) .grid-background {
 /* Container utility for consistent 90% width on mobile */
 .container-responsive {
   width: 90%;
+  max-width: min(640px, 100vw);
   margin-left: auto;
   margin-right: auto;
-  max-width: 640px;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Custom container for Faal page - wider and more spacious */

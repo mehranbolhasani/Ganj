@@ -3,6 +3,7 @@
 import { Poet } from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
+import { normalizedPoetSlug } from '@/lib/ganjoor-slug';
 
 interface FamousPoetsProps {
   poets: Poet[];
@@ -39,9 +40,10 @@ const getPoetImage = (slug: string) => {
 
 export default function FamousPoets({ poets }: FamousPoetsProps) {
   // Filter to get only the famous poets
-  const famousPoets = poets.filter(poet => 
-    FAMOUS_POET_SLUGS.includes(poet.slug?.toLowerCase() || '')
-  );
+  const famousPoets = poets.filter((poet) => {
+    const slug = normalizedPoetSlug(poet.slug);
+    return slug && FAMOUS_POET_SLUGS.includes(slug);
+  });
 
   return (
     <div className="w-full mb-24 relative">
@@ -59,7 +61,7 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
             {/* Poet Image with explicit dimensions to prevent CLS */}
             <div className="w-full aspect-square rounded-xl overflow-hidden bg-stone-200 dark:bg-stone-700 group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
               <Image
-                src={`/images/${getPoetImage(poet.slug || '')}`}
+                src={`/images/${getPoetImage(normalizedPoetSlug(poet.slug))}`}
                 alt={`تصویر ${poet.name}`}
                 width={384}
                 height={384}

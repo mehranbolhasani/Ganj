@@ -1,4 +1,5 @@
 import { Poet } from './types';
+import { slugFromGanjoorFullUrl } from './ganjoor-slug';
 
 const API_BASE_URL = 'https://api.ganjoor.net/api/ganjoor';
 
@@ -42,7 +43,7 @@ export const simpleApi = {
       return data.map((poet) => ({
         id: poet.id,
         name: poet.name,
-        slug: poet.fullUrl?.replace('/', '') || '',
+        slug: slugFromGanjoorFullUrl(poet.fullUrl),
         description: poet.description,
         birthYear: poet.birthYearInLHijri,
         deathYear: poet.deathYearInLHijri,
