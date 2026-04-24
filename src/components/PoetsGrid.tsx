@@ -21,23 +21,20 @@ const FAMOUS_POET_SLUGS = [
 ];
 
 const PoetsGrid = () => {
+  // Show the six featured cards immediately (no API wait); full list loads in background.
   const [poets, setPoets] = useState<Poet[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeLetter, setActiveLetter] = useState<string>('');
   const [availableLetters, setAvailableLetters] = useState<string[]>([]);
 
-  console.log('PoetsGrid component rendered');
-
   useEffect(() => {
     const loadPoets = async () => {
       try {
-        console.log('Starting to load poets...');
         setLoading(true);
+        setError(null);
         const poetsData = await hybridApi.getPoets();
-        console.log('API response:', poetsData.slice(0, 3)); // Log first 3 poets
         setPoets(poetsData);
-        console.log(`Loaded ${poetsData.length} poets from Hybrid API`);
       } catch (err) {
         console.error('Error loading poets:', err);
         setError(err instanceof Error ? err.message : 'خطا در بارگذاری شاعران');
@@ -87,17 +84,7 @@ const PoetsGrid = () => {
     });
   }, [poets]);
 
-  if (loading) {
-    return (
-      <div className="relative w-full">
-        <div className="text-center py-8">
-          <div className="text-stone-600 dark:text-stone-300">در حال بارگذاری شاعران...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
+  if (error && poets.length === 0) {
     return (
       <div className="relative w-full">
         <p className="text-center text-sm text-stone-600 dark:text-stone-400 mb-6">
@@ -111,8 +98,14 @@ const PoetsGrid = () => {
   return (
     <div className="relative w-full">
 
-      {/* Famous Poets Section */}
+      {/* Famous Poets Section — static data first frame; merges with API when loaded */}
       <FamousPoets poets={famousPoets} />
+
+      {loading && poets.length === 0 && (
+        <p className="mt-10 text-center text-sm text-stone-500 dark:text-stone-400">
+          در حال بارگذاری فهرست کامل شاعران...
+        </p>
+      )}
       
       {/* Alphabetical Poets Section */}
       <AlphabeticalPoets 
