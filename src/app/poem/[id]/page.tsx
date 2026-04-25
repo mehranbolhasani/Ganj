@@ -5,7 +5,9 @@ import PoemNavigation from '@/components/PoemNavigation';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import HistoryTracker from '@/components/HistoryTracker';
 import { BreadcrumbStructuredData, ArticleStructuredData } from '@/components/StructuredData';
+import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { hybridApi } from '@/lib/hybrid-api';
+import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
 
@@ -84,6 +86,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
   let error: string | null = null;
   let previousPoem: Poem | null = null;
   let nextPoem: Poem | null = null;
+  let ganjoorUnavailable = false;
 
   try {
     poem = await hybridApi.getPoem(poemId);
@@ -134,8 +137,20 @@ export default async function PoemPage({ params }: PoemPageProps) {
       }
     }
   } catch (err) {
+    if (err instanceof GanjoorUnavailableError) {
+      ganjoorUnavailable = true;
+    }
     error = err instanceof Error ? err.message : 'خطا در بارگذاری شعر';
     console.error(`[PoemPage] Error loading poem ${poemId}:`, err);
+  }
+
+  if (ganjoorUnavailable) {
+    return (
+      <GanjoorOutageCard
+        backHref="/"
+        backLabel="بازگشت به صفحه اصلی"
+      />
+    );
   }
 
   if (error || !poem) {

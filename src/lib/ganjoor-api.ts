@@ -1,9 +1,29 @@
 import { Poet, Category, Poem, Chapter } from './types';
-import { withCache } from './api-cache';
 import { withRetry } from './retry-utils';
 import { slugFromGanjoorFullUrl } from './ganjoor-slug';
+import { withDurableCache } from './durable-cache';
 
 const API_BASE_URL = 'https://api.ganjoor.net/api/ganjoor';
+const GANJOOR_TIMEOUT_MS = 1000;
+const GANJOOR_RETRY_COUNT = 1;
+const NETWORK_FAILURE_COOLDOWN_MS = 15 * 1000;
+
+const CIRCUIT_WINDOW_MS = 10 * 1000;
+const CIRCUIT_OPEN_MS = 30 * 1000;
+const CIRCUIT_FAILURE_THRESHOLD = 3;
+
+const GANJOOR_TTL = {
+  poets: 24 * 60 * 60 * 1000,
+  poet: 12 * 60 * 60 * 1000,
+  category: 6 * 60 * 60 * 1000,
+  chapter: 6 * 60 * 60 * 1000,
+  poem: 2 * 60 * 60 * 1000,
+  randomPoem: 5 * 60 * 1000,
+};
+
+let circuitOpenedUntil = 0;
+let recentFailureTimestamps: number[] = [];
+let networkFailureCooldownUntil = 0;
 
 class GanjoorApiError extends Error {
   constructor(message: string, public status?: number) {
@@ -12,13 +32,72 @@ class GanjoorApiError extends Error {
   }
 }
 
+export class GanjoorUnavailableError extends GanjoorApiError {
+  constructor(message: string = 'Ganjoor API is temporarily unavailable') {
+    super(message);
+    this.name = 'GanjoorUnavailableError';
+  }
+}
+
+function isCircuitOpen(): boolean {
+  return Date.now() < circuitOpenedUntil;
+}
+
+function isNetworkFailureCoolingDown(): boolean {
+  return Date.now() < networkFailureCooldownUntil;
+}
+
+function resetCircuitFailures(): void {
+  recentFailureTimestamps = [];
+  networkFailureCooldownUntil = 0;
+}
+
+function recordCircuitFailure(): void {
+  const now = Date.now();
+  recentFailureTimestamps = recentFailureTimestamps.filter(
+    (timestamp) => now - timestamp <= CIRCUIT_WINDOW_MS
+  );
+  recentFailureTimestamps.push(now);
+
+  if (recentFailureTimestamps.length >= CIRCUIT_FAILURE_THRESHOLD) {
+    circuitOpenedUntil = now + CIRCUIT_OPEN_MS;
+  }
+}
+
+function isNetworkLikeError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  if (error.name === 'TimeoutError' || error.name === 'AbortError') return true;
+  if (error.name === 'TypeError' && error.message.includes('fetch')) return true;
+  const message = error.message.toLowerCase();
+  return (
+    message.includes('timed out') ||
+    message.includes('timeout') ||
+    message.includes('network') ||
+    message.includes('failed to fetch') ||
+    message.includes('fetch failed') ||
+    message.includes('econnrefused') ||
+    message.includes('enotfound')
+  );
+}
+
+function openFastFailureWindow(): void {
+  const now = Date.now();
+  circuitOpenedUntil = Math.max(circuitOpenedUntil, now + CIRCUIT_OPEN_MS);
+  networkFailureCooldownUntil = now + NETWORK_FAILURE_COOLDOWN_MS;
+}
+
 async function fetchApi<T>(endpoint: string): Promise<T> {
+  if (isCircuitOpen() || isNetworkFailureCoolingDown()) {
+    throw new GanjoorUnavailableError('Ganjoor API circuit is open');
+  }
+
   const fetchWithRetry = () => withRetry(async () => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
+      signal: AbortSignal.timeout(GANJOOR_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -30,22 +109,49 @@ async function fetchApi<T>(endpoint: string): Promise<T> {
 
     const data = await response.json();
     return data;
+  }, {
+    maxRetries: GANJOOR_RETRY_COUNT,
+    baseDelay: 300,
+    retryCondition: (error) => {
+      if (error instanceof GanjoorUnavailableError) {
+        return false;
+      }
+      if (error instanceof GanjoorApiError && error.status && error.status < 500) {
+        return false;
+      }
+      // Connection/timeout failures should fail fast (no second attempt).
+      if (isNetworkLikeError(error)) return false;
+      if (error.status === 429) return true;
+      if (error.status && error.status >= 500) return true;
+      return false;
+    },
   });
 
   try {
-    return await fetchWithRetry();
+    const data = await fetchWithRetry();
+    resetCircuitFailures();
+    return data;
   } catch (error) {
+    recordCircuitFailure();
+    if (isNetworkLikeError(error)) {
+      openFastFailureWindow();
+    }
+    if (error instanceof GanjoorUnavailableError) {
+      throw error;
+    }
     if (error instanceof GanjoorApiError) {
       throw error;
     }
-    throw new GanjoorApiError(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new GanjoorUnavailableError(
+      `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
 export const ganjoorApi = {
   // Get all poets
   async getPoets(): Promise<Poet[]> {
-    return withCache('/poets', async () => {
+    return withDurableCache('ganjoor:/poets', async () => {
       const data = await fetchApi<Array<{
         id: number;
         name: string;
@@ -62,12 +168,12 @@ export const ganjoorApi = {
         birthYear: poet.birthYearInLHijri,
         deathYear: poet.deathYearInLHijri,
       }));
-    });
+    }, GANJOOR_TTL.poets);
   },
 
   // Get poet details and categories
   async getPoet(id: number): Promise<{ poet: Poet; categories: Category[] }> {
-    return withCache(`/poet/${id}`, async () => {
+    return withDurableCache(`ganjoor:/poet/${id}`, async () => {
       const poetResponse = await fetchApi<{
         poet: {
           id: number;
@@ -188,12 +294,12 @@ export const ganjoorApi = {
       );
 
       return { poet, categories: categoriesWithCounts };
-    });
+    }, GANJOOR_TTL.poet);
   },
 
   // Get poems from a category (handles both direct poems and chapters)
   async getCategoryPoems(poetId: number, categoryId: number): Promise<Poem[]> {
-    return withCache(`/cat/${categoryId}`, async () => {
+    return withDurableCache(`ganjoor:/cat/${categoryId}`, async () => {
       const data = await fetchApi<{
         poet: { name: string };
         cat: {
@@ -264,12 +370,12 @@ export const ganjoorApi = {
       }
 
       return allPoems;
-    });
+    }, GANJOOR_TTL.category);
   },
 
   // Get chapter details
   async getChapter(poetId: number, categoryId: number, chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
-    return withCache(`/chapter/${chapterId}`, async () => {
+    return withDurableCache(`ganjoor:/chapter/${chapterId}`, async () => {
       const root = await fetchApi<{
         poet: { name: string };
         cat: {
@@ -334,12 +440,12 @@ export const ganjoorApi = {
 
       chapter.poemCount = poems.length;
       return { chapter, poems };
-    });
+    }, GANJOOR_TTL.chapter);
   },
 
   // Get individual poem
   async getPoem(id: number): Promise<Poem> {
-    return withCache(`/poem/${id}`, async () => {
+    return withDurableCache(`ganjoor:/poem/${id}`, async () => {
       const data = await fetchApi<unknown>(`/poem/${id}`);
 
       const obj = data as Record<string, unknown>;
@@ -404,12 +510,12 @@ export const ganjoorApi = {
         categoryId: catId,
         categoryTitle: catTitle,
       };
-    });
+    }, GANJOOR_TTL.poem);
   },
 
   // Get a random poem from all poets
   async getRandomPoem(): Promise<Poem> {
-    return withCache('/random-poem', async () => {
+    return withDurableCache('ganjoor:/random-poem', async () => {
       try {
         // Get all poets first
         const poets = await this.getPoets();
@@ -468,7 +574,7 @@ export const ganjoorApi = {
           poetName: 'حافظ',
         };
       }
-    }, 5 * 60 * 1000); // Cache for 5 minutes
+    }, GANJOOR_TTL.randomPoem);
   },
 
   // Note: Search functions removed - now handled by Supabase API

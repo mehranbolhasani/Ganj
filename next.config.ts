@@ -29,6 +29,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      // Backward compatibility for stale relative font URLs (e.g. /poet/5/utils/fonts/*)
+      {
+        source: '/:path*/utils/fonts/:fontFile',
+        destination: '/fonts/:fontFile',
+      },
+    ];
+  },
   // Use Turbopack with minimal config
   turbopack: {},
 };

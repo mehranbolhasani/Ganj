@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { hybridApi } from '@/lib/hybrid-api';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.ganj.directory';
@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     // Get all poets for dynamic routes
-    const poets = await ganjoorApi.getPoets();
+    const poets = await hybridApi.getPoets();
     
     // Add poet pages
     const poetPages: MetadataRoute.Sitemap = poets.map((poet) => ({
@@ -31,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     
     for (const poet of poets.slice(0, 10)) { // Limit to first 10 poets
       try {
-        const { categories } = await ganjoorApi.getPoet(poet.id);
+        const { categories } = await hybridApi.getPoet(poet.id);
         
         // Add category pages
         categories.forEach((category) => {
@@ -43,7 +43,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           });
         });
       } catch (error) {
-        console.error(`Error fetching categories for poet ${poet.id}:`, error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(`Error fetching categories for poet ${poet.id}:`, error);
+        }
       }
     }
 

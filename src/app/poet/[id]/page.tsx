@@ -6,8 +6,10 @@ import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ExpandableDescription from '@/components/ExpandableDescription';
 import PoetSearch from '@/components/PoetSearch';
+import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { PoetPageSkeleton } from '@/components/LoadingStates';
 import { hybridApi } from '@/lib/hybrid-api';
+import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poet, Category } from '@/lib/types';
 
@@ -107,13 +109,28 @@ export default async function PoetPage({ params }: PoetPageProps) {
   let poet: Poet | null = null;
   let categories: Category[] = [];
   let error: string | null = null;
+  let ganjoorUnavailable = false;
+  let migratedPoet = false;
 
   try {
     const result = await hybridApi.getPoet(poetId);
     poet = result.poet;
     categories = result.categories;
   } catch (err) {
+    if (err instanceof GanjoorUnavailableError) {
+      ganjoorUnavailable = true;
+      migratedPoet = await hybridApi.isPoetMigrated(poetId);
+    }
     error = err instanceof Error ? err.message : 'خطا در بارگذاری شاعر';
+  }
+
+  if (ganjoorUnavailable && !migratedPoet) {
+    return (
+      <GanjoorOutageCard
+        backHref="/"
+        backLabel="بازگشت به صفحه اصلی"
+      />
+    );
   }
 
   if (error || !poet) {
@@ -155,11 +172,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
             }`}>
             {/* Poet Image - only for famous poets - reserve space to prevent layout shift */}
              {getPoetImage(poet.slug || '') ? (
-                 <div className={`relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] border-none md:border-l border-yellow-900/50 p-4 shrink-0 ${
-                   isFamous 
-                    //  ? 'bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-700 dark:to-orange-700 ring-4 ring-amber-200/50 dark:ring-amber-600/50' 
-                    //  : 'bg-stone-300 dark:bg-stone-600'
-                 }`}>
+                 <div className="relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] border-none md:border-l border-yellow-900/50 p-4 shrink-0">
                    <Image
                      src={`/images/${getPoetImage(poet.slug || '')}`}
                      alt={`تصویر ${poet.name}`}

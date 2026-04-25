@@ -36,6 +36,10 @@ const supabase = supabaseUrl && supabaseKey
   ? createClient(supabaseUrl, supabaseKey)
   : null;
 
+let migratedPoetIdsCache: number[] | null = null;
+let migratedPoetIdsCacheExpiresAt = 0;
+const MIGRATED_POETS_CACHE_TTL_MS = 5 * 60 * 1000;
+
 class SupabaseApiError extends Error {
   constructor(message: string, public code?: string, public details?: unknown) {
     super(message);
@@ -382,6 +386,45 @@ export const supabaseApi = {
       return !error && data !== null;
     } catch {
       return false;
+    }
+  },
+
+  /**
+   * List all poet IDs currently migrated into Supabase.
+   * Uses short in-memory memoization to avoid repeated queries.
+   */
+  async listMigratedPoetIds(): Promise<number[]> {
+    if (!supabase) {
+      return [];
+    }
+
+    const now = Date.now();
+    if (migratedPoetIdsCache && now < migratedPoetIdsCacheExpiresAt) {
+      return migratedPoetIdsCache;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('poets')
+        .select('id')
+        .order('id', { ascending: true });
+
+      if (error) {
+        throw new SupabaseApiError(
+          'Failed to fetch migrated poet IDs from Supabase',
+          error.code,
+          error
+        );
+      }
+
+      migratedPoetIdsCache = (data || []).map((row) => row.id);
+      migratedPoetIdsCacheExpiresAt = now + MIGRATED_POETS_CACHE_TTL_MS;
+      return migratedPoetIdsCache;
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Failed to list migrated poet IDs:', error);
+      }
+      return [];
     }
   },
 

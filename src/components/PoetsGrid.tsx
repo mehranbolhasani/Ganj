@@ -20,6 +20,46 @@ const FAMOUS_POET_SLUGS = [
   'nezami'
 ];
 
+const POETS_CACHE_KEY = 'ganjeh-poets-cache-v1';
+const POETS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+interface CachedPoetsPayload {
+  poets: Poet[];
+  timestamp: number;
+}
+
+const getCachedPoets = (): Poet[] | null => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const raw = localStorage.getItem(POETS_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CachedPoetsPayload;
+    if (!Array.isArray(parsed.poets)) return null;
+    if (Date.now() - parsed.timestamp > POETS_CACHE_TTL_MS) {
+      localStorage.removeItem(POETS_CACHE_KEY);
+      return null;
+    }
+    return parsed.poets;
+  } catch {
+    return null;
+  }
+};
+
+const setCachedPoets = (poets: Poet[]): void => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const payload: CachedPoetsPayload = {
+      poets,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(POETS_CACHE_KEY, JSON.stringify(payload));
+  } catch {
+    // ignore storage failures
+  }
+};
+
 const PoetsGrid = () => {
   // Show the six featured cards immediately (no API wait); full list loads in background.
   const [poets, setPoets] = useState<Poet[]>([]);
@@ -30,11 +70,17 @@ const PoetsGrid = () => {
 
   useEffect(() => {
     const loadPoets = async () => {
+      const cachedPoets = getCachedPoets();
+      if (cachedPoets && cachedPoets.length > 0) {
+        setPoets(cachedPoets);
+      }
+
       try {
         setLoading(true);
         setError(null);
         const poetsData = await hybridApi.getPoets();
         setPoets(poetsData);
+        setCachedPoets(poetsData);
       } catch (err) {
         console.error('Error loading poets:', err);
         setError(err instanceof Error ? err.message : 'خطا در بارگذاری شاعران');

@@ -3,8 +3,10 @@ import { Suspense } from 'react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ChapterList from '@/components/ChapterList';
 import PoemPagination from '@/components/PoemPagination';
+import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { CategoryPageSkeleton } from '@/components/LoadingStates';
 import { hybridApi } from '@/lib/hybrid-api';
+import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';
 
@@ -34,7 +36,8 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
   let categoryTitle: string = '';
   let category: Category | undefined;
   let error: string | null = null;
-  let chaptersOverride: Category['chapters'] | undefined;
+  let ganjoorUnavailable = false;
+  let migratedPoet = false;
 
   try {
     poems = await hybridApi.getCategoryPoems(poetId, categoryId);
@@ -43,15 +46,21 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
     poetName = poetData.poet.name;
     category = poetData.categories.find(cat => cat.id === categoryId);
     categoryTitle = category?.title || 'مجموعه';
-    const SPECIAL_NESTED_CATEGORIES: Record<number, number[]> = { 9: [152] };
-    const isSpecial = (SPECIAL_NESTED_CATEGORIES[poetId] || []).includes(categoryId);
-    if (isSpecial && (!category?.chapters || category.chapters.length === 0)) {
-      const ganPoet = await (await import('@/lib/ganjoor-api')).ganjoorApi.getPoet(poetId);
-      const ganCategory = ganPoet.categories.find(cat => cat.id === categoryId);
-      chaptersOverride = ganCategory?.chapters;
-    }
   } catch (err) {
+    if (err instanceof GanjoorUnavailableError) {
+      ganjoorUnavailable = true;
+      migratedPoet = await hybridApi.isPoetMigrated(poetId);
+    }
     error = err instanceof Error ? err.message : 'خطا در بارگذاری اشعار';
+  }
+
+  if (ganjoorUnavailable && !migratedPoet) {
+    return (
+      <GanjoorOutageCard
+        backHref={`/poet/${poetId}`}
+        backLabel="بازگشت به شاعر"
+      />
+    );
   }
 
   if (error) {
@@ -74,7 +83,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
       
     );
   }
-  const effectiveChapters = chaptersOverride ?? (category?.chapters ?? []);
+  const effectiveChapters = category?.chapters ?? [];
   return (
     <Suspense fallback={<CategoryPageSkeleton />}>
       <Breadcrumbs items={[

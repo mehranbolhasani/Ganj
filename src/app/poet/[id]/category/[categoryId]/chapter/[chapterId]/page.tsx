@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import PoemPagination from '@/components/PoemPagination';
+import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { ChapterPageSkeleton } from '@/components/LoadingStates';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { hybridApi } from '@/lib/hybrid-api';
+import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
 
@@ -35,20 +37,35 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
   let categoryTitle: string = '';
   let chapterTitle: string = '';
   let error: string | null = null;
+  let ganjoorUnavailable = false;
+  let migratedPoet = false;
 
   try {
     // Get chapter details and poems
-    const chapterData = await ganjoorApi.getChapter(poetId, categoryId, chapterId);
+    const chapterData = await hybridApi.getChapter(poetId, categoryId, chapterId);
     poems = chapterData.poems;
     chapterTitle = chapterData.chapter.title;
     
     // Get poet and category info for breadcrumbs
-    const poetData = await ganjoorApi.getPoet(poetId);
+    const poetData = await hybridApi.getPoet(poetId);
     poetName = poetData.poet.name;
     const category = poetData.categories.find(cat => cat.id === categoryId);
     categoryTitle = category?.title || 'مجموعه';
   } catch (err) {
+    if (err instanceof GanjoorUnavailableError) {
+      ganjoorUnavailable = true;
+      migratedPoet = await hybridApi.isPoetMigrated(poetId);
+    }
     error = err instanceof Error ? err.message : 'خطا در بارگذاری اشعار';
+  }
+
+  if (ganjoorUnavailable && !migratedPoet) {
+    return (
+      <GanjoorOutageCard
+        backHref={`/poet/${poetId}/category/${categoryId}`}
+        backLabel="بازگشت به مجموعه"
+      />
+    );
   }
 
   if (error) {

@@ -4,38 +4,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Local Font Declarations */
+/* Local font declarations (use absolute /fonts paths for nested routes) */
 @font-face {
-  font-family: 'DoranFaNum';
-  src: url('/fonts/DoranFaNum-VF.woff2') format('woff2'),
-       url('/fonts/DoranFaNum-VF.woff') format('woff');
-  font-weight: 100 900;
+  font-family: 'Estedad';
+  src: url('/fonts/Estedad-Regular.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Estedad';
-  src: url('/fonts/Estedad-FD[KSHD,wght].woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  font-feature-settings: 'kern' 1, 'liga' 1;
-}
-
-@font-face {
-  font-family: "Abar VF";
-  src: url("/fonts/AbarFaNum-VF.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  font-feature-settings: 'kern' 1, 'liga' 1;
-}
-
-@font-face {
-  font-family: "Hafez";
-  src: url("/fonts/Hafez-Regular.woff2") format("woff2");
-  font-weight: 400;
+  src: url('/fonts/Estedad-Bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }

@@ -41,6 +41,16 @@ CREATE TABLE IF NOT EXISTS poems (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Durable cache for Ganjoor API responses (server-side resilience)
+CREATE TABLE IF NOT EXISTS ganjoor_cache (
+  key TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  fetched_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  ttl_ms INTEGER NOT NULL DEFAULT 300000,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Create indexes for fast lookups
 CREATE INDEX IF NOT EXISTS idx_poets_name ON poets USING gin(name gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS idx_categories_poet_id ON categories(poet_id);
@@ -49,6 +59,7 @@ CREATE INDEX IF NOT EXISTS idx_categories_title ON categories USING gin(title gi
 CREATE INDEX IF NOT EXISTS idx_poems_poet_id ON poems(poet_id);
 CREATE INDEX IF NOT EXISTS idx_poems_category_id ON poems(category_id);
 CREATE INDEX IF NOT EXISTS idx_poems_title ON poems USING gin(title gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_ganjoor_cache_fetched_at ON ganjoor_cache(fetched_at);
 
 -- Full-text search indexes (GIN for fast search)
 -- Using both tsvector (standard full-text) and trigram (fuzzy/typo-tolerant)
@@ -79,6 +90,9 @@ CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON categories
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_poems_updated_at BEFORE UPDATE ON poems
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_ganjoor_cache_updated_at BEFORE UPDATE ON ganjoor_cache
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Create materialized view for famous poets (cache for performance)
@@ -123,6 +137,7 @@ COMMENT ON COLUMN poems.verses_array IS 'Individual verses as array for display'
 ALTER TABLE poets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE poems ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ganjoor_cache ENABLE ROW LEVEL SECURITY;
 
 -- Public read access policies for poetry data
 CREATE POLICY "Allow public read access to poets"
@@ -136,6 +151,11 @@ CREATE POLICY "Allow public read access to categories"
 CREATE POLICY "Allow public read access to poems"
   ON poems FOR SELECT
   USING (true);
+
+-- No anon/authenticated access to internal Ganjoor cache table
+REVOKE ALL ON ganjoor_cache FROM anon;
+REVOKE ALL ON ganjoor_cache FROM authenticated;
+REVOKE ALL ON ganjoor_cache FROM public;
 
 -- Note: contact_messages table RLS policy should be created separately
 -- if the table exists. See scripts/fix-supabase-security.sql for full setup.

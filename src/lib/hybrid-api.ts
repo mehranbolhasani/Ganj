@@ -26,6 +26,22 @@ interface PerformanceMetric {
 const performanceMetrics: PerformanceMetric[] = [];
 const MAX_METRICS = 100; // Keep last 100 metrics
 
+async function getMigratedPoetIdSet(): Promise<Set<number>> {
+  if (!isSupabaseAvailable()) {
+    return new Set<number>();
+  }
+  const ids = await supabaseApi.listMigratedPoetIds();
+  return new Set(ids);
+}
+
+export async function isMigratedPoet(id: number): Promise<boolean> {
+  if (!isSupabaseAvailable()) {
+    return false;
+  }
+  const migratedSet = await getMigratedPoetIdSet();
+  return migratedSet.has(id);
+}
+
 /**
  * Track API call performance
  */
@@ -162,60 +178,15 @@ export const hybridApi = {
         
         if (hasPoet) {
           const data = await supabaseApi.getPoet(id);
-          if (data.categories.length === 0) {
-            console.log(`Poet ${id} has no categories in Supabase, using Ganjoor API`);
-          } else {
-            const specialCats = SPECIAL_NESTED_CATEGORIES[id] || [];
-            if (specialCats.length > 0) {
-              try {
-                const ganData = await ganjoorApi.getPoet(id);
-                const chaptersByCat = new Map<number, { poemCount?: number; chapters?: Chapter[] }>();
-                ganData.categories.forEach(c => {
-                  chaptersByCat.set(c.id, { poemCount: c.poemCount, chapters: c.chapters });
-                });
-                const enriched: { poet: Poet; categories: Category[] } = {
-                  poet: data.poet,
-                  categories: data.categories.map((c): Category => {
-                    const g = chaptersByCat.get(c.id);
-                    const isSpecial = specialCats.includes(c.id);
-                    if (isSpecial && g && g.chapters && g.chapters.length > 0) {
-                      return { ...c, poemCount: g.poemCount, hasChapters: true, chapters: g.chapters };
-                    }
-                    return c;
-                  }),
-                };
-                const duration = performance.now() - startTime;
-                trackPerformance({
-                  source: 'supabase',
-                  endpoint: 'getPoet',
-                  duration,
-                  success: true,
-                  fallback: false,
-                });
-                return enriched;
-              } catch {
-                const duration = performance.now() - startTime;
-                trackPerformance({
-                  source: 'supabase',
-                  endpoint: 'getPoet',
-                  duration,
-                  success: true,
-                  fallback: false,
-                });
-                return data;
-              }
-            } else {
-              const duration = performance.now() - startTime;
-              trackPerformance({
-                source: 'supabase',
-                endpoint: 'getPoet',
-                duration,
-                success: true,
-                fallback: false,
-              });
-              return data;
-            }
-          }
+          const duration = performance.now() - startTime;
+          trackPerformance({
+            source: 'supabase',
+            endpoint: 'getPoet',
+            duration,
+            success: true,
+            fallback: false,
+          });
+          return data;
         } else {
           console.log(`Poet ${id} not in Supabase, using Ganjoor API`);
         }
@@ -245,6 +216,36 @@ export const hybridApi = {
    */
   async getCategoryPoems(poetId: number, categoryId: number): Promise<Poem[]> {
     const startTime = performance.now();
+
+    const migratedPoet = await isMigratedPoet(poetId);
+
+    if (migratedPoet) {
+      try {
+        const poems = await supabaseApi.getCategoryPoems(poetId, categoryId);
+        const duration = performance.now() - startTime;
+
+        trackPerformance({
+          source: 'supabase',
+          endpoint: 'getCategoryPoems',
+          duration,
+          success: true,
+          fallback: false,
+        });
+
+        // Intentionally return Supabase result (even if empty) for migrated poets.
+        return poems;
+      } catch (error) {
+        const duration = performance.now() - startTime;
+        trackPerformance({
+          source: 'supabase',
+          endpoint: 'getCategoryPoems',
+          duration,
+          success: false,
+          fallback: false,
+        });
+        throw error;
+      }
+    }
 
     // Try Supabase first for better performance
     if (isSupabaseAvailable()) {
@@ -342,6 +343,10 @@ export const hybridApi = {
    * Get chapter details (Ganjoor API only, not in Supabase yet)
    */
   async getChapter(poetId: number, categoryId: number, chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
+    if (await isMigratedPoet(poetId)) {
+      throw new Error('فصل برای شاعرهای مهاجرت‌کرده فعلا فقط از سوپابیس پشتیبانی می‌شود');
+    }
+
     const startTime = performance.now();
     const data = await ganjoorApi.getChapter(poetId, categoryId, chapterId);
     const duration = performance.now() - startTime;
@@ -375,13 +380,17 @@ export const hybridApi = {
 
     return poem;
   },
+
+  async getMigratedPoetIds(): Promise<number[]> {
+    return supabaseApi.listMigratedPoetIds();
+  },
+
+  async isPoetMigrated(id: number): Promise<boolean> {
+    return isMigratedPoet(id);
+  },
 };
 
 /**
  * Export for monitoring and debugging
  */
 export { performanceMetrics };
-// Special-case nested categories that contain sub-categories (multi-level)
-const SPECIAL_NESTED_CATEGORIES: Record<number, number[]> = {
-  9: [152], // Attar: Divan-e Ashaar
-};

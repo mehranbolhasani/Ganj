@@ -3,8 +3,43 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { ChevronDown, Search, Star } from 'lucide-react';
-import { ganjoorApi } from '@/lib/ganjoor-api';
+import { hybridApi } from '@/lib/hybrid-api';
 import { Poet } from '@/lib/types';
+
+const POETS_CACHE_KEY = 'ganjeh-poets-cache-v1';
+const POETS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+interface CachedPoetsPayload {
+  poets: Poet[];
+  timestamp: number;
+}
+
+const getCachedPoets = (): Poet[] | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(POETS_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CachedPoetsPayload;
+    if (!Array.isArray(parsed.poets)) return null;
+    if (Date.now() - parsed.timestamp > POETS_CACHE_TTL_MS) {
+      localStorage.removeItem(POETS_CACHE_KEY);
+      return null;
+    }
+    return parsed.poets;
+  } catch {
+    return null;
+  }
+};
+
+const setCachedPoets = (poets: Poet[]): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    const payload: CachedPoetsPayload = { poets, timestamp: Date.now() };
+    localStorage.setItem(POETS_CACHE_KEY, JSON.stringify(payload));
+  } catch {
+    // ignore storage failures
+  }
+};
 
 // Hook to get window size
 const useWindowSize = () => {
@@ -70,12 +105,18 @@ export default function PoetsDropdown() {
 
   useEffect(() => {
     const fetchPoets = async () => {
+      const cachedPoets = getCachedPoets();
+      if (cachedPoets && cachedPoets.length > 0) {
+        setPoets(cachedPoets);
+      }
+
       if (poets.length > 0) return; // Already loaded
       
       setLoading(true);
       try {
-        const allPoets = await ganjoorApi.getPoets();
+        const allPoets = await hybridApi.getPoets();
         setPoets(allPoets);
+        setCachedPoets(allPoets);
       } catch (error) {
         console.error('Error fetching poets for dropdown:', error);
       } finally {
