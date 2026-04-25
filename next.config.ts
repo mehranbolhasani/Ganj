@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['next-themes'],
   },
+  compiler: {
+    // Strip all console.* calls from production builds.
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   // Enable React Strict Mode for better development experience
   reactStrictMode: true,
   // Add caching headers for better performance
