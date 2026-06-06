@@ -3,7 +3,7 @@
 import React from 'react';
 import { useToast } from '@/components/Toast';
 
-const ContactForm = (): JSX.Element => {
+const ContactForm = () => {
   const { toast } = useToast();
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -21,6 +21,9 @@ const ContactForm = (): JSX.Element => {
         body: JSON.stringify({ name, email, message }),
       });
       const data = await res.json();
+      if (res.status === 429) {
+        throw new Error(data?.error || 'تعداد درخواست‌ها بیش از حد مجاز است. لطفاً بعداً تلاش کنید.');
+      }
       if (!res.ok) throw new Error(data?.error || 'خطا در ارسال فرم');
       toast.success('پیام شما با موفقیت ارسال شد. متشکرم!');
       setName(''); setEmail(''); setMessage('');

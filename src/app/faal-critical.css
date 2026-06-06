@@ -1,0 +1,17 @@
+/* Hide preload background by default */
+#faal-preload-bg {
+  display: none;
+}
+/* Show preload bg when faal page element exists (SERVER RENDERED) */
+html:has([data-faal-page]) #faal-preload-bg {
+  display: block !important;
+}
+/* Backup: JS-set attribute for preload bg */
+html[data-faal-route] #faal-preload-bg {
+  display: block !important;
+}
+/* Hide grid background on faal page */
+html:has([data-faal-page]) .grid-background,
+html[data-faal-route] .grid-background {
+  display: none !important;
+}

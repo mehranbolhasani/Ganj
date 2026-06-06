@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import React from "react";
 import "./globals.css";
+import "./faal-critical.css";
 import { ThemeProvider } from "next-themes";
 import ThemeSync from "@/components/ThemeSync";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -82,31 +83,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
-  },
 };
-
-// Critical CSS for faal page - respects theme system
-const faalCriticalCSS = `
-  /* Hide preload background by default */
-  #faal-preload-bg {
-    display: none;
-  }
-  /* Show preload bg when faal page element exists (SERVER RENDERED) */
-  html:has([data-faal-page]) #faal-preload-bg {
-    display: block !important;
-  }
-  /* Backup: JS-set attribute for preload bg */
-  html[data-faal-route] #faal-preload-bg {
-    display: block !important;
-  }
-  /* Hide grid background on faal page */
-  html:has([data-faal-page]) .grid-background,
-  html[data-faal-route] .grid-background {
-    display: none !important;
-  }
-`;
 
 export default function RootLayout({
   children,
@@ -124,8 +101,6 @@ export default function RootLayout({
         <meta name="color-scheme" content="light dark" />
         {/* Script to handle Faal page preload background - respects theme system */}
         <script dangerouslySetInnerHTML={{ __html: `!function(){var p=location.pathname;var d=document;if(p==='/faal'||p.startsWith('/faal')){d.documentElement.setAttribute('data-faal-route','true');}else{setTimeout(function(){var bg=d.getElementById('faal-preload-bg');if(bg)bg.style.display='none';},0);}}();`}} />
-        {/* Critical CSS for Faal page - respects theme system */}
-        <style dangerouslySetInnerHTML={{ __html: faalCriticalCSS }} />
       </head>
       <body className="antialiased" style={{ fontFamily: 'Estedad, Abar VF, Vazirmatn, Vazir, Tahoma, Arial, sans-serif' }}>
         {/* Server-rendered background for Faal page - respects theme system */}

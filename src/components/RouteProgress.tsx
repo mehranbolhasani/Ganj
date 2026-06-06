@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 
-export default function RouteProgress(): JSX.Element | null {
+export default function RouteProgress() {
   const pathname = usePathname();
   const [isActive, setIsActive] = React.useState(false);
   const [progress, setProgress] = React.useState(0);

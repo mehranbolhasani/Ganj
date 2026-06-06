@@ -8,16 +8,10 @@ import { createClient } from '@supabase/supabase-js';
 import { Poet, Category, Poem, Chapter } from './types';
 import { withCache } from './api-cache';
 
-// Initialize Supabase client
-// On server: prefer service role key (more permissions)
-// On client: use anon key (public)
+// Initialize Supabase client (shared - safe for both client and server)
+// Uses anon key only. For server-only elevated access, use supabase-server.ts.
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  
-const supabaseKey = typeof window === 'undefined'
-  // Server-side: prefer service role key for full access
-  ? (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-  // Client-side: use anon key only
-  : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Debug logging (only in development, and only once)
 let hasWarnedAboutCredentials = false;
@@ -27,7 +21,7 @@ if (process.env.NODE_ENV === 'development' && !hasWarnedAboutCredentials) {
     // Only warn on server-side (client-side will use fallback anyway)
     if (typeof window === 'undefined') {
       console.warn('⚠️  Supabase credentials not found on server. Using Ganjoor API fallback.');
-      console.warn('   Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local for Supabase access.');
+      console.warn('   Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local for Supabase access.');
     }
   }
 }

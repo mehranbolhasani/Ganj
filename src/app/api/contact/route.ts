@@ -1,4 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+const ratelimit =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(5, '1 h'),
+        analytics: false,
+        prefix: 'ganj:contact',
+      })
+    : null;
 
 type ContactPayload = {
   name: string;
@@ -12,6 +24,15 @@ function isValidEmail(email: string): boolean {
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting
+    if (ratelimit) {
+      const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? '127.0.0.1';
+      const { success } = await ratelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ error: 'تعداد درخواست‌ها بیش از حد مجاز است. لطفاً بعداً تلاش کنید.' }, { status: 429 });
+      }
+    }
+
     const body = (await req.json()) as Partial<ContactPayload>;
     const name = (body.name || '').toString().trim();
     const email = (body.email || '').toString().trim();
@@ -29,6 +50,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'طول ورودی بیش از حد مجاز است.' }, { status: 400 });
     }
 
+    // This is a Next.js API route — server-only. SUPABASE_SERVICE_ROLE_KEY is safe here.
     // Store in Supabase via REST (no SDK dependency)
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
