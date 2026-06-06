@@ -104,6 +104,7 @@ scripts/import-remaining-poets-fast.ts
 
 # Migration state and logs
 scripts/migration-progress.json
+scripts/migration-*.log
 
 # SQL utility scripts (except security fix scripts)
 scripts/*.sql
