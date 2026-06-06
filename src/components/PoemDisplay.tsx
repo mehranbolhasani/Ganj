@@ -16,7 +16,7 @@ type ReadingTheme = 'default' | 'sepia' | 'night';
 
 const PoemDisplay = ({ poem }: PoemDisplayProps) => {
   const { poemClasses, fontSize } = useFontSize();
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [isHydrated] = useState(() => typeof window !== 'undefined');
   const [isDistractFree, setIsDistractFree] = useState(false);
   const [readingTheme, setReadingTheme] = useState<ReadingTheme>('default');
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -37,12 +37,6 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         return 'text-lg sm:text-2xl';
     }
   };
-
-  // Prevent hydration mismatch by only rendering after hydration
-  useEffect(() => {
-    const timer = setTimeout(() => setIsHydrated(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Handle text selection for Vajehyab search
   useEffect(() => {

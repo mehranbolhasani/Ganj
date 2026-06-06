@@ -95,7 +95,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
 
   // Search function using Supabase (instant, no indexing wait)
   const search = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
       startTransition(() => {
         setResults([]);
       });
@@ -160,7 +160,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
   // Debounced search - increased to 500ms for better performance
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (query.trim()) {
+      if (query.trim().length >= 2) {
         search(query);
       } else {
         startTransition(() => {
@@ -332,20 +332,26 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
               <div className="animate-spin w-6 h-6 border-2 border-stone-300 dark:border-stone-600 border-t-stone-600 dark:border-t-stone-300 rounded-full mx-auto mb-3"></div>
               <p className="text-stone-600 dark:text-stone-400">در حال جستجو...</p>
             </div>
-          ) : query.trim() && results.length === 0 ? (
+          ) : !isLoading && query.trim().length === 1 ? (
+            <div className="p-8 text-center">
+              <p className="text-stone-500 dark:text-stone-400 text-sm">
+                برای جستجو حداقل ۲ کاراکتر وارد کنید
+              </p>
+            </div>
+          ) : !isLoading && query.trim().length >= 2 && results.length === 0 ? (
             <div className="p-8 text-center">
               <p className="text-stone-600 dark:text-stone-400 mb-4">
-                هیچ نتیجه‌ای یافت نشد
+                هیچ نتیجه‌ای برای «{query}» یافت نشد
               </p>
               <Link
                 href={`/search?q=${encodeURIComponent(query)}`}
                 onClick={onClose}
-                className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 underline"
+                className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 underline text-sm"
               >
                 جستجوی کامل
               </Link>
             </div>
-          ) : query.trim() ? (
+          ) : query.trim().length >= 2 && results.length > 0 ? (
             <>
               {/* Results count */}
               <div className="px-4 py-3 flex items-center justify-between text-sm text-stone-600 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">

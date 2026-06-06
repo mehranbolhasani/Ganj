@@ -246,3 +246,22 @@ export const useFontSize = () => {
 
 // Import React for hooks
 import React from 'react';
+
+/**
+ * Read font size synchronously from localStorage for SSR-safe initial render.
+ * Returns 'medium' as fallback (matches DEFAULT_PREFERENCES).
+ * Safe to call during render — returns fallback on server or if storage is unavailable.
+ */
+export function getInitialFontSize(): 'small' | 'medium' | 'large' {
+  if (typeof window === 'undefined') return 'medium';
+  try {
+    const raw = localStorage.getItem('ganj_preferences');
+    if (!raw) return 'medium';
+    const parsed = JSON.parse(raw);
+    const value = parsed?.value?.fontSize;
+    if (value === 'small' || value === 'medium' || value === 'large') return value;
+    return 'medium';
+  } catch {
+    return 'medium';
+  }
+}

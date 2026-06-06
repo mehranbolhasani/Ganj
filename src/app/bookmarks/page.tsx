@@ -89,6 +89,14 @@ export default function BookmarksPage() {
         </div>
 
 
+        {/* localStorage notice */}
+        <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 text-xs text-stone-500 dark:text-stone-400 mb-4">
+          <span className="shrink-0 mt-0.5" aria-hidden="true">💾</span>
+          <p>
+            علاقه‌مندی‌ها فقط در این مرورگر ذخیره می‌شوند و با پاک کردن داده‌های مرورگر یا تغییر دستگاه از بین می‌روند.
+          </p>
+        </div>
+
         {/* Bookmarks List */}
         {bookmarks.length === 0 ? (
           <div className="text-center py-12">

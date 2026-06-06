@@ -16,7 +16,7 @@ export default function FontSizeControl({
   vertical = false
 }: FontSizeControlProps) {
   const { fontSize } = useFontSize();
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [isHydrated] = useState(() => typeof window !== 'undefined');
 
   const increaseFontSize = useCallback(() => {
     const sizes = ['small', 'medium', 'large'] as const;
@@ -35,12 +35,6 @@ export default function FontSizeControl({
       updatePreference('fontSize', newSize);
     }
   }, [fontSize]);
-
-  // Prevent hydration mismatch by only rendering after hydration
-  useEffect(() => {
-    const timer = setTimeout(() => setIsHydrated(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Handle keyboard shortcuts
   useEffect(() => {
