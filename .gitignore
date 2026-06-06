@@ -102,6 +102,9 @@ scripts/fix-missing-verses.ts
 scripts/import-remaining-poets.ts
 scripts/import-remaining-poets-fast.ts
 
+# Migration state and logs
+scripts/migration-progress.json
+
 # SQL utility scripts (except security fix scripts)
 scripts/*.sql
 !scripts/fix-supabase-security.sql
