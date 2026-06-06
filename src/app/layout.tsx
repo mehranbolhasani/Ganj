@@ -35,6 +35,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://ganj.directory/'),
   alternates: {
     canonical: '/',
+    languages: {
+      'fa': 'https://www.ganj.directory',
+    },
   },
   icons: {
     icon: [

@@ -12,6 +12,7 @@ import { hybridApi } from '@/lib/hybrid-api';
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poet, Category } from '@/lib/types';
+import { BreadcrumbStructuredData, PersonStructuredData } from '@/components/StructuredData';
 
 // Helper function to get poet image based on slug
 const getPoetImage = (slug: string) => {
@@ -88,7 +89,7 @@ export async function generateMetadata({ params }: PoetPageProps): Promise<Metad
         images: [ogImage],
       },
       alternates: {
-        canonical: `/poet/${poet.id}`,
+        canonical: `https://ganj.directory/poet/${poet.id}`,
       },
     };
   } catch {
@@ -155,8 +156,25 @@ export default async function PoetPage({ params }: PoetPageProps) {
   const isFamous = isFamousPoet(poet.slug || '');
 
   return (
-    <Suspense fallback={<PoetPageSkeleton />}>
-      <Breadcrumbs items={[{ label: poet.name }]} />
+    <>
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'دفتر گنج', url: 'https://ganj.directory' },
+          { name: poet.name, url: `https://ganj.directory/poet/${poet.id}` },
+        ]}
+      />
+      <PersonStructuredData
+        name={poet.name}
+        description={poet.description}
+        birthDate={poet.birthYear ? String(poet.birthYear) : undefined}
+        deathDate={poet.deathYear ? String(poet.deathYear) : undefined}
+        url={`https://ganj.directory/poet/${poet.id}`}
+        image={getPoetImage(poet.slug || '') 
+          ? `https://ganj.directory/images/${getPoetImage(poet.slug || '')}`
+          : undefined}
+      />
+      <Suspense fallback={<PoetPageSkeleton />}>
+        <Breadcrumbs items={[{ label: poet.name }]} />
       
        <div className={`mb-8 border rounded-2xl shadow-2xl/5 backdrop-blur-md ${
          isFamous 
@@ -238,5 +256,6 @@ export default async function PoetPage({ params }: PoetPageProps) {
         <CategoryList categories={categories} poetId={poetId} isFamous={isFamous} />
       </div>
     </Suspense>
+  </>
   );
 }

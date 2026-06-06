@@ -1,53 +1,68 @@
 import { MetadataRoute } from 'next';
 import { hybridApi } from '@/lib/hybrid-api';
 
+const BASE_URL = 'https://www.ganj.directory';
+const CONCURRENCY = 5; // max parallel requests to Ganjoor API
+
+/** Run an array of async tasks with a max concurrency limit */
+async function batchedAsync<T>(
+  items: T[],
+  fn: (item: T) => Promise<MetadataRoute.Sitemap>,
+  concurrency: number
+): Promise<MetadataRoute.Sitemap> {
+  const results: MetadataRoute.Sitemap = [];
+  for (let i = 0; i < items.length; i += concurrency) {
+    const chunk = items.slice(i, i + concurrency);
+    const settled = await Promise.allSettled(chunk.map(fn));
+    for (const result of settled) {
+      if (result.status === 'fulfilled') {
+        results.push(...result.value);
+      }
+      // silently skip failed poets — their pages just won't appear in sitemap
+    }
+  }
+  return results;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.ganj.directory';
-  
-  // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: BASE_URL,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,
     },
+    {
+      url: `${BASE_URL}/faal`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
   ];
 
   try {
-    // Get all poets for dynamic routes
     const poets = await hybridApi.getPoets();
-    
-    // Add poet pages
+
     const poetPages: MetadataRoute.Sitemap = poets.map((poet) => ({
-      url: `${baseUrl}/poet/${poet.id}`,
+      url: `${BASE_URL}/poet/${poet.id}`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'weekly' as const,
       priority: 0.8,
     }));
 
-    // Get categories for each poet (limited to avoid too many requests)
-    const categoryPages: MetadataRoute.Sitemap = [];
-    
-    for (const poet of poets.slice(0, 10)) { // Limit to first 10 poets
-      try {
+    const categoryPages = await batchedAsync(
+      poets,
+      async (poet) => {
         const { categories } = await hybridApi.getPoet(poet.id);
-        
-        // Add category pages
-        categories.forEach((category) => {
-          categoryPages.push({
-            url: `${baseUrl}/poet/${poet.id}/category/${category.id}`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.6,
-          });
-        });
-      } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(`Error fetching categories for poet ${poet.id}:`, error);
-        }
-      }
-    }
+        return categories.map((category) => ({
+          url: `${BASE_URL}/poet/${poet.id}/category/${category.id}`,
+          lastModified: new Date(),
+          changeFrequency: 'monthly' as const,
+          priority: 0.6,
+        }));
+      },
+      CONCURRENCY
+    );
 
     return [...staticPages, ...poetPages, ...categoryPages];
   } catch (error) {

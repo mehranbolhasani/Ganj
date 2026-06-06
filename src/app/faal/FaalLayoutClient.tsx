@@ -5,34 +5,19 @@ import FaalHeader from '@/components/FaalHeader';
 import FaalFooter from '@/components/FaalFooter';
 import Particles from '@/components/Particles';
 import { debounce } from '@/lib/utils';
-import { FaalState } from '@/lib/faal-types';
 import { usePanelStyles } from '@/hooks/usePanelStyles';
 import { getRecommendedParticleCount, isWebGLSupported } from '@/lib/performance-detection';
+import { useFaalContext } from '@/contexts/FaalContext';
 
 export default function FaalLayoutClient({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [faalState, setFaalState] = useState<FaalState>('landing');
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
-  // Listen for state changes from children via custom event (temporary bridge)
-  useEffect(() => {
-    const handleStateChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{ state: FaalState }>;
-      if (customEvent.detail?.state && customEvent.detail.state !== 'transitioning') {
-        setFaalState(customEvent.detail.state);
-      }
-    };
-
-    window.addEventListener('faal-state-change', handleStateChange);
-
-    return () => {
-      window.removeEventListener('faal-state-change', handleStateChange);
-    };
-  }, []);
+  const { state: faalState } = useFaalContext();
 
   // Set mobile state only on client-side to avoid hydration mismatch
   useEffect(() => {

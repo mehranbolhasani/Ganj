@@ -130,3 +130,86 @@ export function ArticleStructuredData({
   );
 }
 
+interface PersonSchema {
+  name: string;
+  description?: string;
+  birthDate?: string;
+  deathDate?: string;
+  url: string;
+  image?: string;
+}
+
+export function PersonStructuredData({
+  name,
+  description,
+  birthDate,
+  deathDate,
+  url,
+  image,
+}: PersonSchema) {
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name,
+    url,
+    ...(description && { description }),
+    ...(birthDate && { birthDate }),
+    ...(deathDate && { deathDate }),
+    ...(image && { image }),
+    jobTitle: 'شاعر',
+    nationality: {
+      '@type': 'Country',
+      name: 'Iran',
+    },
+  };
+
+  return (
+    <script
+      id="person-schema"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+interface CreativeWorkSchema {
+  name: string;
+  text: string;
+  author: {
+    name: string;
+    url: string;
+  };
+  url: string;
+  inLanguage?: string;
+}
+
+export function CreativeWorkStructuredData({
+  name,
+  text,
+  author,
+  url,
+  inLanguage = 'fa',
+}: CreativeWorkSchema) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name,
+    text,
+    url,
+    inLanguage,
+    author: {
+      '@type': 'Person',
+      name: author.name,
+      url: author.url,
+    },
+  };
+
+  return (
+    <script
+      id="creative-work-schema"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+

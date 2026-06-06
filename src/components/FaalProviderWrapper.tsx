@@ -68,20 +68,32 @@ export function FaalProviderWrapper({ children }: FaalProviderWrapperProps) {
   const [poem, setPoem] = useState<Poem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const loadingStartTime = useRef<number | null>(null);
+  const isCancelledRef = useRef(false);
+
+  useEffect(() => {
+    isCancelledRef.current = false;
+    return () => {
+      isCancelledRef.current = true;
+    };
+  }, []);
 
   const fetchRandomGhazal = useCallback(async () => {
+    isCancelledRef.current = false;
+
     // Step 1: Start transition
     setState('transitioning');
     setError(null);
     
     // Wait for initial transition
     await waitForInitialTransition();
+    if (isCancelledRef.current) return;
     
     // Step 2: Move to loading state - this triggers panel resize
     setState('loading');
     
     // Wait for panel resize to complete
     await waitForPanelResize();
+    if (isCancelledRef.current) return;
     
     // Step 3: Small delay before showing spinner (for smoother transition)
     await waitForSpinnerDelay();
@@ -136,6 +148,7 @@ export function FaalProviderWrapper({ children }: FaalProviderWrapperProps) {
       // Step 4: Ensure minimum loading time has passed
       const elapsed = Date.now() - (loadingStartTime.current || 0);
       await waitForMinimumLoading(elapsed);
+      if (isCancelledRef.current) return;
       
       // Step 5: Set poem and move to result state
       setPoem(fullPoem);
@@ -145,6 +158,7 @@ export function FaalProviderWrapper({ children }: FaalProviderWrapperProps) {
       // The FaalHafez component will handle the reveal animation
       await waitForPoemReveal();
     } catch (err) {
+      if (isCancelledRef.current) return;
       if (process.env.NODE_ENV === 'development') {
         console.error('Error fetching faal:', err);
       }
@@ -165,15 +179,6 @@ export function FaalProviderWrapper({ children }: FaalProviderWrapperProps) {
     fetchRandomGhazal,
     handleTryAgain,
   };
-
-  // Notify layout of state changes (for panel resizing)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && state !== 'transitioning') {
-      window.dispatchEvent(new CustomEvent('faal-state-change', { 
-        detail: { state: state as Exclude<FaalState, 'transitioning'> }
-      }));
-    }
-  }, [state]);
 
   return (
     <FaalProvider value={contextValue}>

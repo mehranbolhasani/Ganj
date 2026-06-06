@@ -26,12 +26,25 @@ interface PerformanceMetric {
 const performanceMetrics: PerformanceMetric[] = [];
 const MAX_METRICS = 100; // Keep last 100 metrics
 
+// Module-level cache for migrated poet ID Set
+let migratedPoetSetCache: Set<number> | null = null;
+let migratedPoetSetCacheExpiresAt = 0;
+const MIGRATED_SET_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 async function getMigratedPoetIdSet(): Promise<Set<number>> {
   if (!isSupabaseAvailable()) {
     return new Set<number>();
   }
+
+  const now = Date.now();
+  if (migratedPoetSetCache && now < migratedPoetSetCacheExpiresAt) {
+    return migratedPoetSetCache;
+  }
+
   const ids = await supabaseApi.listMigratedPoetIds();
-  return new Set(ids);
+  migratedPoetSetCache = new Set(ids);
+  migratedPoetSetCacheExpiresAt = now + MIGRATED_SET_CACHE_TTL_MS;
+  return migratedPoetSetCache;
 }
 
 export async function isMigratedPoet(id: number): Promise<boolean> {

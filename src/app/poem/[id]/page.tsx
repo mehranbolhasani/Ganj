@@ -4,7 +4,7 @@ import PoemDisplay from '@/components/PoemDisplay';
 import PoemNavigation from '@/components/PoemNavigation';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import HistoryTracker from '@/components/HistoryTracker';
-import { BreadcrumbStructuredData, ArticleStructuredData } from '@/components/StructuredData';
+import { BreadcrumbStructuredData, ArticleStructuredData, CreativeWorkStructuredData } from '@/components/StructuredData';
 import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { hybridApi } from '@/lib/hybrid-api';
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PoemPageProps): Promise<Metad
         images: ['https://ganj.directory/og-image.jpg'],
       },
       alternates: {
-        canonical: `/poem/${poem.id}`,
+        canonical: `https://ganj.directory/poem/${poem.id}`,
       },
     };
   } catch {
@@ -190,6 +190,15 @@ export default async function PoemPage({ params }: PoemPageProps) {
         author={{ name: poem.poetName }}
         url={`https://ganj.directory/poem/${poem.id}`}
         image="https://ganj.directory/og-image.jpg"
+      />
+      <CreativeWorkStructuredData
+        name={poem.title}
+        text={poem.verses.slice(0, 4).join(' / ')}
+        author={{
+          name: poem.poetName,
+          url: `https://ganj.directory/poet/${poem.poetId}`,
+        }}
+        url={`https://ganj.directory/poem/${poem.id}`}
       />
       <HistoryTracker poem={poem} />
 

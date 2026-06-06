@@ -45,6 +45,20 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
     );
   }
 
+  const styles = isFamous
+    ? {
+        card: 'bg-white/80 border border-white dark:bg-orange-900/20 dark:border-orange-700/50 hover:bg-orange-100/80 dark:hover:bg-orange-800/30',
+        iconWrapper: 'bg-amber-100/50 dark:bg-amber-800/30',
+        icon: 'text-amber-700 dark:text-amber-300',
+        title: 'text-amber-900 dark:text-amber-100',
+      }
+    : {
+        card: 'bg-white/50 border border-white dark:bg-stone-800/50 dark:border-stone-700 hover:bg-stone-100/80 hover:border-stone-300 dark:hover:bg-stone-700/30 dark:hover:border-stone-600',
+        iconWrapper: 'bg-stone-100 dark:bg-stone-700',
+        icon: 'text-stone-600 dark:text-stone-400',
+        title: 'text-stone-900 dark:text-stone-300',
+      };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
       {categories.map((category) => {
@@ -54,29 +68,13 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
           <Link
             key={category.id}
             href={`/poet/${poetId}/category/${category.id}`}
-            className={`flex items-center gap-3 p-4 rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 backdrop-blur-md ${
-              isFamous 
-                ? 'bg-white/80 border border-white dark:bg-orange-900/20 dark:border-orange-700/50 hover:bg-orange-100/80 hover:to-orange-100/80 dark:hover:bg-orange-800/30 dark:hover:to-orange-800/30' 
-                : 'bg-white/50 border border-white dark:bg-stone-800/50 dark:border-stone-700 hover:bg-stone-100/80 hover:border-stone-300 dark:hover:bg-stone-700/30 dark:hover:border-stone-600'
-            }`}
+            className={`flex items-center gap-3 p-4 rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 backdrop-blur-md ${styles.card}`}
           >
-            <div className={`p-2 rounded-lg ${
-              isFamous 
-                ? 'bg-amber-100/50 dark:bg-amber-800/30' 
-                : 'bg-stone-100 dark:bg-stone-700'
-            }`}>
-              <IconComponent className={`w-5 h-5 ${
-                isFamous 
-                  ? 'text-amber-700 dark:text-amber-300' 
-                  : 'text-stone-600 dark:text-stone-400'
-              }`} />
+            <div className={`p-2 rounded-lg ${styles.iconWrapper}`}>
+              <IconComponent className={`w-5 h-5 ${styles.icon}`} />
             </div>
             <div className="flex flex-col gap-0">
-              <h3 className={`text-lg font-semibold ${
-                isFamous 
-                  ? 'text-amber-900 dark:text-amber-100' 
-                  : 'text-stone-900 dark:text-stone-300'
-              }`}>
+              <h3 className={`text-lg font-semibold ${styles.title}`}>
                 {category.title}
               </h3>
             {category.poemCount !== undefined && (
