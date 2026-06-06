@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { Poet } from '@/lib/types';
 import React from 'react';
-
-import { CalendarRange } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Calendar03Icon } from '@hugeicons/core-free-icons';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface PoetCardProps {
   poet: Poet;
@@ -13,8 +14,8 @@ function PoetCard({ poet }: PoetCardProps) {
   // Format birth and death years
   const formatYear = (year?: number) => {
     if (!year) return '';
-    // Convert to Persian numerals if needed
-    return year.toString();
+    // Convert to Persian numerals
+    return toPersianDigits(year);
   };
 
   const birthYear = formatYear(poet.birthYear);
@@ -22,7 +23,7 @@ function PoetCard({ poet }: PoetCardProps) {
   const yearRange = birthYear && deathYear ? `${birthYear} - ${deathYear}` : '';
 
   return (
-    <Link 
+    <Link
       href={`/poet/${poet.id}`}
       prefetch
       onClick={() => {
@@ -47,16 +48,16 @@ function PoetCard({ poet }: PoetCardProps) {
 
         {/* Poet info */}
         <div className="flex flex-col gap-3 sm:gap-4 items-start w-full">
-          <h3 className="font-abar text-lg sm:text-base abar-wght-600 text-stone-900 dark:text-stone-300 text-right leading-tight">
+          <h3 className="text-lg sm:text-base abar-wght-600 text-stone-900 dark:text-stone-300 text-right leading-tight">
             {poet.name}
           </h3>
-          
+
           {yearRange && (
             <div className="flex items-center gap-2 w-full justify-end flex-row-reverse">
               <span className="text-sm sm:text-base text-stone-500 dark:text-stone-300 text-right leading-tight font-medium">
                 {yearRange}
               </span>
-              <CalendarRange className="w-4 h-4 sm:w-5 sm:h-5 text-stone-400 dark:text-stone-300" />
+              <HugeiconsIcon icon={Calendar03Icon} size={16} className="sm:w-5 sm:h-5 text-stone-400 dark:text-stone-300" />
             </div>
           )}
         </div>

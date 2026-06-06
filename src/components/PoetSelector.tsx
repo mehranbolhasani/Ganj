@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Poet } from '@/lib/types';
-import { ChevronDown, X, Search } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowDown01Icon, Cancel01Icon, Search01Icon } from '@hugeicons/core-free-icons';
 
 interface PoetSelectorProps {
   poets: Poet[];
@@ -164,10 +165,10 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
               className="p-0.5 rounded hover:bg-stone-300 dark:hover:bg-stone-500 transition-colors"
               aria-label="حذف انتخاب"
             >
-              <X className="w-3 h-3" />
+              <HugeiconsIcon icon={Cancel01Icon} size={14} />
             </button>
           )}
-          <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <HugeiconsIcon icon={ArrowDown01Icon} size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </div>
       </button>
 
@@ -177,7 +178,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
           {/* Search Input */}
           <div className="p-2 border-b border-stone-200 dark:border-stone-700">
             <div className="relative">
-              <Search className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400" />
               <input
                 ref={searchInputRef}
                 type="text"

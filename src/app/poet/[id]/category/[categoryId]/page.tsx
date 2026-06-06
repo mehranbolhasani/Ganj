@@ -9,6 +9,7 @@ import { hybridApi } from '@/lib/hybrid-api';
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface CategoryPoemsPageProps {
   params: {
@@ -26,7 +27,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
   const poetId = parseInt(resolvedParams.id);
   const categoryId = parseInt(resolvedParams.categoryId);
   const currentPage = parseInt(resolvedSearchParams.page || '1');
-  
+
   if (isNaN(poetId) || isNaN(categoryId)) {
     notFound();
   }
@@ -65,7 +66,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
 
   if (error) {
     return (
-      
+
         <div className="text-center py-8">
           <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">
             خطا در بارگذاری
@@ -73,67 +74,48 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
           <p className="text-stone-600 dark:text-stone-300 mb-4">
             {error}
           </p>
-          <Link 
+          <Link
             href={`/poet/${poetId}`}
             className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
           >
             بازگشت به شاعر
           </Link>
         </div>
-      
+
     );
   }
   const effectiveChapters = category?.chapters ?? [];
   return (
     <Suspense fallback={<CategoryPageSkeleton />}>
-      <Breadcrumbs items={[
-        { label: poetName, href: `/poet/${poetId}` },
-        { label: categoryTitle }
-      ]} />
-      
-       <div className="">
-         <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-300 text-right flex items-center justify-between">
-           <span>{categoryTitle}</span>
-           <span className="text-stone-600 dark:text-stone-300">
-             {poems.length}
-           </span>
-         </h1>
-       </div>
+      <div className="min-h-fit bg-primary/5 p-6 rounded-3xl flex flex-col gap-4">
+        <Breadcrumbs items={[{ label: poetName, href: `/poet/${poetId}` }, { label: categoryTitle }]} />
 
-       {/* Show chapters if available */}
-       {effectiveChapters.length > 0 && (
-         <ChapterList 
-           chapters={effectiveChapters} 
-           categoryTitle={categoryTitle}
-           poetId={poetId}
-           categoryId={categoryId}
-         />
-       )}
+        <div className="h-20 flex items-center">
+          <h1 className="text-3xl font-bold text-right flex items-center justify-between w-full">
+            <span>{categoryTitle}</span>
+            <span className="text-stone-600 dark:text-stone-300">{toPersianDigits(poems.length)}</span>
+          </h1>
+        </div>
 
-      {/* Show poems only if there are no chapters, or if there are direct poems */}
-      {effectiveChapters.length > 0 ? (
-        <div className="text-center py-8">
-          <p className="text-stone-600 dark:text-stone-400 text-right mb-4">
-            برای مشاهده اشعار، روی یکی از فصول بالا کلیک کنید
-          </p>
-          <p className="text-sm text-stone-500 dark:text-stone-500 text-right">
-            این مجموعه شامل {effectiveChapters.length} فصل است
-          </p>
-        </div>
-      ) : poems.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-stone-500 dark:text-stone-300 text-right">
-            هیچ شعری یافت نشد
-          </p>
-        </div>
-      ) : (
-        <PoemPagination
-          poems={poems}
-          itemsPerPage={20}
-          currentPage={currentPage}
-          baseUrl={`/poet/${poetId}/category/${categoryId}`}
-        />
-      )}
+        {/* Show chapters if available */}
+        {effectiveChapters.length > 0 && (
+          <ChapterList chapters={effectiveChapters} categoryTitle={categoryTitle} poetId={poetId} categoryId={categoryId} />
+        )}
+
+        {/* Show poems only if there are no chapters, or if there are direct poems */}
+        {effectiveChapters.length > 0 ? (
+          <div className="text-center py-8">
+            <p className="text-stone-600 dark:text-stone-400 text-right mb-4">برای مشاهده اشعار، روی یکی از فصول بالا کلیک کنید</p>
+            <p className="text-sm text-stone-500 dark:text-stone-500 text-right">این مجموعه شامل {toPersianDigits(effectiveChapters.length)} فصل است</p>
+          </div>
+        ) : poems.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-stone-500 dark:text-stone-300 text-right">هیچ شعری یافت نشد</p>
+          </div>
+        ) : (
+          <PoemPagination poems={poems} itemsPerPage={20} currentPage={currentPage} baseUrl={`/poet/${poetId}/category/${categoryId}`} />
+        )}
+      </div>
     </Suspense>
   );
 }

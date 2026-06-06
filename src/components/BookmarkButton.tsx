@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Heart } from 'lucide-react';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { addBookmark, removeBookmark } from '@/lib/bookmarks-manager';
 import { useToast } from './Toast';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { HeartIcon } from '@hugeicons/core-free-icons';
 
 interface BookmarkButtonProps {
   poemId: number;
@@ -131,11 +132,9 @@ export default function BookmarkButton({
         } ${isAnimating ? 'scale-110' : 'scale-100'} ${className}`}
         aria-label={isBookmarked ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
       >
-        <Heart 
-          className={`w-4 h-4 transition-all duration-200 ${
+        <HugeiconsIcon icon={HeartIcon} size={16} className={`transition-all duration-200 ${
             isBookmarked ? 'fill-current' : ''
-          } ${isAnimating ? 'animate-pulse' : ''}`}
-        />
+          } ${isAnimating ? 'animate-pulse' : ''}`} />
         {showLabel && (
           <span className="text-sm font-medium">
             {isBookmarked ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}

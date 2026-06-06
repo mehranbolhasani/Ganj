@@ -4,6 +4,7 @@ import { Poet } from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
 import { normalizedPoetSlug } from '@/lib/ganjoor-slug';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface FamousPoetsProps {
   poets: Poet[];
@@ -11,14 +12,14 @@ interface FamousPoetsProps {
 
 function formatYear(year?: number) {
   if (!year) return '';
-  // Convert to Persian numerals if needed
-  return year.toString();
+  // Convert to Persian numerals
+  return toPersianDigits(year);
 }
 
 // Define the 6 most famous poets by their slugs (from Ganjoor website)
 const FAMOUS_POET_SLUGS = [
   'hafez',
-  'saadi', 
+  'saadi',
   'moulavi',
   'ferdousi',
   'attar',
@@ -47,38 +48,38 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
 
   return (
     <div className="w-full mb-24 relative">
-      <h2 className="font-abar text-xl abar-wght-700 text-stone-900 dark:text-stone-100 mb-8 text-right">
+      <h2 className="sr-only mb-8 text-right">
         شاعرهای پرمخاطب
       </h2>
-      
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-2 xs:grid-cols-2 gap-4 sm:gap-6">
+
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-2 xs:grid-cols-2 gap-4">
         {famousPoets.map((poet) => (
-          <Link 
-            key={poet.id} 
+          <Link
+            key={poet.id}
             href={`/poet/${poet.id}`}
-            className="flex flex-col items-center group cursor-pointer w-full bg-white/50 dark:bg-yellow-950/80 border border-white rounded-2xl shadow-lg/5 hover:shadow-lg transition-all duration-200 min-h-[200px] sm:min-h-[230px] gap-1 dark:border-yellow-900/50 p-1 active:scale-[0.98] touch-manipulation"
+            className="flex flex-col items-center group cursor-pointer w-full bg-card rounded-2xl shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/15 transition-all duration-200 min-h-[200px] sm:min-h-[230px] gap-1 p-1 active:scale-[0.98] touch-manipulation dark:shadow-none"
           >
             {/* Poet Image with explicit dimensions to prevent CLS */}
-            <div className="w-full aspect-square rounded-xl overflow-hidden bg-stone-200 dark:bg-stone-700 group-hover:bg-stone-300 dark:group-hover:bg-stone-600 transition-colors">
+            <div className="w-full aspect-square rounded-xl overflow-hidden mix-blend-multiply dark:mix-blend-hard-light dark:opacity-70">
               <Image
                 src={`/images/${getPoetImage(normalizedPoetSlug(poet.slug))}`}
                 alt={`تصویر ${poet.name}`}
                 width={384}
                 height={384}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-300"
                 priority
               />
             </div>
-            
+
             {/* Poet Name */}
-            <div className="text-center py-3 sm:py-4">
-              <h3 className="font-abar text-sm sm:text-base abar-wght-600 text-stone-900 dark:text-stone-100 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors leading-tight">
+            <div className="text-right py-3 sm:py-4 w-full px-4">
+              <h3 className="text-base font-medium transition-colors leading-tight [word-spacing:-0.1rem]">
                 {poet.name}
               </h3>
 
               {poet.birthYear && poet.deathYear && (
-                <div className="block w-full text-center">
+                <div className="block w-full">
                   <span className="text-xs sm:text-sm text-yellow-700 dark:text-yellow-300 leading-tight font-bold">
                     {formatYear(poet.birthYear)} - {formatYear(poet.deathYear)}
                   </span>

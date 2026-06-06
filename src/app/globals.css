@@ -7,8 +7,48 @@
 /* Local font declarations (use absolute /fonts paths for nested routes) */
 @font-face {
   font-family: 'Estedad';
+  src: url('/fonts/Estedad-Thin.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('/fonts/Estedad-ExtraLight.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('/fonts/Estedad-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
   src: url('/fonts/Estedad-Regular.woff2') format('woff2');
   font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('/fonts/Estedad-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('/fonts/Estedad-SemiBold.woff2') format('woff2');
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -21,7 +61,21 @@
   font-display: swap;
 }
 
-/* Abar Variable Font utilities */
+@font-face {
+  font-family: 'Estedad';
+  src: url('/fonts/Estedad-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Estedad';
+  src: url('/fonts/Estedad-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -119,24 +173,7 @@
   --color-slate-950: #020617;
 
   /* Font Variables */
-  /* --font-doran removed in favor of Abar */
   --font-estedad: 'Estedad', sans-serif;
-  --font-abar: 'Abar VF', sans-serif;
-  --font-abad: 'Abad VF', sans-serif;
-  --font-hafez: 'Hafez', serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -164,14 +201,14 @@
 
 /* Default to light mode */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: var(--color-stone-100);
+  --foreground: var(--color-amber-950);
   --radius: 0.625rem;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: var(--color-amber-900);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -183,32 +220,19 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
 }
 
 /* Light mode when .light class is present */
 .light {
-  --background: #f5f5f4;
-  --foreground: #1c1917;
+  --background: var(--color-stone-100);
+  --foreground: var(--color-amber-950);
 }
 
 /* Dark mode when .dark class is present */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --background: var(--color-stone-900);
+  --foreground: var(--color-stone-300);
+  --card: lch(from var(--color-amber-950) 27% c h / 0.5);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -224,55 +248,13 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 body {
-  font-family: 'Estedad', 'Abar VF', 'Vazirmatn', 'Vazir', 'Tahoma', 'Arial', sans-serif;
+  font-family: 'Estedad', sans-serif;
   direction: rtl;
   text-align: right;
   transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Abar font utility: control variations via CSS variables */
-.font-abar {
-  font-family: 'Abar VF', 'Estedad', 'Vazirmatn', sans-serif;
-  --abar-wght: 400;
-  --abar-cntr: 0;
-  font-variation-settings: 'wght' var(--abar-wght), 'CNTR' var(--abar-cntr);
-}
-
-/* Weight presets */
-.abar-wght-300 { --abar-wght: 300; }
-.abar-wght-400 { --abar-wght: 400; }
-.abar-wght-500 { --abar-wght: 500; }
-.abar-wght-600 { --abar-wght: 600; }
-.abar-wght-700 { --abar-wght: 700; }
-.abar-wght-800 { --abar-wght: 800; }
-.abar-wght-900 { --abar-wght: 900; }
-
-/* Contrast presets */
-.abar-cntr-0   { --abar-cntr: 0; }
-.abar-cntr-25  { --abar-cntr: 25; }
-.abar-cntr-50  { --abar-cntr: 50; }
-.abar-cntr-75  { --abar-cntr: 75; }
-.abar-cntr-100 { --abar-cntr: 100; }
-
-/* Hafez font utility */
-.font-hafez {
-  font-family: 'Hafez', 'Estedad', 'Abar VF', serif;
 }
 
 /* Set color-scheme based on theme class */
@@ -296,7 +278,7 @@ html:not(.dark) {
 
 /* Dark mode background */
 html.dark {
-  background-color: #1c1917; /* stone-900 */
+  background-color: var(--color-amber-950); /* stone-900 */
 }
 
 /* Faal page backgrounds - respects theme system */
@@ -316,7 +298,7 @@ html:not(.dark) body {
 }
 
 html.dark body {
-  background-color: #1c1917;
+  background-color: var(--color-amber-950);
 }
 
 html:not(.dark)[data-faal-route] body,
@@ -564,36 +546,6 @@ html:has([data-faal-page]) .grid-background {
   animation-delay: 500ms; /* Start pulsing after skeleton is visible */
 }
 
-/* Grid background with fade-out effect - optimized for performance */
-.grid-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
-  will-change: auto;
-  content-visibility: auto;
-  contain: layout style paint;
-  background-image: 
-    linear-gradient(to right, #e2e8f0 1px, transparent 1px),
-    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
-  background-size: 20px 30px;
-  background-attachment: fixed;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
-}
-
-/* Dark mode grid background */
-.dark .grid-background {
-  background-image: 
-    linear-gradient(to right, #57534e 1px, transparent 1px),
-    linear-gradient(to bottom, #57534e 1px, transparent 1px);
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
-  opacity: 0.3;
-}
-
 /* Mobile viewport optimizations */
 @media (max-width: 640px) {
   /* Prevent horizontal scroll */
@@ -683,4 +635,3 @@ html:has([data-faal-page]) .grid-background {
     background-color: color-mix(in oklab, var(--color-amber-900) 50%, transparent) !important;
   }
 }
-

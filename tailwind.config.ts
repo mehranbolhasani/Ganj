@@ -10,9 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        'abar': ['Abar VF', 'sans-serif'],
         'estedad': ['Estedad', 'sans-serif'],
-        'hafez': ['Hafez', 'serif'],
       },
     },
   },

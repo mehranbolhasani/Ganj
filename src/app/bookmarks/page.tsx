@@ -3,8 +3,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useBookmarks, removeBookmark } from '@/lib/bookmarks-manager';
-import { Heart, Calendar, List, X } from 'lucide-react';
 import { useToast } from '@/components/Toast';
+import { toPersianDigits } from '@/lib/persian-digits';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Calendar01Icon, Cancel01Icon, HeartIcon, ListViewIcon } from '@hugeicons/core-free-icons';
 
 export default function BookmarksPage() {
   const { bookmarks, loading } = useBookmarks();
@@ -36,9 +38,9 @@ export default function BookmarksPage() {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (minutes < 1) return 'همین الان';
-    if (minutes < 60) return `${minutes} دقیقه پیش`;
-    if (hours < 24) return `${hours} ساعت پیش`;
-    if (days < 7) return `${days} روز پیش`;
+    if (minutes < 60) return `${toPersianDigits(minutes)} دقیقه پیش`;
+    if (hours < 24) return `${toPersianDigits(hours)} ساعت پیش`;
+    if (days < 7) return `${toPersianDigits(days)} روز پیش`;
     return new Date(timestamp).toLocaleDateString('fa-IR');
   };
 
@@ -74,20 +76,19 @@ export default function BookmarksPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto w-full">
+    <div className="max-w-6xl mx-auto w-full min-h-fit bg-primary/5 p-6 rounded-3xl flex flex-col gap-4">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <Heart className="w-8 h-8 text-red-500" />
+            <HugeiconsIcon icon={HeartIcon} size={32} className="text-red-500" />
             <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">
               علاقه‌مندی‌ها
             </h1>
           </div>
           <p className="text-stone-600 dark:text-stone-300">
-            {bookmarks.length} شعر در علاقه‌مندی‌های شما
+            {toPersianDigits(bookmarks.length)} شعر در علاقه‌مندی‌های شما
           </p>
         </div>
-
 
         {/* localStorage notice */}
         <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 text-xs text-stone-500 dark:text-stone-400 mb-4">
@@ -100,7 +101,7 @@ export default function BookmarksPage() {
         {/* Bookmarks List */}
         {bookmarks.length === 0 ? (
           <div className="text-center py-12">
-            <Heart className="w-16 h-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+            <HugeiconsIcon icon={HeartIcon} size={64} className="text-stone-300 dark:text-stone-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
               هنوز علاقه‌مندی‌ای ندارید
             </h3>
@@ -122,19 +123,19 @@ export default function BookmarksPage() {
                 {Object.keys(bookmarksByPoet).length > 1 && (
                   <div className="flex items-center gap-2 mb-3 pb-2 border-b border-stone-200 dark:border-stone-700 justify-between">
                     <div className="flex items-center gap-2">
-                      <List className="w-4 h-4 text-stone-600 dark:text-stone-400" />
+                      <HugeiconsIcon icon={ListViewIcon} size={16} className="text-stone-600 dark:text-stone-400" />
                       <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                         {poetName}
                       </h2>
                     </div>
                     <div className="text-sm text-stone-500 dark:text-stone-400">
                       <span className="text-sm text-stone-500 dark:text-stone-400">
-                        {poetBookmarks.length} شعر
+                        {toPersianDigits(poetBookmarks.length)} شعر
                       </span>
                     </div>
                   </div>
                 )}
-                
+
                 {/* Bookmarks List - More compact layout */}
                 <div className="space-y-2">
                   {poetBookmarks.map((bookmark) => (
@@ -154,7 +155,7 @@ export default function BookmarksPage() {
                           )}
 
                         <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400 mt-2">
-                          <Calendar className="w-3 h-3" />
+                          <HugeiconsIcon icon={Calendar01Icon} size={14} />
                           <span>{formatTimeAgo(bookmark.timestamp)}</span>
                         </div>
                         </Link>
@@ -168,7 +169,7 @@ export default function BookmarksPage() {
                           className="opacity-0 group-hover:opacity-100 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-all duration-200"
                           title="حذف از علاقه‌مندی‌ها"
                         >
-                          <X className="w-4 h-4" />
+                          <HugeiconsIcon icon={Cancel01Icon} size={16} />
                         </button>
                       </div>
                     </div>
@@ -186,7 +187,7 @@ export default function BookmarksPage() {
             <div className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
-                  <X className="w-5 h-5 text-red-600 dark:text-red-400" />
+                  <HugeiconsIcon icon={Cancel01Icon} size={20} className="text-red-600 dark:text-red-400" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
@@ -197,11 +198,11 @@ export default function BookmarksPage() {
                   </p>
                 </div>
               </div>
-              
+
               <p className="text-stone-700 dark:text-stone-300 mb-6">
                 آیا مطمئن هستید که می‌خواهید <span className="font-medium">&quot;{removingBookmark.title}&quot;</span> را از علاقه‌مندی‌هایتان حذف کنید؟
               </p>
-              
+
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={cancelRemove}
@@ -228,7 +229,7 @@ export default function BookmarksPage() {
             <div className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
-                  <X className="w-5 h-5 text-red-600 dark:text-red-400" />
+                  <HugeiconsIcon icon={Cancel01Icon} size={20} className="text-red-600 dark:text-red-400" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
@@ -239,11 +240,11 @@ export default function BookmarksPage() {
                   </p>
                 </div>
               </div>
-              
+
               <p className="text-stone-700 dark:text-stone-300 mb-6">
                 آیا مطمئن هستید که می‌خواهید <span className="font-medium">&quot;{removingBookmark.title}&quot;</span> را از علاقه‌مندی‌هایتان حذف کنید؟
               </p>
-              
+
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={cancelRemove}

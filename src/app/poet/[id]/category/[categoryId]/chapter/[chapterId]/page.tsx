@@ -8,6 +8,7 @@ import { hybridApi } from '@/lib/hybrid-api';
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface ChapterPoemsPageProps {
   params: {
@@ -101,7 +102,7 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
         <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-300 text-right flex items-center justify-between">
           <span>{chapterTitle}</span>
           <span className="text-stone-600 dark:text-stone-300">
-            {poems.length}
+            {toPersianDigits(poems.length)}
           </span>
         </h1>
         <p className="text-stone-600 dark:text-stone-400 text-right mt-2">

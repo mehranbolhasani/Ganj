@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFontSize, updatePreference } from '@/lib/user-preferences';
-import { Type } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { TextIcon } from '@hugeicons/core-free-icons';
 
 interface FontSizeControlProps {
   className?: string;
@@ -90,7 +91,7 @@ export default function FontSizeControl({
     <div className={`flex align-center font-size-control ${className}`}>
       {showLabel && (
         <div className="flex items-center gap-2 mb-2">
-          <Type className="w-4 h-4 text-stone-600 dark:text-stone-400" />
+          <HugeiconsIcon icon={TextIcon} size={16} className="text-stone-600 dark:text-stone-400" />
           <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
             اندازه فونت
           </span>

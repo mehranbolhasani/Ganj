@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { AlertTriangle, Home, RefreshCw, Search } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Alert02Icon, Home01Icon, RefreshIcon, Search01Icon } from '@hugeicons/core-free-icons';
 
 const Error = ({
   error,
@@ -20,7 +21,7 @@ const Error = ({
     <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-900 p-4">
       <div className="max-w-lg w-full bg-white dark:bg-stone-800 rounded-xl shadow-lg p-8 text-center">
         <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <AlertTriangle className="w-10 h-10 text-red-600 dark:text-red-400" />
+          <HugeiconsIcon icon={Alert02Icon} size={40} className="text-red-600 dark:text-red-400" />
         </div>
         
         <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-4">
@@ -51,7 +52,7 @@ const Error = ({
               aria-label="تلاش مجدد برای بارگذاری صفحه"
               className="flex items-center gap-2 px-6 py-3 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
             >
-              <RefreshCw className="w-4 h-4" />
+              <HugeiconsIcon icon={RefreshIcon} size={16} />
               تلاش مجدد
             </button>
             
@@ -60,7 +61,7 @@ const Error = ({
               aria-label="بازگشت به صفحه اصلی"
               className="flex items-center gap-2 px-6 py-3 bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 rounded-lg hover:bg-stone-700 dark:hover:bg-stone-300 transition-colors"
             >
-              <Home className="w-4 h-4" />
+              <HugeiconsIcon icon={Home01Icon} size={16} />
               صفحه اصلی
             </Link>
           </div>
@@ -75,7 +76,7 @@ const Error = ({
                 aria-label="جستجو در سایت"
                 className="flex items-center gap-2 px-4 py-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
               >
-                <Search className="w-4 h-4" />
+                <HugeiconsIcon icon={Search01Icon} size={16} />
                 جستجو کنید
               </Link>
             </div>

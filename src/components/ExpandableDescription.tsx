@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 
 interface ExpandableDescriptionProps {
   description: string;
@@ -9,36 +10,36 @@ interface ExpandableDescriptionProps {
   maxLength?: number;
 }
 
-export default function ExpandableDescription({ 
-  description, 
-  isFamous = false, 
-  maxLength = 300 
+export default function ExpandableDescription({
+  description,
+  isFamous = false,
+  maxLength = 300
 }: ExpandableDescriptionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   // Check if description is long enough to need truncation
   const needsTruncation = description.length > maxLength;
-  
+
   // Get the truncated text
-  const truncatedText = needsTruncation 
+  const truncatedText = needsTruncation
     ? description.substring(0, maxLength) + '...'
     : description;
-  
+
   // Get the text to display
-  const displayText = isExpanded || !needsTruncation 
-    ? description 
+  const displayText = isExpanded || !needsTruncation
+    ? description
     : truncatedText;
 
   return (
-    <div className="text-sm md:text-md max-w-3xl mx-auto p-6 pb-4 leading-relaxed">
+    <div className="text-sm md:text-md max-w-3xl mx-auto px-6 py-0 pb-6 leading-relaxed">
       <p className={`${
-        isFamous 
-          ? 'text-stone-800 dark:text-yellow-100' 
+        isFamous
+          ? 'text-stone-800 dark:text-yellow-100'
           : 'text-stone-700 dark:text-stone-300'
       }`}>
         {displayText}
       </p>
-      
+
       {needsTruncation && (
         <div className="flex justify-start mt-4">
           <button
@@ -51,12 +52,12 @@ export default function ExpandableDescription({
           >
             {isExpanded ? (
               <>
-                <ChevronUp className="w-4 h-4 translate-y-0.5" />
+                <HugeiconsIcon icon={ArrowUp01Icon} size={16} className="translate-y-0.5" />
                 کمتر
               </>
             ) : (
               <>
-                <ChevronDown className="w-4 h-4 translate-y-0.5" />
+                <HugeiconsIcon icon={ArrowDown01Icon} size={16} className="translate-y-0.5" />
                 بیشتر
               </>
             )}

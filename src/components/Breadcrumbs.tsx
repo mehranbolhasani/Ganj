@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ChevronLeft, Home } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon, Home01Icon } from '@hugeicons/core-free-icons';
 
 interface BreadcrumbItem {
   label: string;
@@ -19,24 +20,24 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
 
   return (
     <nav
-      className="mb-6 flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[#82827c] dark:text-gray-400"
+      className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1 text-sm"
       aria-label="مسیر صفحه"
     >
       {/* Home icon */}
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="flex shrink-0 items-center gap-1 hover:text-[#21201c] dark:hover:text-white transition-colors"
       >
-        <Home className="w-4 h-4 shrink-0" />
+        <HugeiconsIcon icon={Home01Icon} size={16} className="shrink-0" />
         <span>خانه</span>
       </Link>
 
       {/* Breadcrumb items */}
       {breadcrumbItems.map((item, index) => (
         <div key={index} className="flex min-w-0 max-w-full items-center gap-2">
-          <ChevronLeft className="h-4 w-4 shrink-0" aria-hidden />
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4 shrink-0" aria-hidden />
           {item.href ? (
-            <Link 
+            <Link
               href={item.href}
               className="min-w-0 max-w-full break-words [overflow-wrap:anywhere] hover:text-[#21201c] dark:hover:text-white transition-colors"
             >

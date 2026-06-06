@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useRef, useCallback, useTransition } from 'react';
 import Link from 'next/link';
-import { Search, X, Clock, ArrowUp, ArrowDown, ArrowLeft, CornerDownLeft, Filter } from 'lucide-react';
 import { searchAll } from '@/lib/supabase-search';
 import { Poet, Category, Poem } from '@/lib/types';
 import { useToast } from './Toast';
 import { simpleApi } from '@/lib/simple-api';
 import PoetSelector from './PoetSelector';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowDown01Icon, ArrowDownLeft01Icon, ArrowLeft01Icon, ArrowUp01Icon, Cancel01Icon, Clock01Icon, FilterIcon, Search01Icon } from '@hugeicons/core-free-icons';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface SearchResult {
   type: 'poet' | 'category' | 'poem';
@@ -36,12 +38,12 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
   const [poets, setPoets] = useState<Poet[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPending, startTransition] = useTransition();
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLElement | null>(null);
   const { toast } = useToast();
-  
+
   // Disable body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -49,12 +51,12 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     } else {
       document.body.style.overflow = '';
     }
-    
+
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
-  
+
   // Load search history from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('ganj_search_history');
@@ -83,12 +85,12 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
   // Save search history to localStorage
   const saveSearchHistory = useCallback((query: string) => {
     if (!query.trim()) return;
-    
+
     const newHistory = [
       { query: query.trim(), timestamp: Date.now() },
       ...searchHistory.filter(item => item.query !== query.trim())
     ].slice(0, 10); // Keep only last 10 searches
-    
+
     setSearchHistory(newHistory);
     localStorage.setItem('ganj_search_history', JSON.stringify(newHistory));
   }, [searchHistory]);
@@ -103,22 +105,22 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     }
 
     setIsLoading(true);
-    
+
     try {
       // Search using Supabase API (instant full-text search) - limited to 30 for modal preview
       // If poet filter is selected, only search poems for that poet
       const searchType = selectedPoetId ? 'poems' : 'all';
       const { poets, categories, poems } = await searchAll(
-        searchQuery, 
-        30, 
+        searchQuery,
+        30,
         searchType,
         0,
         false,
         selectedPoetId
       );
-      
+
       const searchResults: SearchResult[] = [];
-      
+
       // Only include poets if no poet filter is selected
       if (!selectedPoetId) {
         searchResults.push(
@@ -134,7 +136,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           }))
         );
       }
-      
+
       // Always include poems (filtered by poet if selected)
       searchResults.push(
         ...poems.map(poem => ({
@@ -238,14 +240,14 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     saveSearchHistory(query);
     onClose();
   };
-  
+
   // Highlight matching text in search results
   const highlightText = (text: string, highlight: string) => {
     if (!highlight.trim()) return text;
-    
+
     const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return parts.map((part) => 
-      part.toLowerCase() === highlight.toLowerCase() 
+    return parts.map((part) =>
+      part.toLowerCase() === highlight.toLowerCase()
         ? `<mark class="bg-yellow-200 dark:bg-yellow-600/40 text-stone-900 dark:text-stone-100 px-0.5 rounded">${part}</mark>`
         : part
     ).join('');
@@ -274,18 +276,18 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 pt-20"
       onClick={handleBackdropClick}
     >
-      <div 
+      <div
         className="w-full max-w-2xl bg-white dark:bg-stone-800 rounded-xl shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}
         <div className="p-4 border-b border-stone-200 dark:border-stone-700 space-y-3">
           <div className="flex items-center gap-3">
-            <Search className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+            <HugeiconsIcon icon={Search01Icon} size={20} className="text-stone-500 dark:text-stone-400" aria-hidden="true" />
             <input
               ref={inputRef}
               type="text"
@@ -296,10 +298,10 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
               onFocus={() => setShowHistory(query === '')}
               className="flex-1 bg-transparent text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none"
             />
-            
+
             {/* Poet Filter */}
             <div className="flex items-center gap-2 w-56">
-              <Filter className="w-4 h-4 text-stone-500 dark:text-stone-400 shrink-0" />
+              <HugeiconsIcon icon={FilterIcon} size={16} className="text-stone-500 dark:text-stone-400 shrink-0" />
               <PoetSelector
                 poets={poets}
                 selectedPoetId={selectedPoetId}
@@ -319,9 +321,9 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
               className="p-1 rounded-md text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors"
               aria-label="بستن جستجو"
             >
-              <X className="w-5 h-5" aria-hidden="true" />
+              <HugeiconsIcon icon={Cancel01Icon} size={20} aria-hidden="true" />
             </button>
-            
+
           </div>
         </div>
 
@@ -356,7 +358,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
               {/* Results count */}
               <div className="px-4 py-3 flex items-center justify-between text-sm text-stone-600 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
                 <span>
-                  {results.length} نتیجه
+                  {toPersianDigits(results.length)} نتیجه
                   {selectedPoetId && (
                     <span className="text-stone-500 dark:text-stone-400">
                       {' '}در اشعار {poets.find(p => p.id === selectedPoetId)?.name}
@@ -370,25 +372,25 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                     className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 text-xs flex items-center gap-1 border border-stone-200 dark:border-stone-500 rounded-full py-2 px-2"
                   >
                     مشاهده همه نتایج
-                    <ArrowLeft className="w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
+                    <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="text-stone-600 dark:text-stone-400" aria-hidden="true" />
                   </Link>
                 )}
               </div>
-              
+
               {/* Results list */}
               <div className="divide-y divide-stone-200 dark:divide-stone-700/50">
                 {results.map((result, index) => {
                   const isPoet = result.type === 'poet';
                   const isCategory = result.type === 'category';
                   const isPoem = result.type === 'poem';
-                  
+
                   const data = result.data as Poet | Category | Poem;
                   const title = isPoet ? (data as Poet).name : (data as Category | Poem).title;
-                  
+
                   let poetName = '';
                   let categoryTitle = '';
                   let verses: string[] = [];
-                  
+
                   if (isPoem) {
                     const poemData = data as Poem;
                     poetName = poemData.poetName || '';
@@ -398,21 +400,21 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                     // Category doesn't have poetName in our types, skip it
                     poetName = '';
                   }
-                  
+
                   // Find the verse(s) that contain the search term
                   // For long texts (>10 verses), show only one line before and after the match
                   let displayVerses: string[] = [];
                   const isLongText = verses.length > 10;
                   let foundIndex = -1;
-                  
+
                   if (verses.length > 0) {
                     const queryLower = query.toLowerCase().trim();
                     const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
-                    
+
                     // First, check if keyword exists anywhere in all verses (for debugging)
                     const allVersesText = verses.join(' ').toLowerCase();
                     const keywordExists = allVersesText.includes(queryLower);
-                    
+
                     // Try to find which verse contains the search term
                     // First: exact phrase match (case-insensitive)
                     for (let i = 0; i < verses.length; i++) {
@@ -422,7 +424,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         break;
                       }
                     }
-                    
+
                     // Second: if multi-word query, try finding verse with all words
                     if (foundIndex === -1 && queryWords.length > 1) {
                       for (let i = 0; i < verses.length; i++) {
@@ -434,7 +436,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         }
                       }
                     }
-                    
+
                     // Third: try finding any word from the query
                     if (foundIndex === -1 && queryWords.length > 0) {
                       for (let i = 0; i < verses.length; i++) {
@@ -446,7 +448,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         }
                       }
                     }
-                    
+
                     // Fourth: normalize text (remove diacritics and normalize Persian characters) and try again
                     if (foundIndex === -1 && queryLower.length > 1) {
                       const normalizeText = (text: string) => text
@@ -454,7 +456,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         .replace(/[\u200C\u200D]/g, '') // Remove zero-width characters
                         .replace(/\s+/g, ' ')
                         .trim();
-                      
+
                       const normalizedQuery = normalizeText(queryLower);
                       for (let i = 0; i < verses.length; i++) {
                         const normalizedVerse = normalizeText(verses[i].toLowerCase());
@@ -464,7 +466,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         }
                       }
                     }
-                    
+
                     // Fifth: if keyword exists in all verses but we still haven't found it,
                     // try searching with different Persian character variations
                     if (foundIndex === -1 && keywordExists && queryLower.length > 1) {
@@ -485,10 +487,10 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                         }
                       }
                     }
-                    
+
                     // Check if keyword is in title
                     const titleContainsKeyword = title.toLowerCase().includes(queryLower);
-                    
+
                     if (foundIndex >= 0) {
                       // Found keyword in verses - show the matching verse(s)
                       if (isLongText) {
@@ -535,7 +537,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                           break;
                         }
                       }
-                      
+
                       if (foundIndex >= 0) {
                         if (isLongText) {
                           displayVerses = [
@@ -568,7 +570,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                       }
                     }
                   }
-                  
+
                   return (
                     <Link
                       key={`${result.type}-${data.id}`}
@@ -586,25 +588,25 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                       <div className="flex items-start gap-3">
                         <div className="flex-1 min-w-0">
                           {/* Title with highlight */}
-                          <h4 
-                            className="font-abar text-[15px] font-medium text-stone-900 dark:text-stone-100 text-right mb-1"
+                          <h4
+                            className="text-[15px] font-medium text-stone-900 dark:text-stone-100 text-right mb-1"
                             dangerouslySetInnerHTML={{ __html: highlightText(title, query) }}
                           />
-                          
+
                           {/* Metadata */}
-                          <p 
+                          <p
                             className="text-[13px] text-stone-600 dark:text-stone-400 text-right mb-2"
-                            dangerouslySetInnerHTML={{ 
-                              __html: isPoet 
+                            dangerouslySetInnerHTML={{
+                              __html: isPoet
                                 ? 'شاعر'
-                                : isCategory 
+                                : isCategory
                                   ? highlightText(poetName, query)
                                   : isPoem
                                     ? highlightText(poetName, query) + (categoryTitle ? ` - ${highlightText(categoryTitle, query)}` : '')
                                     : ''
                             }}
                           />
-                          
+
                           {/* Verse preview for poems */}
                           {isPoem && displayVerses.length > 0 && (
                             <div className="text-[13px] text-stone-600 dark:text-stone-300 text-right leading-relaxed space-y-1">
@@ -626,7 +628,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                                   }
                                 }
                                 return (
-                                  <p 
+                                  <p
                                     key={vIndex}
                                     className={isMatchLine ? '' : 'opacity-75'}
                                     dangerouslySetInnerHTML={{ __html: highlightText(verse, query) }}
@@ -639,10 +641,10 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                             </div>
                           )}
                         </div>
-                        
+
                         {/* Arrow indicator */}
                         <div className="flex-shrink-0 pt-1">
-                          <CornerDownLeft className="w-4 h-4 text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-colors" aria-hidden="true" />
+                          <HugeiconsIcon icon={ArrowDownLeft01Icon} size={16} className="text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-colors" aria-hidden="true" />
                         </div>
                       </div>
                     </Link>
@@ -667,7 +669,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                   onClick={() => handleHistoryClick(item.query)}
                   className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-right"
                 >
-                  <Clock className="w-4 h-4 text-stone-400" />
+                  <HugeiconsIcon icon={Clock01Icon} size={16} className="text-stone-400" />
                   <span className="text-stone-700 dark:text-stone-300">{item.query}</span>
                 </button>
               ))}
@@ -680,12 +682,12 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">
-                <ArrowUp className="w-3 h-3" />
-                <ArrowDown className="w-3 h-3" />
+                <HugeiconsIcon icon={ArrowUp01Icon} size={14} />
+                <HugeiconsIcon icon={ArrowDown01Icon} size={14} />
                 <span>انتخاب</span>
               </span>
               <span className="flex items-center gap-1">
-                <CornerDownLeft className="w-3 h-3" />
+                <HugeiconsIcon icon={ArrowDownLeft01Icon} size={14} />
                 <span>باز کردن</span>
               </span>
             </div>

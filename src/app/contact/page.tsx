@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <div className="max-w-3xl mx-auto w-full px-4 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100 mb-2">تماس با من</h1>
+        <h1 className="text-3xl text-stone-900 dark:text-stone-100 mb-2">تماس با من</h1>
         <p className="text-stone-600 dark:text-stone-300">اگر ایرادی دیدید یا پیشنهادی دارید، از طریق فرم زیر یا ایمیل در تماس باشید.</p>
       </div>
 
@@ -46,5 +46,3 @@ export default function ContactPage() {
     </div>
   );
 }
-
-

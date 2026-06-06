@@ -21,7 +21,7 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
 
   // Filter out famous poets - memoized
   const otherPoets = useMemo(() => {
-    return poets.filter(poet => 
+    return poets.filter(poet =>
       !famousPoetSlugs.includes(poet.slug?.toLowerCase() || '')
     );
   }, [poets, famousPoetSlugs]);
@@ -31,12 +31,12 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
     return otherPoets.reduce((groups, poet) => {
       const firstLetter = poet.name.charAt(0);
       const letterKey = firstLetter;
-      
+
       if (!groups[letterKey]) {
         groups[letterKey] = [];
       }
       groups[letterKey].push(poet);
-      
+
       return groups;
     }, {} as { [key: string]: Poet[] });
   }, [otherPoets]);
@@ -70,7 +70,7 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
   useEffect(() => {
     const handleScroll = () => {
       // const _scrollY = window.scrollY;
-      
+
       for (const letter of sortedGroups) {
         const element = sectionRefs.current[letter];
         if (element) {
@@ -89,10 +89,10 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
 
   return (
     <div className="w-full">
-      <h2 className="font-abar text-xl abar-wght-700 text-stone-900 dark:text-stone-100 mb-8 text-right">
+      <h2 className="text-xl abar-wght-700 text-stone-900 dark:text-stone-100 mb-8 text-right">
         شاعرهای دیگر
       </h2>
-      
+
       <div className="space-y-8">
         {sortedGroups.map((letter) => (
           <div
@@ -104,12 +104,12 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
             className="scroll-mt-20"
           >
             <div className="flex items-center mb-4 sticky top-1 z-2 bg-white/80 dark:bg-yellow-900/30 px-6 py-2 rounded-full backdrop-blur-md w-fit mr-2">
-              <h3 className="text-xl font-abar abar-wght-500 text-stone-800 dark:text-stone-200">
+              <h3 className="text-xl text-stone-800 dark:text-stone-200">
                 {letter}
               </h3>
               <div className="h-px bg-stone-400 dark:bg-stone-500 mr-4 w-8"></div>
             </div>
-            
+
             <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
               {groupedPoets[letter].map((poet) => (
                 <PoetCard key={poet.id} poet={poet} />

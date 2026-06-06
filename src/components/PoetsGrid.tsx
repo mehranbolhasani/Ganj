@@ -8,7 +8,8 @@ import { FEATURED_POETS_FALLBACK } from '@/lib/featured-poets-fallback';
 import FamousPoets from './FamousPoets';
 import AlphabeticalPoets from './AlphabeticalPoets';
 import AlphabeticalNav from './AlphabeticalNav';
-import { ArrowLeftIcon } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 
 // Define the 6 most famous poets by their slugs (from Ganjoor website)
 const FAMOUS_POET_SLUGS = [
@@ -169,14 +170,11 @@ const PoetsGrid = () => {
         />
       </div>
 
-
-
-
         <div className="faal-banner-container max-w-full md:max-w-[640px] w-full mx-auto sticky bottom-0 z-50 h-28 md:h-36 flex items-center justify-center">
           <a href="/faal" className="faal-banner w-[80%] md:w-1/2 h-20 flex items-center justify-center bg-amber-950/90 rounded-full backdrop-blur-sm shadow-xl dark:shadow-md shadow-amber-900/60 z-30 overflow-hidden relative ring-2 ring-amber-500/20 hover:ring-2 hover:ring-amber-500/40 hover:w-[45%] transition-all duration-300 ease-in-out" target="_blank">
             <div className="faal-banner-content flex items-center justify-between w-full h-full px-6 relative z-20">
               <div className="faal-banner-content-title">
-                <h3 className="relative text-4xl font-hafez text-amber-100 dark:text-amber-100 flex items-center justify-center translate-y-0.5">
+                <h3 className="relative text-4xl text-amber-100 dark:text-amber-100 flex items-center justify-center translate-y-0.5">
                   <span>
                     <span>فا</span>
                     <span>ل</span>
@@ -191,7 +189,7 @@ const PoetsGrid = () => {
     
               <div className="faal-banner-content-description flex items-center justify-center gap-1 text-amber-50">
                 <span className="text-base font-bold">مشاهده</span>
-                <ArrowLeftIcon className="w-5 h-5" />
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={20} />
               </div>
             </div>
 

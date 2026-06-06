@@ -6,7 +6,9 @@ import { useFontSize } from '@/lib/user-preferences';
 import FontSizeControl from './FontSizeControl';
 import BookmarkButton from './BookmarkButton';
 import TextSelectionTooltip from './TextSelectionTooltip';
-import { BookOpen, X, Palette } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { BookOpen01Icon, Cancel01Icon, ColorsIcon } from '@hugeicons/core-free-icons';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface PoemDisplayProps {
   poem: Poem;
@@ -54,16 +56,16 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         setSelectedText('');
         return;
       }
-      
+
       // Check if selection is within our poem content area
       const range = selection.getRangeAt(0);
       const selectionContainer = range.commonAncestorContainer;
       const isInPoemContent = poemContentRef.current.contains(
-        selectionContainer.nodeType === Node.TEXT_NODE 
-          ? selectionContainer.parentElement 
+        selectionContainer.nodeType === Node.TEXT_NODE
+          ? selectionContainer.parentElement
           : selectionContainer
       );
-      
+
       if (!isInPoemContent) {
         setTooltipPosition(null);
         setSelectedText('');
@@ -80,30 +82,30 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
 
       // Get selection position (range already defined above)
       const rect = range.getBoundingClientRect();
-      
+
       // Validate rect dimensions
       if (rect.width === 0 || rect.height === 0) {
         setTooltipPosition(null);
         setSelectedText('');
         return;
       }
-      
+
       // Calculate center X and top Y of selection
       // getBoundingClientRect() returns viewport coordinates
       const centerX = rect.left + rect.width / 2;
       const topY = rect.top;
-      
+
       // Validate position values are within reasonable bounds
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      
+
       if (centerX < 0 || centerX > viewportWidth || topY < 0 || topY > viewportHeight) {
         // Position is outside viewport, don't show tooltip
         setTooltipPosition(null);
         setSelectedText('');
         return;
       }
-      
+
       // Debug in development
       if (process.env.NODE_ENV === 'development') {
         console.log('Selection position:', {
@@ -113,7 +115,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
           viewport: { width: viewportWidth, height: viewportHeight }
         });
       }
-      
+
       setSelectedText(selectedText);
       setTooltipPosition({
         x: centerX,
@@ -134,7 +136,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
 
     // Handle text selection changes
     document.addEventListener('selectionchange', handleTextSelection);
-    
+
     // Handle clicks/touches outside (for both desktop and mobile)
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('touchstart', handleClickOutside, { passive: true });
@@ -152,8 +154,8 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
       // Check if focus is on an input element
       const activeElement = document.activeElement;
       if (activeElement && (
-        activeElement.tagName === 'INPUT' || 
-        activeElement.tagName === 'TEXTAREA' || 
+        activeElement.tagName === 'INPUT' ||
+        activeElement.tagName === 'TEXTAREA' ||
         (activeElement as HTMLElement).contentEditable === 'true'
       )) {
         return;
@@ -164,7 +166,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         e.preventDefault();
         setIsDistractFree(true);
       }
-      
+
       // ESC to exit distract-free mode
       if (e.key === 'Escape' && isDistractFree) {
         e.preventDefault();
@@ -259,12 +261,12 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
   // Distract-free reading mode
   if (isDistractFree) {
     return (
-      <div 
+      <div
         className={`fixed inset-0 z-50 overflow-y-auto animate-fadeIn distract-free-scroll ${theme.bg}`}
       >
         {/* Progress bar at top */}
         <div className="fixed top-0 left-0 right-0 h-1 bg-stone-200/30 dark:bg-stone-700/30 z-50">
-          <div 
+          <div
             className="h-full bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-600 transition-all duration-300 ease-out"
             style={{ width: `${scrollProgress}%` }}
           />
@@ -277,7 +279,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
           aria-label="بستن حالت تمرکز (ESC)"
           title="بستن (ESC)"
         >
-          <X className="w-5 h-5" />
+          <HugeiconsIcon icon={Cancel01Icon} size={20} />
         </button>
 
         {/* Floating controls - bottom left */}
@@ -287,7 +289,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
             <div className={`${theme.controlsBg} backdrop-blur-sm rounded-t-xl p-2`}>
               <FontSizeControl showLabel={false} vertical={false} />
             </div>
-            
+
             {/* Theme toggle button with color indicators */}
             <button
               onClick={cycleTheme}
@@ -295,33 +297,33 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
               aria-label="تغییر تم"
               title={`تم: ${getThemeLabel()}`}
             >
-              <Palette className={`w-5 h-5 ${theme.text}`} />
-              
+              <HugeiconsIcon icon={ColorsIcon} size={20} className={`w-5 h-5 ${theme.text}`} />
+
               {/* Theme indicators - 3 colored dots */}
               <div className="flex items-center gap-1">
                 {/* Default theme dot */}
-                <div 
+                <div
                   className={`rounded-full transition-all duration-200 ${
-                    readingTheme === 'default' 
-                      ? 'w-2.5 h-2.5 bg-stone-500 dark:bg-stone-400' 
+                    readingTheme === 'default'
+                      ? 'w-2.5 h-2.5 bg-stone-500 dark:bg-stone-400'
                       : 'w-1.5 h-1.5 bg-stone-400/40 dark:bg-stone-600/40'
                   }`}
                 />
-                
+
                 {/* Sepia theme dot */}
-                <div 
+                <div
                   className={`rounded-full transition-all duration-200 ${
-                    readingTheme === 'sepia' 
-                      ? 'w-2.5 h-2.5 bg-[#8b7355]' 
+                    readingTheme === 'sepia'
+                      ? 'w-2.5 h-2.5 bg-[#8b7355]'
                       : 'w-1.5 h-1.5 bg-[#8b7355]/40'
                   }`}
                 />
-                
+
                 {/* Night theme dot */}
-                <div 
+                <div
                   className={`rounded-full transition-all duration-200 ${
-                    readingTheme === 'night' 
-                      ? 'w-2.5 h-2.5 bg-blue-400' 
+                    readingTheme === 'night'
+                      ? 'w-2.5 h-2.5 bg-blue-400'
                       : 'w-1.5 h-1.5 bg-blue-400/40'
                   }`}
                 />
@@ -331,13 +333,13 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         )}
 
         {/* Content - centered and spacious */}
-        <div 
+        <div
           className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-16 sm:py-20"
           style={theme.filter ? { filter: theme.filter } : undefined}
         >
           <div className="max-w-3xl w-full">
             {/* Title */}
-            <h1 className={`font-abar abar-wght-700 text-3xl sm:text-5xl ${theme.text} text-center mb-4 sm:mb-6 leading-tight`}>
+            <h1 className={`text-3xl sm:text-5xl ${theme.text} text-center mb-4 sm:mb-6 leading-tight`}>
               {poem.title}
             </h1>
 
@@ -347,15 +349,15 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
             </p>
 
             {/* Verses - large, spacious, centered */}
-            <div 
+            <div
               ref={poemContentRef}
               className="space-y-4 sm:space-y-6 select-text"
             >
               {poem.verses.map((verse, index) => (
-                <p 
+                <p
                   key={index}
                   className={`${theme.text} text-center leading-loose sm:leading-loose ${getDistractFreeFontSize()} ${index % 2 === 1 ? 'mb-8 sm:mb-12' : ''}`}
-                  style={{ 
+                  style={{
                     lineHeight: '2.5',
                   }}
                 >
@@ -363,7 +365,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
                 </p>
               ))}
             </div>
-            
+
             {/* Text Selection Tooltip */}
             {tooltipPosition && selectedText && (
               <TextSelectionTooltip
@@ -379,7 +381,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
 
             {/* Subtle hint at bottom */}
             <p className={`text-center text-xs sm:text-sm ${theme.secondaryText} mt-16 sm:mt-20 font-normal opacity-60`}>
-              برای خروج از حالت تمرکز کلید ESC را فشار دهید • پیمایش: {Math.round(scrollProgress)}%
+              برای خروج از حالت تمرکز کلید ESC را فشار دهید • پیمایش: {toPersianDigits(Math.round(scrollProgress))}٪
             </p>
           </div>
         </div>
@@ -396,7 +398,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
       <div className="mb-4 text-center sm:mb-8">
         <div className="mb-4 flex w-full min-w-0 flex-row items-center">
           <div className="flex w-full min-w-0 justify-between text-right">
-            <h1 className="min-w-0 max-w-full break-words font-hafez text-2xl font-normal leading-tight text-stone-900 dark:text-stone-300 [overflow-wrap:anywhere] sm:text-4xl sm:leading-14">
+            <h1 className="min-w-0 max-w-full break-words text-2xl font-normal leading-tight text-stone-900 dark:text-stone-300 [overflow-wrap:anywhere] sm:text-4xl sm:leading-14">
               {poem.title}
             </h1>
           </div>
@@ -420,7 +422,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
                   aria-label="حالت تمرکز (بدون حواس‌پرتی)"
                   title="حالت تمرکز (F)"
                 >
-                  <BookOpen className="w-4 h-4" aria-hidden="true" />
+                  <HugeiconsIcon icon={BookOpen01Icon} size={16} aria-hidden="true" />
                 </button>
               ) : (
                 <div className="w-10 h-10" aria-hidden="true" />
@@ -442,7 +444,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
               )}
             </div>
           </div>
-          
+
           {/* Poet info - Mobile: below controls, Desktop: left side */}
           <div className="min-w-0 max-w-full text-right">
             <p className="break-words text-base font-normal text-stone-600 [overflow-wrap:anywhere] dark:text-stone-300 sm:text-lg">
@@ -456,15 +458,15 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
           </div>
         </div>
       </div>
-      
+
       <div className="min-w-0 max-w-full rounded-2xl border border-white bg-white/50 p-4 shadow-lg/5 backdrop-blur-md dark:border-yellow-900/40 dark:bg-yellow-900/10 sm:p-8">
         {hasVerses ? (
-          <div 
+          <div
             ref={poemContentRef}
             className="prose prose-lg min-w-0 max-w-full select-text text-center"
           >
             {poem.verses.map((verse, index) => (
-              <p 
+              <p
                 key={index}
                 className={`break-words text-right text-stone-900 [overflow-wrap:anywhere] [word-break:break-word] leading-relaxed mobile-leading-relaxed dark:text-stone-300 mb-3 even:mb-9 ${isHydrated ? poemClasses : ''}`}
               >
@@ -482,7 +484,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
             </p>
           </div>
         )}
-        
+
         {/* Text Selection Tooltip */}
         {tooltipPosition && selectedText && (
           <TextSelectionTooltip

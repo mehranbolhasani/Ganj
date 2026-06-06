@@ -15,10 +15,8 @@ export default function FontScope({ children, weight, contrast, className }: Fon
   if (typeof contrast === 'number') style['--abar-cntr'] = contrast;
 
   return (
-    <div className={`font-abar ${className ?? ''}`} style={style}>
+    <div className={`${className ?? ''}`} style={style}>
       {children}
     </div>
   );
 }
-
-

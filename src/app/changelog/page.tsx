@@ -2,24 +2,25 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Star, Bug, Plus, Zap, Heart, Settings } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon, Bug01Icon, FlashIcon, HeartIcon, PlusSignIcon, Settings01Icon, StarIcon } from '@hugeicons/core-free-icons';
 
 export default function ChangelogPage() {
   return (
     <div className="max-w-4xl mx-auto w-full px-0 py-4">
       {/* Header */}
       <div className="mb-8">
-        <Link 
+        <Link
           href="/"
           className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors mb-4"
         >
-          <ArrowLeft className="w-4 h-4 rotate-180" />
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="rotate-180" />
           بازگشت به صفحه اصلی
         </Link>
-        
+
         <div className="flex items-center gap-3 mb-4">
           <div>
-            <h1 className="text-3xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100 mb-4">
+            <h1 className="text-3xl text-stone-900 dark:text-stone-100 mb-4">
               تاریخچه تغییرات
             </h1>
             <p className="text-stone-600 dark:text-stone-300 text-lg mb-8">
@@ -33,18 +34,18 @@ export default function ChangelogPage() {
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-xl p-4 mb-16 border border-blue-200 dark:border-blue-800/50">
         <div className="flex items-center gap-3 mb-9">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Star className="w-4 h-4 text-white" />
+            <HugeiconsIcon icon={StarIcon} size={16} className="text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100">نسخه ۰/۳</h2>
+            <h2 className="text-xl text-stone-900 dark:text-stone-100">نسخه ۰/۳</h2>
             <p className="text-stone-600 dark:text-stone-300">آخرین به‌روزرسانی - ۱۶ دسامبر ۲۰۲۵</p>
           </div>
         </div>
-        
+
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-3">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <Plus className="w-4 h-4 text-green-600" />
+              <HugeiconsIcon icon={PlusSignIcon} size={16} className="text-green-600" />
               ویژگی‌های جدید
             </h3>
             <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
@@ -53,10 +54,10 @@ export default function ChangelogPage() {
               <li>• <strong>فیلتر شاعر در جستجوی سراسری</strong> - محدود کردن نتایج جستجو به شاعر خاص</li>
             </ul>
           </div>
-          
+
           <div className="space-y-3">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-yellow-600" />
+              <HugeiconsIcon icon={FlashIcon} size={16} className="text-yellow-600" />
               بهبودها
             </h3>
             <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
@@ -65,10 +66,10 @@ export default function ChangelogPage() {
               <li>• بهبود مدیریت state در کامپوننت‌های React</li>
             </ul>
           </div>
-          
+
           <div className="space-y-3">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <Bug className="w-4 h-4 text-red-600" />
+              <HugeiconsIcon icon={Bug01Icon} size={16} className="text-red-600" />
               رفع مشکلات
             </h3>
             <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
@@ -90,18 +91,18 @@ export default function ChangelogPage() {
         <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700 mb-6">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <Star className="w-4 h-4 text-white" />
+              <HugeiconsIcon icon={StarIcon} size={16} className="text-white" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">نسخه ۰/۲</h3>
               <p className="text-stone-600 dark:text-stone-300">۱۰ نوامبر ۲۰۲۵</p>
             </div>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <Plus className="w-4 h-4 text-green-600" />
+                <HugeiconsIcon icon={PlusSignIcon} size={16} className="text-green-600" />
                 ویژگی‌های جدید
               </h4>
               <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
@@ -113,10 +114,10 @@ export default function ChangelogPage() {
                 <li>• اسکریپت تست خودکار برای بررسی Layout Shifts</li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-yellow-600" />
+                <HugeiconsIcon icon={FlashIcon} size={16} className="text-yellow-600" />
                 بهبودها
               </h4>
               <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
@@ -128,10 +129,10 @@ export default function ChangelogPage() {
                 <li>• تجربه کاربری بهتر در موبایل</li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <Bug className="w-4 h-4 text-red-600" />
+                <HugeiconsIcon icon={Bug01Icon} size={16} className="text-red-600" />
                 رفع مشکلات
               </h4>
               <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
@@ -149,18 +150,18 @@ export default function ChangelogPage() {
         <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-              <Heart className="w-4 h-4 text-white" />
+              <HugeiconsIcon icon={HeartIcon} size={16} className="text-white" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">نسخه ۰/۱</h3>
               <p className="text-stone-600 dark:text-stone-300">۱۹ اکتبر ۲۰۲۵ - اولین نسخه</p>
             </div>
           </div>
-          
+
           <div className="grid md:grid-cols-1 gap-8">
             <div>
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <Plus className="w-4 h-4 text-green-600" />
+                <HugeiconsIcon icon={PlusSignIcon} size={16} className="text-green-600" />
                 ویژگی‌های اصلی
               </h4>
               <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
@@ -171,24 +172,24 @@ export default function ChangelogPage() {
                 <li>• طراحی ریسپانسیو</li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <Settings className="w-4 h-4 text-blue-600" />
+                <HugeiconsIcon icon={Settings01Icon} size={16} className="text-blue-600" />
                 فناوری
               </h4>
               <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
-                <li>• Next.js 16 با Turbopack</li>
+                <li>• Next.js ۱۶ با Turbopack</li>
                 <li>• TypeScript برای امنیت نوع</li>
                 <li>• Tailwind CSS برای طراحی</li>
                 <li>• پشتیبانی از RTL</li>
                 <li>• بهینه‌سازی SEO</li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <Bug className="w-4 h-4 text-red-600" />
+                <HugeiconsIcon icon={Bug01Icon} size={16} className="text-red-600" />
                 رفع مشکلات
               </h4>
               <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">

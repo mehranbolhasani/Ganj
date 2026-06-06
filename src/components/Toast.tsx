@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Alert02Icon, AlertCircleIcon, Cancel01Icon, CheckmarkCircle01Icon, InformationCircleIcon } from '@hugeicons/core-free-icons';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -126,13 +127,13 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
   const getIcon = () => {
     switch (toast.type) {
       case 'success':
-        return <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />;
+        return <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} className="text-green-600 dark:text-green-400" />;
       case 'error':
-        return <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />;
+        return <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-red-600 dark:text-red-400" />;
       case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />;
+        return <HugeiconsIcon icon={Alert02Icon} size={20} className="text-yellow-600 dark:text-yellow-400" />;
       case 'info':
-        return <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+        return <HugeiconsIcon icon={InformationCircleIcon} size={20} className="text-blue-600 dark:text-blue-400" />;
     }
   };
 
@@ -186,7 +187,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
           className="flex-shrink-0 p-1 rounded-md text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
           aria-label="بستن اعلان"
         >
-          <X className="w-4 h-4" />
+          <HugeiconsIcon icon={Cancel01Icon} size={16} />
         </button>
       </div>
     </div>

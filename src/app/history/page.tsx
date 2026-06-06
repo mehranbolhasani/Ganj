@@ -3,8 +3,10 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useViewHistory } from '@/lib/history-manager';
-import { History, BarChart3, Download, Trash2, Search, Filter, Clock, User, BookOpen } from 'lucide-react';
 import { useToast } from '@/components/Toast';
+import { toPersianDigits } from '@/lib/persian-digits';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { BookOpen01Icon, ChartBarLineIcon, Clock01Icon, Delete02Icon, Download04Icon, FilterIcon, HistoryIcon, Search01Icon, UserIcon } from '@hugeicons/core-free-icons';
 
 type GroupBy = 'none' | 'date' | 'poet';
 type DateFilter = 'all' | 'today' | 'yesterday' | 'week' | 'month';
@@ -130,9 +132,9 @@ export default function HistoryPage() {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (minutes < 1) return 'همین الان';
-    if (minutes < 60) return `${minutes} دقیقه پیش`;
-    if (hours < 24) return `${hours} ساعت پیش`;
-    if (days < 7) return `${days} روز پیش`;
+    if (minutes < 60) return `${toPersianDigits(minutes)} دقیقه پیش`;
+    if (hours < 24) return `${toPersianDigits(hours)} ساعت پیش`;
+    if (days < 7) return `${toPersianDigits(days)} روز پیش`;
     return new Date(timestamp).toLocaleDateString('fa-IR');
   };
 
@@ -181,13 +183,13 @@ export default function HistoryPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <History className="w-8 h-8 text-stone-600 dark:text-stone-400" />
+            <HugeiconsIcon icon={HistoryIcon} size={32} className="text-stone-600 dark:text-stone-400" />
             <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">
               تاریخچه بازدیدها
             </h1>
           </div>
           <p className="text-stone-600 dark:text-stone-300">
-            {items.length} مورد در تاریخچه شما
+            {toPersianDigits(items.length)} مورد در تاریخچه شما
           </p>
         </div>
 
@@ -196,10 +198,10 @@ export default function HistoryPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700">
               <div className="flex items-center gap-3">
-                <BarChart3 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <HugeiconsIcon icon={ChartBarLineIcon} size={24} className="text-blue-600 dark:text-blue-400" />
                 <div>
                   <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-                    {statistics.totalItems}
+                    {toPersianDigits(statistics.totalItems)}
                   </h3>
                   <p className="text-sm text-stone-600 dark:text-stone-400">کل بازدیدها</p>
                 </div>
@@ -208,13 +210,13 @@ export default function HistoryPage() {
 
             <div className="bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700">
               <div className="flex items-center gap-3">
-                <User className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <HugeiconsIcon icon={UserIcon} size={24} className="text-green-600 dark:text-green-400" />
                 <div>
                   <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                     {statistics.mostReadPoet}
                   </h3>
                   <p className="text-sm text-stone-600 dark:text-stone-400">
-                    محبوب‌ترین شاعر ({statistics.mostReadPoetCount} بار)
+                    محبوب‌ترین شاعر ({toPersianDigits(statistics.mostReadPoetCount)} بار)
                   </p>
                 </div>
               </div>
@@ -222,13 +224,13 @@ export default function HistoryPage() {
 
             <div className="bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700">
               <div className="flex items-center gap-3">
-                <BookOpen className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                <HugeiconsIcon icon={BookOpen01Icon} size={24} className="text-purple-600 dark:text-purple-400" />
                 <div>
                   <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                     {statistics.mostReadCategory}
                   </h3>
                   <p className="text-sm text-stone-600 dark:text-stone-400">
-                    محبوب‌ترین مجموعه ({statistics.mostReadCategoryCount} بار)
+                    محبوب‌ترین مجموعه ({toPersianDigits(statistics.mostReadCategoryCount)} بار)
                   </p>
                 </div>
               </div>
@@ -241,7 +243,7 @@ export default function HistoryPage() {
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-400" />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400" />
               <input
                 type="text"
                 placeholder="جستجو در تاریخچه..."
@@ -261,7 +263,7 @@ export default function HistoryPage() {
                     : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
                 }`}
               >
-                <Filter className="w-4 h-4" />
+                <HugeiconsIcon icon={FilterIcon} size={16} />
                 فیلتر
               </button>
 
@@ -269,7 +271,7 @@ export default function HistoryPage() {
                 onClick={exportHistory}
                 className="flex items-center gap-2 px-3 py-2 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
               >
-                <Download className="w-4 h-4" />
+                <HugeiconsIcon icon={Download04Icon} size={16} />
                 صادر کردن
               </button>
 
@@ -278,7 +280,7 @@ export default function HistoryPage() {
                   onClick={clearHistory}
                   className="flex items-center gap-2 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <HugeiconsIcon icon={Delete02Icon} size={16} />
                   پاک کردن همه
                 </button>
               )}
@@ -326,7 +328,7 @@ export default function HistoryPage() {
         {/* History List */}
         {filteredItems.length === 0 ? (
           <div className="text-center py-12">
-            <History className="w-16 h-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+            <HugeiconsIcon icon={HistoryIcon} size={64} className="text-stone-300 dark:text-stone-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
               {searchQuery ? 'هیچ موردی یافت نشد' : 'تاریخچه‌ای وجود ندارد'}
             </h3>
@@ -352,7 +354,7 @@ export default function HistoryPage() {
                 {groupBy !== 'none' && (
                   <div className="px-4 py-3 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700 rounded-t-xl">
                     <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 text-right">
-                      {groupName} ({groupItems.length})
+                      {groupName} ({toPersianDigits(groupItems.length)})
                     </h3>
                   </div>
                 )}
@@ -375,7 +377,7 @@ export default function HistoryPage() {
                           </p>
                         </div>
                         <div className="flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
-                          <Clock className="w-3 h-3" />
+                          <HugeiconsIcon icon={Clock01Icon} size={14} />
                           <span>{formatTimeAgo(item.timestamp)}</span>
                         </div>
                       </div>

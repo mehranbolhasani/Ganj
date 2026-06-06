@@ -20,7 +20,7 @@ interface PoemPageProps {
 export async function generateMetadata({ params }: PoemPageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const poemId = parseInt(resolvedParams.id);
-  
+
   if (isNaN(poemId)) {
     return {
       title: 'شعر یافت نشد',
@@ -30,10 +30,10 @@ export async function generateMetadata({ params }: PoemPageProps): Promise<Metad
   try {
     const poem = await hybridApi.getPoem(poemId);
     const firstVerse = poem.verses && poem.verses.length > 0 ? poem.verses[0] : '';
-    const description = firstVerse 
+    const description = firstVerse
       ? `${firstVerse.substring(0, 150)}...`
       : `شعر ${poem.title} از ${poem.poetName}`;
-    
+
     const title = `${poem.title} - ${poem.poetName}`;
 
     return {
@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: PoemPageProps): Promise<Metad
 export default async function PoemPage({ params }: PoemPageProps) {
   const resolvedParams = await params;
   const poemId = parseInt(resolvedParams.id);
-  
+
   if (isNaN(poemId)) {
     notFound();
   }
@@ -92,7 +92,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
     poem = await hybridApi.getPoem(poemId);
     poetName = poem.poetName;
     categoryTitle = poem.categoryTitle || 'مجموعه';
-    
+
     // Debug: Log poem data in development
     if (process.env.NODE_ENV === 'development') {
       console.log(`[PoemPage] Loaded poem ${poemId}:`, {
@@ -107,7 +107,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
     if (poem.categoryId) {
       try {
         let poems: Poem[] = [];
-        
+
         // If poem belongs to a chapter, fetch poems from that chapter
         // Otherwise, fetch from the category
         if (poem.chapterId) {
@@ -116,16 +116,16 @@ export default async function PoemPage({ params }: PoemPageProps) {
         } else {
           poems = await hybridApi.getCategoryPoems(poem.poetId, poem.categoryId);
         }
-        
+
         // Find current poem index
         const currentIndex = poems.findIndex(p => p.id === poemId);
-        
+
         if (currentIndex !== -1) {
           // Get previous poem
           if (currentIndex > 0) {
             previousPoem = poems[currentIndex - 1];
           }
-          
+
           // Get next poem
           if (currentIndex < poems.length - 1) {
             nextPoem = poems[currentIndex + 1];
@@ -162,7 +162,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
         <p className="text-stone-600 dark:text-stone-300 mb-4">
           {error}
         </p>
-        <Link 
+        <Link
           href="/"
           className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
         >
@@ -202,7 +202,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
       />
       <HistoryTracker poem={poem} />
 
-      <article className="w-full min-w-0 max-w-full overflow-x-clip">
+      <article className="w-full min-w-0 max-w-full overflow-x-clip min-h-fit bg-primary/5 p-6 rounded-3xl flex flex-col gap-4">
         <Breadcrumbs items={[
           { label: poetName, href: `/poet/${poem.poetId}` },
           { label: categoryTitle, href: poem.categoryId ? `/poet/${poem.poetId}/category/${poem.categoryId}` : undefined },
@@ -212,7 +212,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
         <PoemDisplay poem={poem} />
 
         <div className="w-full max-w-full min-w-0 sm:max-w-4xl sm:mx-auto">
-          <PoemNavigation 
+          <PoemNavigation
             currentPoem={poem}
             previousPoem={previousPoem}
             nextPoem={nextPoem}

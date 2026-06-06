@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { ExternalLink } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowUpRight01Icon } from '@hugeicons/core-free-icons';
 
 interface TextSelectionTooltipProps {
   onClose: () => void;
@@ -193,7 +194,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
         aria-label="جستجو در واژه‌یاب"
       >
         <span className="text-xs">جستجو در واژه‌یاب</span>
-        <ExternalLink className="w-4 h-4" aria-hidden="true" />
+        <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} aria-hidden="true" />
       </a>
       <button
         onClick={(e) => {

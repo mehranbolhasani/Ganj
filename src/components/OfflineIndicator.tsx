@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { WifiOff, CheckCircle } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { CheckmarkCircle01Icon, WifiOffIcon } from '@hugeicons/core-free-icons';
 
 const OfflineIndicator = () => {
   const [isOnline, setIsOnline] = useState(() => typeof navigator !== 'undefined' ? navigator.onLine : true);
@@ -50,9 +51,9 @@ const OfflineIndicator = () => {
       >
         <div className="flex-shrink-0">
           {isOnline ? (
-            <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} className="text-green-600 dark:text-green-400" />
           ) : (
-            <WifiOff className="w-5 h-5 text-red-600 dark:text-red-400" />
+            <HugeiconsIcon icon={WifiOffIcon} size={20} className="text-red-600 dark:text-red-400" />
           )}
         </div>
         

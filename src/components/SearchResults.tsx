@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { Search, Users, BookOpen, FileText, Heart } from 'lucide-react';
 import { searchAll } from '@/lib/supabase-search';
 import { Poet, Category, Poem, SearchResponse } from '@/lib/types';
 import { PoemCardSkeleton } from './LoadingStates';
 import { useBookmarks } from '@/lib/bookmarks-manager';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { BookOpen01Icon, File02Icon, Group01Icon, HeartIcon, Search01Icon } from '@hugeicons/core-free-icons';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface SearchResultsProps {
   query: string;
@@ -204,7 +206,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
     return (
       <div className="text-center py-12">
         <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Search className="w-8 h-8 text-red-600 dark:text-red-400" />
+          <HugeiconsIcon icon={Search01Icon} size={32} className="text-red-600 dark:text-red-400" />
         </div>
         <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
           خطا در جستجو
@@ -240,10 +242,10 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
         <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="flex gap-2 border-b border-stone-200 dark:border-stone-700 min-w-max sm:min-w-0">
             {[
-              { key: 'all', label: 'همه', count: totalResults, icon: Search },
-              { key: 'poets', label: 'شاعران', count: totalCounts.poets, icon: Users },
-              { key: 'categories', label: 'مجموعه‌ها', count: totalCounts.categories, icon: BookOpen },
-              { key: 'poems', label: 'اشعار', count: totalCounts.poems, icon: FileText },
+              { key: 'all', label: 'همه', count: totalResults, icon: Search01Icon },
+              { key: 'poets', label: 'شاعران', count: totalCounts.poets, icon: Group01Icon },
+              { key: 'categories', label: 'مجموعه‌ها', count: totalCounts.categories, icon: BookOpen01Icon },
+              { key: 'poems', label: 'اشعار', count: totalCounts.poems, icon: File02Icon },
             ].map(({ key, label, count, icon: Icon }) => {
             const handleTabClick = () => {
               setActiveTab(key as 'all' | 'poets' | 'categories' | 'poems');
@@ -264,10 +266,10 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
                     : 'border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <HugeiconsIcon icon={Icon} size={16} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>{label}</span>
                 <span className="bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
-                  {count}
+                  {toPersianDigits(count)}
                 </span>
               </button>
             );
@@ -289,7 +291,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
       {totalResults === 0 ? (
         <div className="text-center py-12">
           <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Search className="w-8 h-8 text-stone-400" />
+            <HugeiconsIcon icon={Search01Icon} size={32} className="text-stone-400" />
           </div>
           <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
             هیچ نتیجه‌ای یافت نشد
@@ -346,7 +348,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
                       : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                   }`}
                 >
-                  {pageNum}
+                  {toPersianDigits(pageNum)}
                 </Link>
               );
             })}
@@ -365,7 +367,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
 
           {/* Page Info */}
           <div className="text-center text-sm text-stone-500 dark:text-stone-400">
-            صفحه {page} از {totalPages} • {totalResults} نتیجه
+            صفحه {toPersianDigits(page)} از {toPersianDigits(totalPages)} • {toPersianDigits(totalResults)} نتیجه
           </div>
         </>
       )}
@@ -381,7 +383,7 @@ const PoetResultCard = ({ poet, query, highlightText }: { poet: Poet; query: str
     >
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-full flex items-center justify-center shrink-0">
-          <Users className="w-6 h-6 text-stone-600 dark:text-stone-400" />
+          <HugeiconsIcon icon={Group01Icon} size={24} className="text-stone-600 dark:text-stone-400" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 
@@ -408,7 +410,7 @@ const CategoryResultCard = ({ category, query, highlightText }: { category: Cate
     >
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-lg flex items-center justify-center shrink-0">
-          <BookOpen className="w-6 h-6 text-stone-600 dark:text-stone-400" />
+          <HugeiconsIcon icon={BookOpen01Icon} size={24} className="text-stone-600 dark:text-stone-400" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 
@@ -545,7 +547,7 @@ const PoemResultCard = ({ poem, isBookmarked, query, highlightText }: { poem: Po
     >
       <div className="flex items-start gap-4">
         <div className="w-12 h-12 bg-yellow-800/40 dark:bg-yellow-800/30 rounded-xl flex items-center justify-center shrink-0">
-          <FileText className="w-6 h-6 sm:w-7 sm:h-7 text-yellow-700 dark:text-yellow-700" />
+          <HugeiconsIcon icon={File02Icon} size={24} className="sm:w-7 sm:h-7 text-yellow-700 dark:text-yellow-700" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
@@ -554,7 +556,7 @@ const PoemResultCard = ({ poem, isBookmarked, query, highlightText }: { poem: Po
               dangerouslySetInnerHTML={{ __html: highlightText(poem.title, query) }}
             />
             {isBookmarked && (
-              <Heart className="w-5 h-5 text-red-500 fill-current shrink-0" />
+              <HugeiconsIcon icon={HeartIcon} size={20} className="text-red-500 fill-current shrink-0" />
             )}
           </div>
           <p className="text-sm sm:text-base text-stone-600 dark:text-stone-400 text-right mb-2 font-medium">

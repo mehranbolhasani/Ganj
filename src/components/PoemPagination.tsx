@@ -1,5 +1,6 @@
 import { Poem } from '@/lib/types';
 import Link from 'next/link';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface PoemPaginationProps {
   poems: Poem[];
@@ -8,26 +9,26 @@ interface PoemPaginationProps {
   baseUrl: string;
 }
 
-export default function PoemPagination({ 
-  poems, 
-  itemsPerPage = 20, 
+export default function PoemPagination({
+  poems,
+  itemsPerPage = 20,
   currentPage = 1,
   baseUrl
 }: PoemPaginationProps) {
   const totalPages = Math.ceil(poems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  
+
   const currentPoems = poems.slice(startIndex, endIndex);
-  
+
   const generatePageUrl = (page: number) => {
     return `${baseUrl}?page=${page}`;
   };
-  
+
   if (poems.length === 0) {
     return null;
   }
-  
+
   if (totalPages <= 1) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -35,9 +36,9 @@ export default function PoemPagination({
           <Link
             key={poem.id}
             href={`/poem/${poem.id}`}
-            className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 active:scale-[0.98] transition-all duration-200 touch-manipulation"
+            className="block p-4 bg-card rounded-xl shadow-xl shadow-primary/10 dark:shadow-none hover:shadow-primary/15 active:scale-[0.98] transition-all duration-200 touch-manipulation"
           >
-            <h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-300 mb-3 text-right leading-tight">
+            <h3 className="text-lg font-semibold mb-2 text-right leading-tight">
               {poem.title}
             </h3>
             <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base text-right flex items-center justify-start gap-2">
@@ -53,21 +54,21 @@ export default function PoemPagination({
       </div>
     );
   }
-  
+
   return (
     <div>
       {/* Poems Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-12">
         {currentPoems.map((poem) => (
           <Link
             key={poem.id}
             href={`/poem/${poem.id}`}
-            className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 active:scale-[0.98] transition-all duration-200 touch-manipulation"
+            className="block p-4 sm:p-6 bg-card rounded-xl shadow-xl shadow-primary/10 dark:shadow-none hover:shadow-primary/15 active:scale-[0.98] transition-all duration-200 touch-manipulation"
           >
-            <h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-300 mb-3 text-right leading-tight">
+            <h3 className="text-lg mb-2 text-right leading-tight">
               {poem.title}
             </h3>
-            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base text-right flex items-center justify-start gap-2">
+            <p className="text-sm text-right text-primary/50 flex items-center justify-start gap-2">
               <span className="font-medium">{poem.poetName}</span>
               {poem.chapterTitle && (
                 <span className="block text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
@@ -78,7 +79,7 @@ export default function PoemPagination({
           </Link>
         ))}
       </div>
-      
+
       {/* Pagination Controls */}
       <div className="flex items-center justify-center gap-2 sm:gap-3 text-sm mb-4">
         {currentPage > 1 && (
@@ -89,7 +90,7 @@ export default function PoemPagination({
             قبلی
           </Link>
         )}
-        
+
         <div className="flex items-center gap-1">
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             let pageNum;
@@ -102,7 +103,7 @@ export default function PoemPagination({
             } else {
               pageNum = currentPage - 2 + i;
             }
-            
+
             return (
               <Link
                 key={pageNum}
@@ -113,12 +114,12 @@ export default function PoemPagination({
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 active:bg-stone-300 dark:active:bg-stone-600'
                 }`}
               >
-                {pageNum}
+                {toPersianDigits(pageNum)}
               </Link>
             );
           })}
         </div>
-        
+
         {currentPage < totalPages && (
           <Link
             href={generatePageUrl(currentPage + 1)}
@@ -128,10 +129,10 @@ export default function PoemPagination({
           </Link>
         )}
       </div>
-      
+
       {/* Page Info */}
       <div className="text-center text-sm text-stone-500 dark:text-stone-400 mt-2">
-        صفحه {currentPage} از {totalPages} • {poems.length} شعر
+        صفحه {toPersianDigits(currentPage)} از {toPersianDigits(totalPages)} • {toPersianDigits(poems.length)} شعر
       </div>
     </div>
   );

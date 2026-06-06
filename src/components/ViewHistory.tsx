@@ -3,8 +3,10 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useViewHistory } from '@/lib/history-manager';
-import { History, Clock, Search, X, Trash2, Filter, ArrowLeft, Eye } from 'lucide-react';
 import { useToast } from './Toast';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon, Cancel01Icon, Clock01Icon, Delete02Icon, FilterIcon, HistoryIcon, Search01Icon, ViewIcon } from '@hugeicons/core-free-icons';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface ViewHistoryProps {
   isOpen: boolean;
@@ -147,9 +149,9 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (minutes < 1) return 'همین الان';
-    if (minutes < 60) return `${minutes} دقیقه پیش`;
-    if (hours < 24) return `${hours} ساعت پیش`;
-    if (days < 7) return `${days} روز پیش`;
+    if (minutes < 60) return `${toPersianDigits(minutes)} دقیقه پیش`;
+    if (hours < 24) return `${toPersianDigits(hours)} ساعت پیش`;
+    if (days < 7) return `${toPersianDigits(days)} روز پیش`;
     return new Date(timestamp).toLocaleDateString('fa-IR');
   };
 
@@ -203,15 +205,15 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
                 className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
                 aria-label="بازگشت"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
               </button>
             )}
-            <History className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+            <HugeiconsIcon icon={HistoryIcon} size={20} className="text-stone-600 dark:text-stone-400" />
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
               {showFullHistory ? 'تاریخچه کامل' : 'تاریخچه بازدیدها'}
             </h3>
             <span className="text-sm text-stone-500 dark:text-stone-400">
-              ({filteredItems.length})
+              ({toPersianDigits(filteredItems.length)})
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -220,7 +222,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
                 onClick={() => setShowFullHistory(true)}
                 className="flex items-center gap-1 px-3 py-1 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
               >
-                <Eye className="w-4 h-4" />
+                <HugeiconsIcon icon={ViewIcon} size={16} />
                 مشاهده همه
               </button>
             )}
@@ -229,7 +231,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
               className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
               aria-label="بستن"
             >
-              <X className="w-4 h-4" />
+              <HugeiconsIcon icon={Cancel01Icon} size={16} />
             </button>
           </div>
         </div>
@@ -238,7 +240,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
         <div className="p-4 border-b border-stone-200 dark:border-stone-700 space-y-3">
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-400" />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400" />
               <input
                 type="text"
                 placeholder="جستجو در تاریخچه..."
@@ -256,7 +258,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
                     : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
                 }`}
               >
-                <Filter className="w-4 h-4" />
+                <HugeiconsIcon icon={FilterIcon} size={16} />
                 فیلتر
               </button>
             )}
@@ -317,7 +319,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
                   {groupBy !== 'none' && (
                     <div className="px-4 py-2 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700">
                       <h4 className="text-sm font-medium text-stone-700 dark:text-stone-300 text-right">
-                        {groupName} ({groupItems.length})
+                        {groupName} ({toPersianDigits(groupItems.length)})
                       </h4>
                     </div>
                   )}
@@ -343,7 +345,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
                           )}
                         </div>
                         <div className="flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
-                          <Clock className="w-3 h-3" />
+                          <HugeiconsIcon icon={Clock01Icon} size={14} />
                           <span>{formatTimeAgo(item.timestamp)}</span>
                         </div>
                       </div>
@@ -362,7 +364,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
               onClick={clearHistory}
               className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
             >
-              <Trash2 className="w-4 h-4" />
+              <HugeiconsIcon icon={Delete02Icon} size={16} />
               پاک کردن تاریخچه
             </button>
           </div>

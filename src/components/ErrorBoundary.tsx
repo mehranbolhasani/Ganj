@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Alert02Icon, Home01Icon, RefreshIcon } from '@hugeicons/core-free-icons';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -55,7 +56,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
         <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-900 p-4">
           <div className="max-w-md w-full bg-white dark:bg-stone-800 rounded-xl shadow-lg p-6 text-center">
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
+              <HugeiconsIcon icon={Alert02Icon} size={32} className="text-red-600 dark:text-red-400" />
             </div>
             
             <h1 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-2">
@@ -83,7 +84,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
                 onClick={this.retry}
                 className="flex items-center gap-2 px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
               >
-                <RefreshCw className="w-4 h-4" />
+                <HugeiconsIcon icon={RefreshIcon} size={16} />
                 تلاش مجدد
               </button>
               
@@ -91,7 +92,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
                 href="/"
                 className="flex items-center gap-2 px-4 py-2 bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 rounded-lg hover:bg-stone-700 dark:hover:bg-stone-300 transition-colors"
               >
-                <Home className="w-4 h-4" />
+                <HugeiconsIcon icon={Home01Icon} size={16} />
                 صفحه اصلی
               </Link>
             </div>

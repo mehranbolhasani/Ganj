@@ -2,35 +2,37 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle, Clock, Search, Bookmark, Share, Filter, Users, Heart, Eye, Smartphone } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon, Bookmark03Icon, CheckmarkCircle01Icon, Clock01Icon, FilterIcon, Group01Icon, HeartIcon, Search01Icon, Share08Icon, SmartPhone01Icon, ViewIcon } from '@hugeicons/core-free-icons';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 export default function RoadmapContent() {
   const [activeTab, setActiveTab] = useState<'current' | 'upcoming'>('current');
 
   const currentFeatures = [
     {
-      icon: Search,
+      icon: Search01Icon,
       title: 'جستجوی پیشرفته',
       description: 'جستجو در شعرها، شاعران و دسته‌بندی‌ها با فیلترهای هوشمند',
       status: 'completed',
       progress: 100
     },
     {
-      icon: Bookmark,
+      icon: Bookmark03Icon,
       title: 'سیستم علاقه‌مندی‌ها',
       description: 'ذخیره و مدیریت شعرهای مورد علاقه با امکان دسته‌بندی',
       status: 'completed',
       progress: 100
     },
     {
-      icon: Eye,
+      icon: ViewIcon,
       title: 'تاریخچه بازدیدها',
       description: 'پیگیری شعرهای خوانده شده و پیشنهاد محتوا',
       status: 'completed',
       progress: 100
     },
     {
-      icon: Smartphone,
+      icon: SmartPhone01Icon,
       title: 'بهینه‌سازی موبایل',
       description: 'تجربه کاربری بهتر در دستگاه‌های موبایل',
       status: 'completed',
@@ -40,7 +42,7 @@ export default function RoadmapContent() {
 
   const upcomingFeatures = [
     {
-      icon: Filter,
+      icon: FilterIcon,
       title: 'فیلترهای پیشرفته',
       description: 'فیلتر بر اساس دوره تاریخی، موضوع، و ویژگی‌های شعر',
       status: 'in-progress',
@@ -48,7 +50,7 @@ export default function RoadmapContent() {
       eta: 'نوامبر ۲۰۲۵'
     },
     {
-      icon: Share,
+      icon: Share08Icon,
       title: 'اشتراک‌گذاری شعرها',
       description: 'اشتراک‌گذاری شعرها در شبکه‌های اجتماعی و پیام‌رسان‌ها',
       status: 'in-progress',
@@ -56,7 +58,7 @@ export default function RoadmapContent() {
       eta: 'نوامبر ۲۰۲۵'
     },
     {
-      icon: Users,
+      icon: Group01Icon,
       title: 'حساب کاربری',
       description: 'ثبت‌نام و ورود برای همگام‌سازی داده‌ها',
       status: 'planned',
@@ -64,7 +66,7 @@ export default function RoadmapContent() {
       eta: 'دسامبر ۲۰۲۵'
     },
     {
-      icon: Users,
+      icon: Group01Icon,
       title: 'ترجمه شعرها',
       description: 'ترجمه شعرها به زبان‌های مختلف',
       status: 'planned',
@@ -91,17 +93,17 @@ export default function RoadmapContent() {
     <div className="max-w-6xl mx-auto px-0 py-4 w-full">
       {/* Header */}
       <div className="mb-8">
-        <Link 
+        <Link
           href="/"
           className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors mb-8"
         >
-          <ArrowLeft className="w-4 h-4 rotate-180" />
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="rotate-180" />
           بازگشت به صفحه اصلی
         </Link>
-        
+
         <div className="flex items-center gap-3 mb-4">
           <div>
-            <h1 className="text-3xl font-abar abar-wght-700 text-stone-900 dark:text-stone-100 mb-4">
+            <h1 className="text-3xl text-stone-900 dark:text-stone-100 mb-4">
               نقشه راه گنج
             </h1>
             <p className="text-stone-600 dark:text-stone-300 text-lg">
@@ -121,7 +123,7 @@ export default function RoadmapContent() {
               : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
           }`}
         >
-          <CheckCircle className="w-4 h-4" />
+          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} />
           ویژگی‌های فعلی
         </button>
         <button
@@ -132,7 +134,7 @@ export default function RoadmapContent() {
               : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
           }`}
         >
-          <Clock className="w-4 h-4" />
+          <HugeiconsIcon icon={Clock01Icon} size={16} />
           برای آینده
         </button>
       </div>
@@ -142,19 +144,19 @@ export default function RoadmapContent() {
         <div className="space-y-6">
           <div className="bg-green-50/50 dark:bg-green-950/40 rounded-xl p-4 border border-green-200 dark:border-green-800/50">
             <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-4 flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} className="text-green-600" />
               ویژگی‌های تکمیل شده
             </h2>
             <p className="text-stone-700 dark:text-stone-300 mb-6">
               این ویژگی‌ها در حال حاضر در گنج موجودن و می‌تونید ازشون استفاده کنید.
             </p>
-            
+
             <div className="grid md:grid-cols-1 gap-4">
               {currentFeatures.map((feature, index) => (
                 <div key={index} className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-stone-200 dark:border-stone-700">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <feature.icon className="w-5 h-5 text-green-600" />
+                      <HugeiconsIcon icon={feature.icon} size={20} className="w-5 h-5 text-green-600" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
@@ -168,13 +170,13 @@ export default function RoadmapContent() {
                           {getStatusText(feature.status)}
                         </span>
                         <div className="flex-1 bg-stone-200 dark:bg-stone-700 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-green-500 h-2 rounded-full transition-all duration-300"
                             style={{ width: `${feature.progress}%` }}
                           ></div>
                         </div>
                         <span className="text-xs text-stone-500 dark:text-stone-400">
-                          {feature.progress}%
+                          {toPersianDigits(feature.progress)}٪
                         </span>
                       </div>
                     </div>
@@ -191,19 +193,19 @@ export default function RoadmapContent() {
         <div className="space-y-6">
           <div className="bg-blue-50/50 dark:bg-blue-950/40 rounded-xl p-4 border border-blue-200 dark:border-blue-800/50">
             <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-blue-600" />
+              <HugeiconsIcon icon={Clock01Icon} size={20} className="text-blue-600" />
               ویژگی‌های در حال توسعه
             </h2>
             <p className="text-stone-700 dark:text-stone-300 mb-6">
               این ویژگی‌ها در حال توسعه هستن و به زودی در دسترس قرار خواهند گرفت.
             </p>
-            
+
             <div className="space-y-4">
               {upcomingFeatures.map((feature, index) => (
                 <div key={index} className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-stone-200 dark:border-stone-700">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <feature.icon className="w-5 h-5 text-blue-600" />
+                      <HugeiconsIcon icon={feature.icon} size={20} className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
@@ -222,13 +224,13 @@ export default function RoadmapContent() {
                           {getStatusText(feature.status)}
                         </span>
                         <div className="flex-1 bg-stone-200 dark:bg-stone-700 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                             style={{ width: `${feature.progress}%` }}
                           ></div>
                         </div>
                         <span className="text-xs text-stone-500 dark:text-stone-400">
-                          {feature.progress}%
+                          {toPersianDigits(feature.progress)}٪
                         </span>
                       </div>
                     </div>
@@ -243,7 +245,7 @@ export default function RoadmapContent() {
       {/* Call to Action */}
       <div className="mt-12 bg-gradient-to-r from-stone-50 to-stone-100 dark:from-stone-800 dark:to-stone-900 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
         <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-4 flex items-center gap-2">
-          <Heart className="w-5 h-5 text-red-600" />
+          <HugeiconsIcon icon={HeartIcon} size={20} className="text-red-600" />
           مشارکت در توسعه
         </h3>
         <p className="text-stone-700 dark:text-stone-300 mb-4">

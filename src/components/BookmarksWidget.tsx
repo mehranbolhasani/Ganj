@@ -2,9 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Heart, ArrowLeft } from 'lucide-react';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import type { BookmarkItem } from '@/lib/bookmarks-manager';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon, HeartIcon } from '@hugeicons/core-free-icons';
+import { toPersianDigits } from '@/lib/persian-digits';
 
 interface BookmarksWidgetProps {
   maxItems?: number;
@@ -24,7 +26,7 @@ export default function BookmarksWidget({
       <div className={`bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700 ${className}`}>
         {showTitle && (
           <div className="flex items-center gap-2 mb-4">
-            <Heart className="w-5 h-5 text-red-500" />
+            <HugeiconsIcon icon={HeartIcon} size={20} className="text-red-500" />
             <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               علاقه‌مندی‌ها
             </h3>
@@ -49,14 +51,14 @@ export default function BookmarksWidget({
       <div className={`bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700 ${className}`}>
         {showTitle && (
           <div className="flex items-center gap-2 mb-4">
-            <Heart className="w-5 h-5 text-red-500" />
+            <HugeiconsIcon icon={HeartIcon} size={20} className="text-red-500" />
             <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               علاقه‌مندی‌ها
             </h3>
           </div>
         )}
         <div className="text-center py-6">
-          <Heart className="w-8 h-8 text-stone-300 dark:text-stone-600 mx-auto mb-2" />
+          <HugeiconsIcon icon={HeartIcon} size={32} className="text-stone-300 dark:text-stone-600 mx-auto mb-2" />
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
             هنوز علاقه‌مندی‌ای ندارید
           </p>
@@ -76,7 +78,7 @@ export default function BookmarksWidget({
       {showTitle && (
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Heart className="w-5 h-5 text-red-500" />
+            <HugeiconsIcon icon={HeartIcon} size={20} className="text-red-500" />
             <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               علاقه‌مندی‌ها
             </h3>
@@ -102,8 +104,8 @@ export default function BookmarksWidget({
             href="/bookmarks"
             className="flex items-center justify-center gap-2 text-sm text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
           >
-            <span>مشاهده همه ({bookmarks.length})</span>
-            <ArrowLeft className="w-4 h-4" />
+            <span>مشاهده همه ({toPersianDigits(bookmarks.length)})</span>
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
           </Link>
         </div>
       )}
@@ -126,9 +128,9 @@ function BookmarkItem({ bookmark }: { bookmark: BookmarkItem }) {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (minutes < 1) return 'همین الان';
-    if (minutes < 60) return `${minutes}د`;
-    if (hours < 24) return `${hours}س`;
-    if (days < 7) return `${days}ر`;
+    if (minutes < 60) return `${toPersianDigits(minutes)}د`;
+    if (hours < 24) return `${toPersianDigits(hours)}س`;
+    if (days < 7) return `${toPersianDigits(days)}ر`;
     return new Date(timestamp).toLocaleDateString('fa-IR', { month: 'short', day: 'numeric' });
   };
 

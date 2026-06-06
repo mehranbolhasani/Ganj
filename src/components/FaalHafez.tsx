@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo, useTransition } from 'react';
-import { Loader2 } from 'lucide-react';
 import { useFaalContext } from '@/contexts/FaalContext';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Loading03Icon } from '@hugeicons/core-free-icons';
 
 export default function FaalHafez() {
   const { state, poem, error, handleTryAgain } = useFaalContext();
@@ -92,7 +93,7 @@ export default function FaalHafez() {
             <div className="relative mb-8">
               <div className="absolute inset-0 blur-2xl opacity-40 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full animate-pulse" />
               <div className="relative">
-                <Loader2 className="w-16 h-16 sm:w-20 sm:h-20 text-amber-600 dark:text-amber-400 animate-spin" />
+                <HugeiconsIcon icon={Loading03Icon} size={64} className="sm:w-20 sm:h-20 text-amber-600 dark:text-amber-400 animate-spin" />
               </div>
             </div>
 
@@ -104,7 +105,7 @@ export default function FaalHafez() {
         ) : (
           // Empty state during panel resize
           <div className="opacity-0">
-            <Loader2 className="w-16 h-16 text-transparent" />
+            <HugeiconsIcon icon={Loading03Icon} size={64} className="text-transparent" />
           </div>
         )}
       </div>
@@ -143,7 +144,7 @@ export default function FaalHafez() {
           }`} 
         >
           <span className="block text-amber-600 dark:text-amber-400 font-medium mb-4">فال شما</span>
-          <h2 className="font-hafez text-3xl md:text-5xl text-amber-100 dark:text-amber-100">
+          <h2 className="text-3xl md:text-5xl text-amber-100 dark:text-amber-100">
             {poem.title}
           </h2>
         </div>

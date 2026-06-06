@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useRef, useCallback, useTransition } from 'react';
 import Link from 'next/link';
-import { Search, X, FileText, Heart } from 'lucide-react';
 import { searchAll } from '@/lib/supabase-search';
 import { Poem } from '@/lib/types';
 import { useBookmarks } from '@/lib/bookmarks-manager';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Cancel01Icon, File02Icon, HeartIcon, Search01Icon } from '@hugeicons/core-free-icons';
 
 interface PoetSearchProps {
   poetId: number;
@@ -20,13 +21,13 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPending, startTransition] = useTransition();
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLElement | null>(null);
   const currentSearchIdRef = useRef<number>(0);
   const { bookmarks } = useBookmarks();
-  
+
   // Search function - only searches poems for this poet
   const search = useCallback(async (searchQuery: string, searchId: number, targetPoetId: number) => {
     if (!searchQuery.trim()) {
@@ -37,11 +38,11 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
     }
 
     setIsLoading(true);
-    
+
     try {
       // Search only poems for this specific poet
       const { poems } = await searchAll(searchQuery, 20, 'poems', 0, false, targetPoetId);
-      
+
       // Only update results if:
       // 1. This is still the latest search
       // 2. The poetId hasn't changed
@@ -49,7 +50,7 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
       if (currentSearchIdRef.current === searchId && targetPoetId === poetId) {
         // Filter results to ensure they all belong to the current poet
         const validPoems = (poems || []).filter(poem => poem.poetId === targetPoetId);
-        
+
         // Debug log in development
         if (process.env.NODE_ENV === 'development') {
           console.log(`[PoetSearch] Search completed for poetId: ${targetPoetId}, found ${validPoems.length} poems`);
@@ -57,7 +58,7 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
             console.warn(`[PoetSearch] WARNING: First poem has wrong poetId! Expected ${targetPoetId}, got ${validPoems[0].poetId}`);
           }
         }
-        
+
         startTransition(() => {
           setResults(validPoems);
           setSelectedIndex(0);
@@ -87,7 +88,7 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
     currentSearchIdRef.current += 1;
     const searchId = currentSearchIdRef.current;
     const currentPoetId = poetId; // Capture current poetId
-    
+
     const timeoutId = setTimeout(() => {
       // Check if this is still the latest search and poetId hasn't changed
       if (currentSearchIdRef.current === searchId && currentPoetId === poetId) {
@@ -164,14 +165,14 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
   useEffect(() => {
     // Invalidate any pending searches by incrementing search ID
     currentSearchIdRef.current += 1;
-    
+
     // Immediately clear results - don't wait for transition
     setResults([]);
     setQuery('');
     setSelectedIndex(0);
     setIsExpanded(false);
     setIsLoading(false);
-    
+
     // Debug log in development
     if (process.env.NODE_ENV === 'development') {
       console.log(`[PoetSearch] Reset for poetId: ${poetId}, poetName: ${poetName}`);
@@ -181,10 +182,10 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
   // Highlight matching text
   const highlightText = (text: string, highlight: string) => {
     if (!highlight.trim()) return text;
-    
+
     const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return parts.map((part) => 
-      part.toLowerCase() === highlight.toLowerCase() 
+    return parts.map((part) =>
+      part.toLowerCase() === highlight.toLowerCase()
         ? `<mark class="bg-yellow-200 dark:bg-yellow-600/40 text-stone-900 dark:text-stone-100 px-0.5 rounded">${part}</mark>`
         : part
     ).join('');
@@ -193,11 +194,11 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
   // Find matching verse
   const findMatchingVerse = (verses: string[], searchQuery: string): string => {
     if (verses.length === 0) return '';
-    
+
     const queryLower = searchQuery.toLowerCase().trim();
     const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
     let foundIndex = -1;
-    
+
     // Exact phrase match
     for (let i = 0; i < verses.length; i++) {
       const verseLower = verses[i].toLowerCase();
@@ -206,7 +207,7 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
         break;
       }
     }
-    
+
     // Multi-word match
     if (foundIndex === -1 && queryWords.length > 1) {
       for (let i = 0; i < verses.length; i++) {
@@ -218,7 +219,7 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
         }
       }
     }
-    
+
     // Any word match
     if (foundIndex === -1 && queryWords.length > 0) {
       for (let i = 0; i < verses.length; i++) {
@@ -230,29 +231,29 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
         }
       }
     }
-    
+
     return foundIndex >= 0 ? verses[foundIndex] : (verses[0] || '');
   };
 
   return (
-    <div className="relative w-full mb-6">
+    <div className="relative w-full mb-6 -mt-8 z-10">
       {/* Search Toggle Button */}
       {!isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
-          className="w-full flex items-center gap-3 px-4 py-3 bg-white/50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors text-right"
+          className="w-full flex items-center gap-2 px-5 pt-10 pb-4 bg-transparent border border-primary/30 border-t-0 rounded-b-2xl hover:bg-primary/15 transition-colors text-right"
         >
-          <Search className="w-5 h-5 text-stone-500 dark:text-stone-400" />
-          <span className="text-stone-600 dark:text-stone-400">جستجو در اشعار {poetName}...</span>
+          <HugeiconsIcon icon={Search01Icon} size={20} className="text-primary" />
+          <span className="text-primary">جستجو در اشعار {poetName}...</span>
         </button>
       )}
 
       {/* Expanded Search */}
       {isExpanded && (
-        <div className="bg-white/80 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 rounded-xl shadow-lg backdrop-blur-md">
+        <div className="rounded-b-2xl px-4 pt-12 pb-5 backdrop-blur-md bg-primary/15 border border-primary/30 border-t-0">
           {/* Search Input */}
-          <div className="flex items-center gap-3 p-4 border-b border-stone-200 dark:border-stone-700">
-            <Search className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+          <div className="flex items-center gap-2">
+            <HugeiconsIcon icon={Search01Icon} size={20} className="text-primary" aria-hidden="true" />
             <input
               ref={inputRef}
               type="text"
@@ -260,14 +261,14 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none"
+              className="flex-1 bg-transparent text-primary focus:outline-none"
             />
             <button
               onClick={() => setIsExpanded(false)}
-              className="p-1 rounded-md text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors"
+              className="transition-colors"
               aria-label="بستن جستجو"
             >
-              <X className="w-5 h-5" aria-hidden="true" />
+              <HugeiconsIcon icon={Cancel01Icon} size={20} aria-hidden="true" />
             </button>
           </div>
 
@@ -286,13 +287,13 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
                   </p>
                 </div>
               ) : (
-                <div className="divide-y divide-stone-200 dark:divide-stone-700/50">
+                <div className="divide-y divide-primary/20 mt-4">
                   {results
                     .filter(poem => poem.poetId === poetId) // Double-check: filter out any poems not from current poet
                     .map((poem, index) => {
                     const displayVerse = findMatchingVerse(poem.verses || [], query);
                     const isBookmarked = bookmarks.some(b => b.poemId === poem.id);
-                    
+
                     return (
                       <Link
                         key={`${poetId}-${poem.id}`} // Include poetId in key to force remount on poet change
@@ -302,40 +303,40 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
                           }
                         }}
                         href={`/poem/${poem.id}`}
-                        className={`block p-4 hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors ${
-                          index === selectedIndex ? 'bg-stone-100 dark:bg-yellow-800/30' : ''
+                        className={`block p-4 hover:bg-primary/15 transition-colors ${
+                          index === selectedIndex ? 'bg-primary/10' : ''
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           <div className="flex-1 min-w-0">
                             {/* Title */}
                             <div className="flex items-center gap-2 mb-1">
-                              <h4 
-                                className="font-abar text-[15px] font-medium text-stone-900 dark:text-stone-100 text-right"
+                              <h4
+                                className="text-[15px] font-medium text-primary text-right"
                                 dangerouslySetInnerHTML={{ __html: highlightText(poem.title, query) }}
                               />
                               {isBookmarked && (
-                                <Heart className="w-4 h-4 text-red-500 fill-current shrink-0" />
+                                <HugeiconsIcon icon={HeartIcon} size={16} className="text-red-500 fill-current shrink-0" />
                               )}
                             </div>
-                            
+
                             {/* Category */}
                             {poem.categoryTitle && (
                               <p className="text-[13px] text-stone-600 dark:text-stone-400 text-right mb-2">
                                 {poem.categoryTitle}
                               </p>
                             )}
-                            
+
                             {/* Verse preview */}
                             {displayVerse && (
-                              <p 
+                              <p
                                 className="text-[13px] text-stone-600 dark:text-stone-300 text-right leading-relaxed"
                                 dangerouslySetInnerHTML={{ __html: highlightText(displayVerse, query) }}
                               />
                             )}
                           </div>
-                          
-                          <FileText className="w-4 h-4 text-stone-400 shrink-0 mt-1" />
+
+                          <HugeiconsIcon icon={File02Icon} size={20} className="shrink-0" />
                         </div>
                       </Link>
                     );
@@ -351,4 +352,3 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
 };
 
 export default PoetSearch;
-
