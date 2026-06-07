@@ -14,6 +14,8 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
+    // Ensure grammY is initialized before handling updates
+    await bot.init();
     await bot.handleUpdate(body);
     return new Response('OK', { status: 200 });
   } catch (err) {
