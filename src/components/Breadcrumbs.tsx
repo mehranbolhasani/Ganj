@@ -20,13 +20,13 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
 
   return (
     <nav
-      className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1 text-sm"
+      className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1 text-sm border-b border-primary/10 pb-4"
       aria-label="مسیر صفحه"
     >
       {/* Home icon */}
       <Link
         href="/"
-        className="flex shrink-0 items-center gap-1 hover:text-[#21201c] dark:hover:text-white transition-colors"
+        className="flex shrink-0 items-center gap-1 hover:text-[#21201c] dark:hover:text-primary-foreground transition-colors"
       >
         <HugeiconsIcon icon={Home01Icon} size={16} className="shrink-0" />
         <span>خانه</span>
@@ -39,12 +39,12 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           {item.href ? (
             <Link
               href={item.href}
-              className="min-w-0 max-w-full break-words [overflow-wrap:anywhere] hover:text-[#21201c] dark:hover:text-white transition-colors"
+              className="min-w-0 max-w-full break-words [overflow-wrap:anywhere] hover:text-[#21201c] dark:hover:text-primary-foreground transition-colors"
             >
               {item.label}
             </Link>
           ) : (
-            <span className="min-w-0 max-w-full break-words [overflow-wrap:anywhere] font-medium text-[#21201c] dark:text-white">
+            <span className="min-w-0 max-w-full break-words [overflow-wrap:anywhere] font-medium text-[#21201c] dark:text-primary-foreground">
               {item.label}
             </span>
           )}

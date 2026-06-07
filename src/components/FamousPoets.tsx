@@ -80,7 +80,7 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
 
               {poet.birthYear && poet.deathYear && (
                 <div className="block w-full">
-                  <span className="text-xs sm:text-sm text-yellow-700 dark:text-yellow-300 leading-tight font-bold">
+                  <span className="text-xs sm:text-sm text-warning leading-tight font-bold">
                     {formatYear(poet.birthYear)} - {formatYear(poet.deathYear)}
                   </span>
                 </div>

@@ -127,8 +127,8 @@ export default function BookmarkButton({
         onMouseLeave={() => setShowTooltip(false)}
         className={`flex items-center justify-center gap-2 w-10 h-10 rounded-lg transition-all duration-200 cursor-pointer ${
           isBookmarked
-            ? 'bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/30'
-            : 'text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-600'
+            ? 'bg-destructive/10 text-destructive hover:bg-destructive/20'
+            : 'text-muted-foreground hover:bg-muted dark:hover:bg-muted'
         } ${isAnimating ? 'scale-110' : 'scale-100'} ${className}`}
         aria-label={isBookmarked ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
       >
@@ -144,10 +144,10 @@ export default function BookmarkButton({
 
       {/* Tooltip - Hidden on mobile to prevent horizontal scrolling */}
       {showTooltip && (
-        <div className="hidden md:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 text-xs rounded shadow-lg whitespace-nowrap z-10">
+        <div className="hidden md:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-primary text-primary-foreground dark:text-foreground text-xs rounded shadow-lg whitespace-nowrap z-10">
           {isBookmarked ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
           <span className="block text-xs opacity-75">کلید B</span>
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-stone-800 dark:border-t-stone-200"></div>
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-primary"></div>
         </div>
       )}
     </div>

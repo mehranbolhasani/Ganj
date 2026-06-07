@@ -197,7 +197,7 @@ export default function PoetsDropdown() {
 
           {/* Dropdown Content */}
           <div
-            className={`mt-0 bg-white dark:bg-stone-800 shadow-lg border border-stone-200 dark:border-stone-700 z-80 overflow-hidden ${
+            className={`mt-0 bg-card shadow-lg border border-border z-80 overflow-hidden ${
               width < 640
                 ? 'rounded-lg'
                 : 'absolute top-full left-0 rounded-b-lg border-t-0'
@@ -216,18 +216,18 @@ export default function PoetsDropdown() {
             }}
           >
           {/* Visual connection line */}
-          <div className="h-px bg-stone-200 dark:bg-stone-700"></div>
+          <div className="h-px bg-muted"></div>
 
           {/* Search Input */}
-          <div className="p-3 border-b border-stone-200 dark:border-stone-700" data-extension-ignore="true">
+          <div className="p-3 border-b border-border" data-extension-ignore="true">
             <div className="relative" style={{ isolation: 'isolate' }}>
-              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400" />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="جستجو در شاعران..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pr-10 pl-3 py-2.5 sm:py-2 text-sm bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-300 dark:focus:ring-stone-600 text-stone-900 dark:text-stone-300 touch-manipulation"
+                className="w-full pr-10 pl-3 py-2.5 sm:py-2 text-sm bg-background dark:bg-secondary border border-border dark:border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring text-foreground touch-manipulation"
                 autoFocus
                 autoComplete="off"
                 spellCheck="false"
@@ -247,15 +247,15 @@ export default function PoetsDropdown() {
             {/* Content */}
             <div className={`overflow-y-auto ${width < 640 ? 'max-h-136' : 'max-h-96'}`}>
             {loading ? (
-              <div className="px-4 py-3 text-sm text-stone-600 dark:text-stone-300 text-center">
+              <div className="px-4 py-3 text-sm text-muted-foreground dark:text-secondary-foreground text-center">
                 در حال بارگذاری...
               </div>
             ) : (
               <>
                 {/* Famous Poets Section */}
                 {!searchQuery && famousPoetsList.length > 0 && (
-                  <div className="px-3 py-2 bg-stone-50 dark:bg-stone-700/50">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-stone-600 dark:text-stone-400 mb-2">
+                  <div className="px-3 py-2 bg-background dark:bg-secondary/50">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground mb-2">
                       <HugeiconsIcon icon={StarIcon} size={14} />
                       شاعران برجسته
                     </div>
@@ -263,13 +263,13 @@ export default function PoetsDropdown() {
                       <Link
                         key={poet.id}
                         href={`/poet/${poet.id}`}
-                        className="block px-2 py-2.5 sm:py-1.5 text-sm text-stone-900 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600 rounded transition-colors touch-manipulation"
+                        className="block px-2 py-2.5 sm:py-1.5 text-sm text-foreground hover:bg-muted dark:hover:bg-muted rounded transition-colors touch-manipulation"
                         onClick={() => setIsOpen(false)}
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium">{poet.name}</span>
                           {(poet.birthYear || poet.deathYear) && (
-                            <span className="text-xs text-stone-500 dark:text-stone-400">
+                            <span className="text-xs text-muted-foreground">
                               {poet.birthYear && poet.deathYear
                                 ? `${toPersianDigits(poet.birthYear)} - ${toPersianDigits(poet.deathYear)}`
                                 : poet.birthYear ? toPersianDigits(poet.birthYear) : poet.deathYear ? toPersianDigits(poet.deathYear) : ''
@@ -286,7 +286,7 @@ export default function PoetsDropdown() {
                 {filteredPoets.length > 0 ? (
                   <div className="py-1">
                     {!searchQuery && (
-                      <div className="px-3 py-2 text-xs font-semibold text-stone-600 dark:text-stone-400 border-b border-stone-100 dark:border-stone-700">
+                      <div className="px-3 py-2 text-xs font-semibold text-muted-foreground border-b border-border dark:border-border">
                         همه شاعران ({toPersianDigits(filteredPoets.length)})
                       </div>
                     )}
@@ -294,13 +294,13 @@ export default function PoetsDropdown() {
                       <Link
                         key={poet.id}
                         href={`/poet/${poet.id}`}
-                        className="block px-3 py-3 sm:py-2 text-sm text-stone-900 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors touch-manipulation"
+                        className="block px-3 py-3 sm:py-2 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors touch-manipulation"
                         onClick={() => setIsOpen(false)}
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium">{poet.name}</span>
                           {(poet.birthYear || poet.deathYear) && (
-                            <span className="text-xs text-stone-500 dark:text-stone-400">
+                            <span className="text-xs text-muted-foreground">
                               {poet.birthYear && poet.deathYear
                                 ? `${toPersianDigits(poet.birthYear)} - ${toPersianDigits(poet.deathYear)}`
                                 : poet.birthYear ? toPersianDigits(poet.birthYear) : poet.deathYear ? toPersianDigits(poet.deathYear) : ''
@@ -311,18 +311,18 @@ export default function PoetsDropdown() {
                       </Link>
                     ))}
                     {!searchQuery && filteredPoets.length > 20 && (
-                      <div className="px-3 py-2 text-xs text-stone-500 dark:text-stone-400 text-center border-t border-stone-100 dark:border-stone-700">
+                      <div className="px-3 py-2 text-xs text-muted-foreground text-center border-t border-border dark:border-border">
                         و {toPersianDigits(filteredPoets.length - 20)} شاعر دیگر... برای دیدن همه جستجو کنید
                       </div>
                     )}
                     {searchQuery && filteredPoets.length > 50 && (
-                      <div className="px-3 py-2 text-xs text-stone-500 dark:text-stone-400 text-center border-t border-stone-100 dark:border-stone-700">
+                      <div className="px-3 py-2 text-xs text-muted-foreground text-center border-t border-border dark:border-border">
                         {toPersianDigits(filteredPoets.length - 50)} نتیجه دیگر... جستجوی دقیق‌تری انجام دهید
                       </div>
                     )}
                   </div>
                 ) : searchQuery ? (
-                  <div className="px-4 py-3 text-sm text-stone-600 dark:text-stone-300 text-center">
+                  <div className="px-4 py-3 text-sm text-muted-foreground dark:text-secondary-foreground text-center">
                     هیچ شاعری با &quot;{searchQuery}&quot; یافت نشد
                   </div>
                 ) : null}

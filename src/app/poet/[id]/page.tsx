@@ -131,11 +131,11 @@ export default async function PoetPage({ params }: PoetPageProps) {
   if (error || !poet) {
     return (
       <div className="text-center py-8">
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">خطا در بارگذاری</h1>
-        <p className="text-stone-600 dark:text-stone-300 mb-4">{error}</p>
+        <h1 className="text-2xl font-bold text-foreground mb-4">خطا در بارگذاری</h1>
+        <p className="text-muted-foreground dark:text-secondary-foreground mb-4">{error}</p>
         <Link
           href="/"
-          className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
+          className="inline-block px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-primary transition-colors"
         >
           بازگشت به صفحه اصلی
         </Link>
@@ -188,14 +188,14 @@ export default async function PoetPage({ params }: PoetPageProps) {
             <div className="flex-2">
               <div className={`flex items-center gap-6 ${isFamous ? "p-6" : "p-6"}`}>
                 <div className="flex flex-col gap-1 align-center md:align-start text-center md:text-right">
-                  <h1 className={`text-3xl font-bold ${isFamous ? "text-amber-900 dark:text-yellow-100" : "text-stone-900 dark:text-stone-300"}`}>
+                  <h1 className={`text-3xl font-bold ${isFamous ? "text-foreground" : "text-foreground"}`}>
                     {poet.name}
                   </h1>
 
                   {(poet.birthYear || poet.deathYear) && (
                     <p
                       className={`text-xl md:text-2xl font-normal ${
-                        isFamous ? "text-amber-700 dark:text-yellow-700" : "text-stone-600 dark:text-stone-300"
+                        isFamous ? "text-secondary-foreground dark:text-warning" : "text-muted-foreground dark:text-secondary-foreground"
                       }`}
                     >
                       {poet.birthYear && poet.deathYear ? `${toPersianDigits(poet.birthYear)} - ${toPersianDigits(poet.deathYear)}` : poet.birthYear ? toPersianDigits(poet.birthYear) : poet.deathYear ? toPersianDigits(poet.deathYear) : ''}
@@ -215,7 +215,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
 
           <h2
             className={`text-lg font-semibold mb-4 text-right ${
-              isFamous ? "text-amber-900 dark:text-amber-100" : "text-stone-900 dark:text-stone-300"
+              isFamous ? "text-foreground" : "text-foreground"
             }`}
           >
             مجموعه‌ها

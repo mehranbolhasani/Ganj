@@ -173,7 +173,7 @@ export default function HistoryPage() {
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="text-stone-600 dark:text-stone-300">در حال بارگذاری تاریخچه...</div>
+        <div className="text-muted-foreground dark:text-secondary-foreground">در حال بارگذاری تاریخچه...</div>
       </div>
     );
   }
@@ -183,12 +183,12 @@ export default function HistoryPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <HugeiconsIcon icon={HistoryIcon} size={32} className="text-stone-600 dark:text-stone-400" />
-            <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">
+            <HugeiconsIcon icon={HistoryIcon} size={32} className="text-muted-foreground" />
+            <h1 className="text-3xl font-bold text-foreground">
               تاریخچه بازدیدها
             </h1>
           </div>
-          <p className="text-stone-600 dark:text-stone-300">
+          <p className="text-muted-foreground dark:text-secondary-foreground">
             {toPersianDigits(items.length)} مورد در تاریخچه شما
           </p>
         </div>
@@ -196,40 +196,40 @@ export default function HistoryPage() {
         {/* Statistics */}
         {items.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700">
+            <div className="bg-card/50 rounded-xl p-4 border border-white dark:border-border">
               <div className="flex items-center gap-3">
                 <HugeiconsIcon icon={ChartBarLineIcon} size={24} className="text-blue-600 dark:text-blue-400" />
                 <div>
-                  <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {toPersianDigits(statistics.totalItems)}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400">کل بازدیدها</p>
+                  <p className="text-sm text-muted-foreground">کل بازدیدها</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700">
+            <div className="bg-card/50 rounded-xl p-4 border border-white dark:border-border">
               <div className="flex items-center gap-3">
                 <HugeiconsIcon icon={UserIcon} size={24} className="text-green-600 dark:text-green-400" />
                 <div>
-                  <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {statistics.mostReadPoet}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400">
+                  <p className="text-sm text-muted-foreground">
                     محبوب‌ترین شاعر ({toPersianDigits(statistics.mostReadPoetCount)} بار)
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/50 dark:bg-stone-800/50 rounded-xl p-4 border border-white dark:border-stone-700">
+            <div className="bg-card/50 rounded-xl p-4 border border-white dark:border-border">
               <div className="flex items-center gap-3">
                 <HugeiconsIcon icon={BookOpen01Icon} size={24} className="text-purple-600 dark:text-purple-400" />
                 <div>
-                  <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {statistics.mostReadCategory}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400">
+                  <p className="text-sm text-muted-foreground">
                     محبوب‌ترین مجموعه ({toPersianDigits(statistics.mostReadCategoryCount)} بار)
                   </p>
                 </div>
@@ -243,13 +243,13 @@ export default function HistoryPage() {
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400" />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="جستجو در تاریخچه..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pr-10 pl-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent"
+                className="w-full pr-10 pl-3 py-2 border border-input rounded-lg bg-card dark:bg-secondary text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               />
             </div>
 
@@ -259,8 +259,8 @@ export default function HistoryPage() {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                   showFilters 
-                    ? 'bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100' 
-                    : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+                    ? 'bg-muted text-foreground' 
+                    : 'text-muted-foreground hover:bg-muted dark:hover:bg-primary'
                 }`}
               >
                 <HugeiconsIcon icon={FilterIcon} size={16} />
@@ -269,7 +269,7 @@ export default function HistoryPage() {
 
               <button
                 onClick={exportHistory}
-                className="flex items-center gap-2 px-3 py-2 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-muted-foreground hover:bg-muted dark:hover:bg-primary rounded-lg transition-colors"
               >
                 <HugeiconsIcon icon={Download04Icon} size={16} />
                 صادر کردن
@@ -278,7 +278,7 @@ export default function HistoryPage() {
               {items.length > 0 && (
                 <button
                   onClick={clearHistory}
-                  className="flex items-center gap-2 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-lg transition-colors"
                 >
                   <HugeiconsIcon icon={Delete02Icon} size={16} />
                   پاک کردن همه
@@ -289,15 +289,15 @@ export default function HistoryPage() {
 
           {/* Filters Panel */}
           {showFilters && (
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-lg p-4 space-y-4">
+            <div className="bg-background dark:bg-primary/50 rounded-lg p-4 space-y-4">
               <div className="flex flex-col sm:flex-row gap-4">
                 {/* Group By */}
                 <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">گروه‌بندی:</label>
+                  <label className="text-sm font-medium text-secondary-foreground">گروه‌بندی:</label>
                   <select
                     value={groupBy}
                     onChange={(e) => setGroupBy(e.target.value as GroupBy)}
-                    className="px-3 py-1 border border-stone-300 dark:border-stone-600 rounded bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 text-sm"
+                    className="px-3 py-1 border border-input rounded bg-card dark:bg-secondary text-foreground text-sm"
                   >
                     <option value="none">بدون گروه‌بندی</option>
                     <option value="date">تاریخ</option>
@@ -307,11 +307,11 @@ export default function HistoryPage() {
 
                 {/* Date Filter */}
                 <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">زمان:</label>
+                  <label className="text-sm font-medium text-secondary-foreground">زمان:</label>
                   <select
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value as DateFilter)}
-                    className="px-3 py-1 border border-stone-300 dark:border-stone-600 rounded bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 text-sm"
+                    className="px-3 py-1 border border-input rounded bg-card dark:bg-secondary text-foreground text-sm"
                   >
                     <option value="all">همه</option>
                     <option value="today">امروز</option>
@@ -328,11 +328,11 @@ export default function HistoryPage() {
         {/* History List */}
         {filteredItems.length === 0 ? (
           <div className="text-center py-12">
-            <HugeiconsIcon icon={HistoryIcon} size={64} className="text-stone-300 dark:text-stone-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
+            <HugeiconsIcon icon={HistoryIcon} size={64} className="text-secondary-foreground dark:text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-secondary-foreground mb-2">
               {searchQuery ? 'هیچ موردی یافت نشد' : 'تاریخچه‌ای وجود ندارد'}
             </h3>
-            <p className="text-stone-500 dark:text-stone-400">
+            <p className="text-muted-foreground">
               {searchQuery 
                 ? 'سعی کنید کلمات کلیدی دیگری جستجو کنید'
                 : 'شعرهای مورد علاقه خود را بازدید کنید تا در اینجا نمایش داده شوند'
@@ -341,7 +341,7 @@ export default function HistoryPage() {
             {!searchQuery && (
               <Link
                 href="/"
-                className="inline-block mt-4 px-6 py-3 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+                className="inline-block mt-4 px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors"
               >
                 شروع جستجو
               </Link>
@@ -350,33 +350,33 @@ export default function HistoryPage() {
         ) : (
           <div className="space-y-4">
             {Object.entries(groupedItems).map(([groupName, groupItems]) => (
-              <div key={groupName} className="bg-white/50 dark:bg-stone-800/50 rounded-xl border border-white dark:border-stone-700">
+              <div key={groupName} className="bg-card/50 rounded-xl border border-white dark:border-border">
                 {groupBy !== 'none' && (
-                  <div className="px-4 py-3 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700 rounded-t-xl">
-                    <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 text-right">
+                  <div className="px-4 py-3 bg-background dark:bg-primary/50 border-b border-border rounded-t-xl">
+                    <h3 className="text-lg font-semibold text-foreground text-right">
                       {groupName} ({toPersianDigits(groupItems.length)})
                     </h3>
                   </div>
                 )}
                 
-                <div className="divide-y divide-stone-200 dark:divide-stone-700">
+                <div className="divide-y divide-border">
                   {groupItems.map((item) => (
                     <Link
                       key={item.id}
                       href={item.url}
-                      className="block p-4 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors group"
+                      className="block p-4 hover:bg-muted dark:hover:bg-secondary transition-colors group"
                     >
                       <div className="flex items-start gap-3">
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-stone-900 dark:text-stone-100 text-right mb-1 group-hover:text-stone-700 dark:group-hover:text-stone-200 transition-colors">
+                          <h4 className="font-medium text-foreground text-right mb-1 group-hover:text-secondary-foreground dark:group-hover:text-secondary-foreground transition-colors">
                             {item.title}
                           </h4>
-                          <p className="text-sm text-stone-600 dark:text-stone-400 text-right">
+                          <p className="text-sm text-muted-foreground text-right">
                             {item.poetName}
                             {item.categoryTitle && ` • ${item.categoryTitle}`}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <HugeiconsIcon icon={Clock01Icon} size={14} />
                           <span>{formatTimeAgo(item.timestamp)}</span>
                         </div>

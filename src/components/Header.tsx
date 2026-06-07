@@ -95,7 +95,7 @@ const Header = () => {
         {/* Mobile Search Button */}
         <button
           onClick={() => setIsSearchOpen(true)}
-          className="p-3 rounded-lg text-foreground hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
+          className="p-3 rounded-lg text-foreground hover:bg-warning/20 dark:hover:bg-destructive/20 active:bg-accent dark:active:bg-destructive/30 transition-colors touch-manipulation"
         >
           <HugeiconsIcon icon={Search01Icon} size={24} aria-hidden="true" />
           <span className="sr-only">جستجو</span>
@@ -104,7 +104,7 @@ const Header = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="p-3 rounded-lg text-stone-900 dark:text-stone-300 hover:bg-yellow-600/20 dark:hover:bg-red-900 active:bg-yellow-200 dark:active:bg-red-800 transition-colors touch-manipulation"
+          className="p-3 rounded-lg text-foreground hover:bg-warning/20 dark:hover:bg-destructive/20 active:bg-accent dark:active:bg-destructive/30 transition-colors touch-manipulation"
         >
           <HugeiconsIcon icon={Menu01Icon} size={24} aria-hidden="true" />
           <span className="sr-only">منوی موبایل</span>
@@ -123,7 +123,7 @@ const Header = () => {
             <HugeiconsIcon icon={Search01Icon} size={16} aria-hidden="true" />
             <span className="sr-only">جستجو</span>
             <span className="hidden sm:inline">جستجو</span>
-            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-mono bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded" aria-hidden="true">
+            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-mono bg-muted dark:bg-secondary text-muted-foreground rounded" aria-hidden="true">
               ⌘K
             </kbd>
           </button>
@@ -137,7 +137,7 @@ const Header = () => {
             <HugeiconsIcon icon={HistoryIcon} size={16} aria-hidden="true" />
             <span>تاریخچه</span>
             {items.length > 0 && (
-              <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer" aria-label={`${toPersianDigits(items.length)} مورد`}>
+              <span className="relative bg-muted text-muted-foreground text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer" aria-label={`${toPersianDigits(items.length)} مورد`}>
                 {items.length > 9 ? '9+' : items.length}
               </span>
             )}
@@ -152,7 +152,7 @@ const Header = () => {
             <HugeiconsIcon icon={HeartIcon} size={16} aria-hidden="true" />
             <span>علاقه‌مندی‌ها</span>
             {bookmarks.length > 0 && (
-              <span className="relative bg-red-200 text-red-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
+              <span className="relative bg-destructive/20 text-destructive text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
                 {bookmarks.length > 9 ? '9+' : bookmarks.length}
               </span>
             )}
@@ -164,7 +164,7 @@ const Header = () => {
 
       {/* Right side - Logo */}
       <div className="flex items-center gap-1 flex-row-reverse h-12">
-        <Link href="/" className="flex items-center gap-1 flex-row-reverse text-foreground dark:text-stone-300">
+        <Link href="/" className="flex items-center gap-1 flex-row-reverse text-foreground dark:text-secondary-foreground">
           <span className="inline-block text-md font-bold">دفتر گنج</span>
           <div className="w-8 h-8 grid items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" className="w-full h-full"><g clipPath="url(#a)"><path fill="#7b3306" d="M0 12.8c0-4.48 0-6.72.872-8.432A8 8 0 0 1 4.368.872C6.08 0 8.32 0 12.8 0h6.4c4.48 0 6.72 0 8.432.872a8 8 0 0 1 3.496 3.496C32 6.08 32 8.32 32 12.8v6.4c0 4.48 0 6.72-.872 8.432a8 8 0 0 1-3.496 3.496C25.92 32 23.68 32 19.2 32h-6.4c-4.48 0-6.72 0-8.432-.872a8 8 0 0 1-3.496-3.496C0 25.92 0 23.68 0 19.2z"/><path stroke="#fffbeb" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.705" d="M24.59 14.273H9.764a2.84 2.84 0 0 0-2.838 2.996m0 0a2.84 2.84 0 0 0 2.838 2.688h10.799c2.143 0 3.215 0 3.88.666.666.666.666 1.737.666 3.88v7.958c0 2.143 0 3.215-.666 3.88-.665.667-1.737.667-3.88.667h-6.817c-3.215 0-4.822 0-5.821-.999s-.999-2.606-.999-5.821zm0 0v-.152m2.838-.002h10.799c1.071 0 1.607 0 1.94.333s.333.869.333 1.94M19.994 26.209h-7.957m4.547 4.547h-4.547"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 12.8c0-4.48 0-6.72.872-8.432A8 8 0 0 1 4.368.872C6.08 0 8.32 0 12.8 0h6.4c4.48 0 6.72 0 8.432.872a8 8 0 0 1 3.496 3.496C32 6.08 32 8.32 32 12.8v6.4c0 4.48 0 6.72-.872 8.432a8 8 0 0 1-3.496 3.496C25.92 32 23.68 32 19.2 32h-6.4c-4.48 0-6.72 0-8.432-.872a8 8 0 0 1-3.496-3.496C0 25.92 0 23.68 0 19.2z"/></clipPath></defs></svg>
@@ -192,7 +192,7 @@ const Header = () => {
         >
           {/* Mobile Menu Slide-in */}
           <div
-            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white/95 dark:bg-stone-800/95 backdrop-blur-sm shadow-xl transform transition-transform duration-300 ease-in-out mobile-optimize"
+            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-card/95 backdrop-blur-sm shadow-xl transform transition-transform duration-300 ease-in-out mobile-optimize"
             style={{ transition: 'transform 0.3s ease-in-out' }}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
@@ -200,11 +200,11 @@ const Header = () => {
             aria-labelledby="mobile-menu-title"
           >
             {/* Mobile Menu Header */}
-            <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
-              <h2 id="mobile-menu-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">منو</h2>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 id="mobile-menu-title" className="text-xl font-bold text-foreground">منو</h2>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-3 rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
+                className="p-3 rounded-lg text-muted-foreground hover:bg-muted dark:hover:bg-secondary active:bg-muted dark:active:bg-muted transition-colors touch-manipulation"
                 aria-label="بستن منو"
               >
                 <HugeiconsIcon icon={Cancel01Icon} size={24} aria-hidden="true" />
@@ -212,16 +212,16 @@ const Header = () => {
             </div>
 
                   {/* Mobile Search */}
-                  <div className="p-4 border-b border-stone-200 dark:border-stone-700">
+                  <div className="p-4 border-b border-border">
                     <div className="relative">
-                      <HugeiconsIcon icon={Search01Icon} size={20} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400" />
+                      <HugeiconsIcon icon={Search01Icon} size={20} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                       <input
                         type="text"
                         placeholder="جستجو در شاعران..."
                         value={mobileSearchQuery}
                         onChange={(e) => setMobileSearchQuery(e.target.value)}
                         aria-label="جستجو در شاعران"
-                        className="w-full pr-12 pl-4 py-3 text-base border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent touch-manipulation"
+                        className="w-full pr-12 pl-4 py-3 text-base border border-input rounded-xl bg-card dark:bg-secondary text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent touch-manipulation"
                         autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
@@ -239,14 +239,14 @@ const Header = () => {
                                 key={poet.id}
                                 href={`/poet/${poet.id}`}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="block px-4 py-3 text-base text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 rounded-lg transition-colors touch-manipulation"
+                                className="block px-4 py-3 text-base text-secondary-foreground hover:bg-muted dark:hover:bg-secondary active:bg-muted dark:active:bg-muted rounded-lg transition-colors touch-manipulation"
                               >
                                 {poet.name}
                               </Link>
                             ))}
                           </div>
                         ) : (
-                          <div className="px-4 py-3 text-base text-stone-500 dark:text-stone-400 text-center">
+                          <div className="px-4 py-3 text-base text-muted-foreground text-center">
                             هیچ شاعری با &quot;{mobileSearchQuery}&quot; یافت نشد
                           </div>
                         )}
@@ -265,14 +265,14 @@ const Header = () => {
                     setIsMobileMenuOpen(false);
                   }}
                   aria-label="تاریخچه بازدیدها"
-                  className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
+                  className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-secondary-foreground hover:bg-muted dark:hover:bg-secondary active:bg-muted dark:active:bg-muted transition-colors touch-manipulation"
                 >
                   <div className="flex items-center gap-3">
                     <HugeiconsIcon icon={HistoryIcon} size={24} />
                     <span className="text-lg font-medium">تاریخچه</span>
                   </div>
                   {items.length > 0 && (
-                    <span className="relative bg-stone-200 text-stone-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
+                    <span className="relative bg-muted text-muted-foreground text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
                 {items.length > 9 ? '۹+' : toPersianDigits(items.length)}
                     </span>
                   )}
@@ -282,22 +282,22 @@ const Header = () => {
                 <Link
                   href="/bookmarks"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 active:bg-stone-200 dark:active:bg-stone-600 transition-colors touch-manipulation"
+                  className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-secondary-foreground hover:bg-muted dark:hover:bg-secondary active:bg-muted dark:active:bg-muted transition-colors touch-manipulation"
                 >
                   <div className="flex items-center gap-3">
                     <HugeiconsIcon icon={HeartIcon} size={24} />
                     <span className="text-lg font-medium">علاقه‌مندی‌ها</span>
                   </div>
                   {bookmarks.length > 0 && (
-                    <span className="relative bg-red-200 text-red-500 text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
+                    <span className="relative bg-destructive/20 text-destructive text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold cursor-pointer">
                 {bookmarks.length > 9 ? '۹+' : toPersianDigits(bookmarks.length)}
                     </span>
                   )}
                 </Link>
 
                 {/* Poets Section */}
-                <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
-                  <h3 className="px-4 py-2 text-sm font-medium text-stone-500 dark:text-stone-400 mb-2">
+                <div className="pt-4 border-t border-border">
+                  <h3 className="px-4 py-2 text-sm font-medium text-muted-foreground mb-2">
                     محبوب‌ترین شاعرها
                   </h3>
 
@@ -321,7 +321,7 @@ const Header = () => {
                             key={poet.id}
                             href={`/poet/${poet.id}`}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="block px-0 py-2 text-base font-medium text-stone-600 dark:text-stone-400 transition-colors"
+                            className="block px-0 py-2 text-base font-medium text-muted-foreground transition-colors"
                           >
                             {poet.name}
                           </Link>

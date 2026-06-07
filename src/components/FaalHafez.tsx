@@ -93,12 +93,12 @@ export default function FaalHafez() {
             <div className="relative mb-8">
               <div className="absolute inset-0 blur-2xl opacity-40 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full animate-pulse" />
               <div className="relative">
-                <HugeiconsIcon icon={Loading03Icon} size={64} className="sm:w-20 sm:h-20 text-amber-600 dark:text-amber-400 animate-spin" />
+                <HugeiconsIcon icon={Loading03Icon} size={64} className="sm:w-20 sm:h-20 text-warning animate-spin" />
               </div>
             </div>
 
             {/* Loading text */}
-            <p className="text-xl text-amber-700 dark:text-amber-300 mb-4 text-center animate-pulse">
+            <p className="text-xl text-secondary-foreground mb-4 text-center animate-pulse">
               در حال گشودن دیوان...
             </p>
           </>
@@ -116,13 +116,13 @@ export default function FaalHafez() {
   if (state === 'error') {
     return (
       <div className="flex flex-col items-center justify-center px-4">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-8 max-w-md text-center">
-          <p className="text-red-600 dark:text-red-400 text-lg mb-6">
+        <div className="bg-destructive/10 border border-destructive rounded-2xl p-8 max-w-md text-center">
+          <p className="text-destructive text-lg mb-6">
             {error || 'خطایی رخ داده است'}
           </p>
           <button
             onClick={handleTryAgain}
-            className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors"
+            className="px-6 py-3 bg-destructive/100 hover:bg-red-600 text-primary-foreground rounded-xl font-medium transition-colors"
           >
             تلاش مجدد
           </button>
@@ -143,8 +143,8 @@ export default function FaalHafez() {
               : 'opacity-0'
           }`} 
         >
-          <span className="block text-amber-600 dark:text-amber-400 font-medium mb-4">فال شما</span>
-          <h2 className="text-3xl md:text-5xl text-amber-100 dark:text-amber-100">
+          <span className="block text-warning font-medium mb-4">فال شما</span>
+          <h2 className="text-3xl md:text-5xl text-background">
             {poem.title}
           </h2>
         </div>
@@ -183,14 +183,14 @@ export default function FaalHafez() {
                 }}
               >
                 <p
-                  className="text-amber-50 dark:text-amber-100 text-lg leading-loose text-right md:text-left w-full md:w-1/2"
+                  className="text-background text-lg leading-loose text-right md:text-left w-full md:w-1/2"
                   style={{ lineHeight: '2.4' }}
                 >
                   {poem.verses[firstVerseIndex]}
                 </p>
                 {poem.verses[secondVerseIndex] && (
                   <p
-                    className="text-amber-50 dark:text-amber-100 text-lg leading-loose text-left md:text-right w-full md:w-1/2"
+                    className="text-background text-lg leading-loose text-left md:text-right w-full md:w-1/2"
                     style={{ lineHeight: '2.4' }}
                   >
                     {poem.verses[secondVerseIndex]}

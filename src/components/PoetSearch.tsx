@@ -186,7 +186,7 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
     const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
     return parts.map((part) =>
       part.toLowerCase() === highlight.toLowerCase()
-        ? `<mark class="bg-yellow-200 dark:bg-yellow-600/40 text-stone-900 dark:text-stone-100 px-0.5 rounded">${part}</mark>`
+        ? `<mark class="bg-accent text-foreground px-0.5 rounded">${part}</mark>`
         : part
     ).join('');
   };
@@ -277,12 +277,12 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
             <div ref={resultsRef} className="max-h-[400px] overflow-y-auto">
               {isLoading ? (
                 <div className="p-8 text-center">
-                  <div className="animate-spin w-6 h-6 border-2 border-stone-300 dark:border-stone-600 border-t-stone-600 dark:border-t-stone-300 rounded-full mx-auto mb-3"></div>
-                  <p className="text-stone-600 dark:text-stone-400">در حال جستجو...</p>
+                  <div className="animate-spin w-6 h-6 border-2 border-input border-t-muted-foreground rounded-full mx-auto mb-3"></div>
+                  <p className="text-muted-foreground">در حال جستجو...</p>
                 </div>
               ) : results.length === 0 ? (
                 <div className="p-8 text-center">
-                  <p className="text-stone-600 dark:text-stone-400">
+                  <p className="text-muted-foreground">
                     هیچ شعری یافت نشد
                   </p>
                 </div>
@@ -316,13 +316,13 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
                                 dangerouslySetInnerHTML={{ __html: highlightText(poem.title, query) }}
                               />
                               {isBookmarked && (
-                                <HugeiconsIcon icon={HeartIcon} size={16} className="text-red-500 fill-current shrink-0" />
+                                <HugeiconsIcon icon={HeartIcon} size={16} className="text-destructive fill-current shrink-0" />
                               )}
                             </div>
 
                             {/* Category */}
                             {poem.categoryTitle && (
-                              <p className="text-[13px] text-stone-600 dark:text-stone-400 text-right mb-2">
+                              <p className="text-[13px] text-muted-foreground text-right mb-2">
                                 {poem.categoryTitle}
                               </p>
                             )}
@@ -330,7 +330,7 @@ const PoetSearch = ({ poetId, poetName }: PoetSearchProps) => {
                             {/* Verse preview */}
                             {displayVerse && (
                               <p
-                                className="text-[13px] text-stone-600 dark:text-stone-300 text-right leading-relaxed"
+                                className="text-[13px] text-muted-foreground dark:text-secondary-foreground text-right leading-relaxed"
                                 dangerouslySetInnerHTML={{ __html: highlightText(displayVerse, query) }}
                               />
                             )}

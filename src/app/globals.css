@@ -178,6 +178,11 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -201,53 +206,63 @@
 
 /* Default to light mode */
 :root {
-  --background: var(--color-stone-100);
-  --foreground: var(--color-amber-950);
+  --background: var(--color-stone-50);
+  --foreground: var(--color-stone-900);
   --radius: 0.625rem;
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: var(--color-amber-900);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --card: var(--color-white);
+  --card-foreground: var(--color-stone-900);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-stone-900);
+  --primary: var(--color-stone-800);
+  --primary-foreground: var(--color-white);
+  --secondary: var(--color-stone-100);
+  --secondary-foreground: var(--color-stone-700);
+  --muted: var(--color-stone-100);
+  --muted-foreground: var(--color-stone-600);
+  --accent: var(--color-stone-100);
+  --accent-foreground: var(--color-stone-700);
+  --destructive: var(--color-red-600);
+  --destructive-foreground: var(--color-white);
+  --warning: var(--color-yellow-600);
+  --warning-foreground: var(--color-white);
+  --info: var(--color-blue-600);
+  --info-foreground: var(--color-white);
+  --border: var(--color-stone-200);
+  --input: var(--color-stone-300);
+  --ring: var(--color-stone-400);
 }
 
 /* Light mode when .light class is present */
 .light {
-  --background: var(--color-stone-100);
-  --foreground: var(--color-amber-950);
+  --background: var(--color-stone-50);
+  --foreground: var(--color-stone-900);
 }
 
 /* Dark mode when .dark class is present */
 .dark {
   --background: var(--color-stone-900);
-  --foreground: var(--color-stone-300);
-  --card: lch(from var(--color-amber-950) 27% c h / 0.5);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --foreground: var(--color-stone-200);
+  --card: var(--color-stone-800);
+  --card-foreground: var(--color-stone-100);
+  --popover: var(--color-stone-800);
+  --popover-foreground: var(--color-stone-100);
+  --primary: var(--color-stone-200);
+  --primary-foreground: var(--color-stone-900);
+  --secondary: var(--color-stone-800);
+  --secondary-foreground: var(--color-stone-200);
+  --muted: var(--color-stone-800);
+  --muted-foreground: var(--color-stone-400);
+  --accent: var(--color-amber-600);
+  --accent-foreground: var(--color-stone-200);
+  --destructive: var(--color-red-500);
+  --destructive-foreground: var(--color-white);
+  --warning: var(--color-yellow-500);
+  --warning-foreground: var(--color-stone-900);
+  --info: var(--color-blue-500);
+  --info-foreground: var(--color-white);
+  --border: var(--color-stone-700);
+  --input: var(--color-stone-600);
+  --ring: var(--color-stone-500);
 }
 
 body {

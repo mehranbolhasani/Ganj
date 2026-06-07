@@ -190,7 +190,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
       <div className="space-y-6">
         <div className="flex gap-2">
           {['all', 'poets', 'categories', 'poems'].map((tab) => (
-            <div key={tab} className="h-10 w-20 bg-stone-200 dark:bg-stone-700 rounded animate-pulse"></div>
+            <div key={tab} className="h-10 w-20 bg-muted rounded animate-pulse"></div>
           ))}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -205,16 +205,16 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
   if (error) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <HugeiconsIcon icon={Search01Icon} size={32} className="text-red-600 dark:text-red-400" />
+        <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+          <HugeiconsIcon icon={Search01Icon} size={32} className="text-destructive" />
         </div>
-        <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
+        <h3 className="text-xl font-semibold text-secondary-foreground mb-2">
           خطا در جستجو
         </h3>
-        <p className="text-stone-500 dark:text-stone-400 mb-4">{error}</p>
+        <p className="text-muted-foreground mb-4">{error}</p>
         <button
           onClick={search}
-          className="px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+          className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors"
         >
           تلاش مجدد
         </button>
@@ -229,7 +229,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
     const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
     return parts.map((part) => 
       part.toLowerCase() === highlight.toLowerCase() 
-        ? `<mark class="bg-yellow-200 dark:bg-yellow-600/40 text-stone-900 dark:text-stone-100 px-0.5 rounded">${part}</mark>`
+        ? `<mark class="bg-accent text-foreground px-0.5 rounded">${part}</mark>`
         : part
     ).join('');
   };
@@ -240,7 +240,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
       {/* Hide tabs if poet filter is active (only poems are shown) */}
       {!poetId && (
         <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex gap-2 border-b border-stone-200 dark:border-stone-700 min-w-max sm:min-w-0">
+          <div className="flex gap-2 border-b border-border min-w-max sm:min-w-0">
             {[
               { key: 'all', label: 'همه', count: totalResults, icon: Search01Icon },
               { key: 'poets', label: 'شاعران', count: totalCounts.poets, icon: Group01Icon },
@@ -262,13 +262,13 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
                 onClick={handleTabClick}
                 className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap shrink-0 touch-manipulation ${
                   activeTab === key
-                    ? 'border-stone-800 dark:border-stone-200 text-stone-900 dark:text-stone-100'
-                    : 'border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300'
+                    ? 'border-border dark:border-border text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-secondary-foreground dark:hover:text-secondary-foreground'
                 }`}
               >
                 <HugeiconsIcon icon={Icon} size={16} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>{label}</span>
-                <span className="bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
+                <span className="bg-muted dark:bg-secondary text-muted-foreground text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
                   {toPersianDigits(count)}
                 </span>
               </button>
@@ -280,8 +280,8 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
       
       {/* Show poet filter indicator */}
       {poetId && results.poems.length > 0 && (
-        <div className="mb-4 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-800 rounded-lg">
-          <p className="text-sm text-stone-700 dark:text-stone-300 text-right">
+        <div className="mb-4 px-4 py-2 bg-warning/10 border border-warning rounded-lg">
+          <p className="text-sm text-secondary-foreground text-right">
             نمایش نتایج فقط برای اشعار <strong>{results.poems[0].poetName}</strong>
           </p>
         </div>
@@ -290,13 +290,13 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
       {/* Results or Empty State */}
       {totalResults === 0 ? (
         <div className="text-center py-12">
-          <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <HugeiconsIcon icon={Search01Icon} size={32} className="text-stone-400" />
+          <div className="w-16 h-16 bg-muted dark:bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+            <HugeiconsIcon icon={Search01Icon} size={32} className="text-muted-foreground" />
           </div>
-          <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
+          <h3 className="text-xl font-semibold text-secondary-foreground mb-2">
             هیچ نتیجه‌ای یافت نشد
           </h3>
-          <p className="text-stone-500 dark:text-stone-400">
+          <p className="text-muted-foreground">
             برای &quot;{query}&quot; در این دسته هیچ نتیجه‌ای پیدا نشد. سعی کنید دسته دیگری را انتخاب کنید یا کلمات کلیدی دیگری جستجو کنید.
           </p>
         </div>
@@ -319,7 +319,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
           {page > 1 && (
             <Link
               href={generatePageUrl(page - 1)}
-              className="px-3 py-2 bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+              className="px-3 py-2 bg-muted text-secondary-foreground rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors"
             >
               قبلی
             </Link>
@@ -344,8 +344,8 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
                   href={generatePageUrl(pageNum)}
                   className={`px-3 py-2 rounded-lg transition-colors ${
                     page === pageNum
-                      ? 'bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900'
-                      : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                      ? 'bg-primary text-primary-foreground dark:text-foreground'
+                      : 'bg-muted text-secondary-foreground hover:bg-muted dark:hover:bg-secondary'
                   }`}
                 >
                   {toPersianDigits(pageNum)}
@@ -357,7 +357,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
           {page < totalPages && (
             <Link
               href={generatePageUrl(page + 1)}
-              className="px-3 py-2 bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+              className="px-3 py-2 bg-muted text-secondary-foreground rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors"
             >
               بعدی
             </Link>
@@ -366,7 +366,7 @@ const SearchResults = ({ query, type, page, poetId }: SearchResultsProps) => {
       )}
 
           {/* Page Info */}
-          <div className="text-center text-sm text-stone-500 dark:text-stone-400">
+          <div className="text-center text-sm text-muted-foreground">
             صفحه {toPersianDigits(page)} از {toPersianDigits(totalPages)} • {toPersianDigits(totalResults)} نتیجه
           </div>
         </>
@@ -379,20 +379,20 @@ const PoetResultCard = ({ poet, query, highlightText }: { poet: Poet; query: str
   return (
     <Link
       href={`/poet/${poet.id}`}
-      className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 transition-all duration-200"
+      className="block p-4 sm:p-6 bg-card/50 border border-white rounded-2xl shadow-lg/5 dark:bg-primary/50 dark:border-border hover:border-input hover:bg-muted dark:hover:bg-secondary/30 dark:hover:border-input transition-all duration-200"
     >
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-full flex items-center justify-center shrink-0">
-          <HugeiconsIcon icon={Group01Icon} size={24} className="text-stone-600 dark:text-stone-400" />
+        <div className="w-12 h-12 bg-muted dark:bg-muted rounded-full flex items-center justify-center shrink-0">
+          <HugeiconsIcon icon={Group01Icon} size={24} className="text-muted-foreground" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 
-            className="text-lg font-semibold text-stone-900 dark:text-stone-100 text-right mb-1"
+            className="text-lg font-semibold text-foreground text-right mb-1"
             dangerouslySetInnerHTML={{ __html: highlightText(poet.name, query) }}
           />
           {poet.description && (
             <p 
-              className="text-sm text-stone-600 dark:text-stone-400 text-right line-clamp-2"
+              className="text-sm text-muted-foreground text-right line-clamp-2"
               dangerouslySetInnerHTML={{ __html: highlightText(poet.description, query) }}
             />
           )}
@@ -406,20 +406,20 @@ const CategoryResultCard = ({ category, query, highlightText }: { category: Cate
   return (
     <Link
       href={`/poet/${category.poetId}/category/${category.id}`}
-      className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 transition-all duration-200"
+      className="block p-4 sm:p-6 bg-card/50 border border-white rounded-2xl shadow-lg/5 dark:bg-primary/50 dark:border-border hover:border-input hover:bg-muted dark:hover:bg-secondary/30 dark:hover:border-input transition-all duration-200"
     >
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-stone-200 dark:bg-stone-600 rounded-lg flex items-center justify-center shrink-0">
-          <HugeiconsIcon icon={BookOpen01Icon} size={24} className="text-stone-600 dark:text-stone-400" />
+        <div className="w-12 h-12 bg-muted dark:bg-muted rounded-lg flex items-center justify-center shrink-0">
+          <HugeiconsIcon icon={BookOpen01Icon} size={24} className="text-muted-foreground" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 
-            className="text-lg font-semibold text-stone-900 dark:text-stone-100 text-right mb-1"
+            className="text-lg font-semibold text-foreground text-right mb-1"
             dangerouslySetInnerHTML={{ __html: highlightText(category.title, query) }}
           />
           {category.description && (
             <p 
-              className="text-sm text-stone-600 dark:text-stone-400 text-right line-clamp-2"
+              className="text-sm text-muted-foreground text-right line-clamp-2"
               dangerouslySetInnerHTML={{ __html: highlightText(category.description, query) }}
             />
           )}
@@ -543,29 +543,29 @@ const PoemResultCard = ({ poem, isBookmarked, query, highlightText }: { poem: Po
   return (
     <Link
       href={`/poem/${poem.id}`}
-      className="block p-4 sm:p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 hover:border-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/30 dark:hover:border-stone-600 active:scale-[0.98] transition-all duration-200 touch-manipulation backdrop-blur-md"
+      className="block p-4 sm:p-6 bg-card/50 border border-white rounded-2xl shadow-lg/5 dark:bg-primary/50 dark:border-border hover:border-input hover:bg-muted dark:hover:bg-secondary/30 dark:hover:border-input active:scale-[0.98] transition-all duration-200 touch-manipulation backdrop-blur-md"
     >
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 bg-yellow-800/40 dark:bg-yellow-800/30 rounded-xl flex items-center justify-center shrink-0">
-          <HugeiconsIcon icon={File02Icon} size={24} className="sm:w-7 sm:h-7 text-yellow-700 dark:text-yellow-700" />
+        <div className="w-12 h-12 bg-warning/40 rounded-xl flex items-center justify-center shrink-0">
+          <HugeiconsIcon icon={File02Icon} size={24} className="sm:w-7 sm:h-7 text-warning dark:text-warning" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <h3 
-              className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-100 text-right leading-tight whitespace-nowrap overflow-hidden text-ellipsis"
+              className="text-lg sm:text-xl font-semibold text-foreground text-right leading-tight whitespace-nowrap overflow-hidden text-ellipsis"
               dangerouslySetInnerHTML={{ __html: highlightText(poem.title, query) }}
             />
             {isBookmarked && (
-              <HugeiconsIcon icon={HeartIcon} size={20} className="text-red-500 fill-current shrink-0" />
+              <HugeiconsIcon icon={HeartIcon} size={20} className="text-destructive fill-current shrink-0" />
             )}
           </div>
-          <p className="text-sm sm:text-base text-stone-600 dark:text-stone-400 text-right mb-2 font-medium">
+          <p className="text-sm sm:text-base text-muted-foreground text-right mb-2 font-medium">
             {poem.poetName}
             {poem.categoryTitle && ` • ${poem.categoryTitle}`}
           </p>
           {displayVerse && (
             <p 
-              className="text-sm sm:text-base text-stone-500 dark:text-stone-500 text-right line-clamp-2 leading-relaxed"
+              className="text-sm sm:text-base text-muted-foreground text-right line-clamp-2 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: highlightText(displayVerse, query) }}
             />
           )}

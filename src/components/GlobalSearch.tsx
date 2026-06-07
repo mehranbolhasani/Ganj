@@ -248,7 +248,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
     const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
     return parts.map((part) =>
       part.toLowerCase() === highlight.toLowerCase()
-        ? `<mark class="bg-yellow-200 dark:bg-yellow-600/40 text-stone-900 dark:text-stone-100 px-0.5 rounded">${part}</mark>`
+        ? `<mark class="bg-accent text-foreground px-0.5 rounded">${part}</mark>`
         : part
     ).join('');
   };
@@ -281,13 +281,13 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
       onClick={handleBackdropClick}
     >
       <div
-        className="w-full max-w-2xl bg-white dark:bg-stone-800 rounded-xl shadow-xl"
+        className="w-full max-w-2xl bg-card rounded-xl shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}
-        <div className="p-4 border-b border-stone-200 dark:border-stone-700 space-y-3">
+        <div className="p-4 border-b border-border space-y-3">
           <div className="flex items-center gap-3">
-            <HugeiconsIcon icon={Search01Icon} size={20} className="text-stone-500 dark:text-stone-400" aria-hidden="true" />
+            <HugeiconsIcon icon={Search01Icon} size={20} className="text-muted-foreground" aria-hidden="true" />
             <input
               ref={inputRef}
               type="text"
@@ -296,12 +296,12 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               onFocus={() => setShowHistory(query === '')}
-              className="flex-1 bg-transparent text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none"
+              className="flex-1 bg-transparent text-foreground placeholder-muted-foreground focus:outline-none"
             />
 
             {/* Poet Filter */}
             <div className="flex items-center gap-2 w-56">
-              <HugeiconsIcon icon={FilterIcon} size={16} className="text-stone-500 dark:text-stone-400 shrink-0" />
+              <HugeiconsIcon icon={FilterIcon} size={16} className="text-muted-foreground shrink-0" />
               <PoetSelector
                 poets={poets}
                 selectedPoetId={selectedPoetId}
@@ -318,7 +318,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
 
             <button
               onClick={onClose}
-              className="p-1 rounded-md text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-colors"
+              className="p-1 rounded-md text-muted-foreground hover:text-foreground dark:hover:text-secondary-foreground transition-colors"
               aria-label="بستن جستجو"
             >
               <HugeiconsIcon icon={Cancel01Icon} size={20} aria-hidden="true" />
@@ -331,24 +331,24 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
         <div ref={resultsRef} className="max-h-[600px] overflow-y-auto">
           {isLoading ? (
             <div className="p-8 text-center">
-              <div className="animate-spin w-6 h-6 border-2 border-stone-300 dark:border-stone-600 border-t-stone-600 dark:border-t-stone-300 rounded-full mx-auto mb-3"></div>
-              <p className="text-stone-600 dark:text-stone-400">در حال جستجو...</p>
+              <div className="animate-spin w-6 h-6 border-2 border-input border-t-muted-foreground rounded-full mx-auto mb-3"></div>
+              <p className="text-muted-foreground">در حال جستجو...</p>
             </div>
           ) : !isLoading && query.trim().length === 1 ? (
             <div className="p-8 text-center">
-              <p className="text-stone-500 dark:text-stone-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 برای جستجو حداقل ۲ کاراکتر وارد کنید
               </p>
             </div>
           ) : !isLoading && query.trim().length >= 2 && results.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-stone-600 dark:text-stone-400 mb-4">
+              <p className="text-muted-foreground mb-4">
                 هیچ نتیجه‌ای برای «{query}» یافت نشد
               </p>
               <Link
                 href={`/search?q=${encodeURIComponent(query)}`}
                 onClick={onClose}
-                className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 underline text-sm"
+                className="text-muted-foreground dark:text-secondary-foreground hover:text-foreground dark:hover:text-background underline text-sm"
               >
                 جستجوی کامل
               </Link>
@@ -356,11 +356,11 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           ) : query.trim().length >= 2 && results.length > 0 ? (
             <>
               {/* Results count */}
-              <div className="px-4 py-3 flex items-center justify-between text-sm text-stone-600 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
+              <div className="px-4 py-3 flex items-center justify-between text-sm text-muted-foreground border-b border-border">
                 <span>
                   {toPersianDigits(results.length)} نتیجه
                   {selectedPoetId && (
-                    <span className="text-stone-500 dark:text-stone-400">
+                    <span className="text-muted-foreground">
                       {' '}در اشعار {poets.find(p => p.id === selectedPoetId)?.name}
                     </span>
                   )}
@@ -369,16 +369,16 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                   <Link
                     href={`/search?q=${encodeURIComponent(query)}${selectedPoetId ? `&poetId=${selectedPoetId}` : ''}`}
                     onClick={onClose}
-                    className="text-stone-600 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 text-xs flex items-center gap-1 border border-stone-200 dark:border-stone-500 rounded-full py-2 px-2"
+                    className="text-muted-foreground dark:text-secondary-foreground hover:text-foreground dark:hover:text-background text-xs flex items-center gap-1 border border-border dark:border-input rounded-full py-2 px-2"
                   >
                     مشاهده همه نتایج
-                    <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="text-stone-600 dark:text-stone-400" aria-hidden="true" />
+                    <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="text-muted-foreground" aria-hidden="true" />
                   </Link>
                 )}
               </div>
 
               {/* Results list */}
-              <div className="divide-y divide-stone-200 dark:divide-stone-700/50">
+              <div className="divide-y divide-border/50">
                 {results.map((result, index) => {
                   const isPoet = result.type === 'poet';
                   const isCategory = result.type === 'category';
@@ -581,21 +581,21 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                       }}
                       href={result.url}
                       onClick={handleResultClick}
-                      className={`block p-4 hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors group ${
-                        index === selectedIndex ? 'bg-stone-100 dark:bg-yellow-800/30' : ''
+                      className={`block p-4 hover:bg-background dark:hover:bg-primary/50 transition-colors group ${
+                        index === selectedIndex ? 'bg-muted' : ''
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className="flex-1 min-w-0">
                           {/* Title with highlight */}
                           <h4
-                            className="text-[15px] font-medium text-stone-900 dark:text-stone-100 text-right mb-1"
+                            className="text-[15px] font-medium text-foreground text-right mb-1"
                             dangerouslySetInnerHTML={{ __html: highlightText(title, query) }}
                           />
 
                           {/* Metadata */}
                           <p
-                            className="text-[13px] text-stone-600 dark:text-stone-400 text-right mb-2"
+                            className="text-[13px] text-muted-foreground text-right mb-2"
                             dangerouslySetInnerHTML={{
                               __html: isPoet
                                 ? 'شاعر'
@@ -609,9 +609,9 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
 
                           {/* Verse preview for poems */}
                           {isPoem && displayVerses.length > 0 && (
-                            <div className="text-[13px] text-stone-600 dark:text-stone-300 text-right leading-relaxed space-y-1">
+                            <div className="text-[13px] text-muted-foreground dark:text-secondary-foreground text-right leading-relaxed space-y-1">
                               {isLongText && foundIndex > 0 && (
-                                <span className="text-stone-400 dark:text-stone-500 text-xs">...</span>
+                                <span className="text-muted-foreground dark:text-muted-foreground text-xs">...</span>
                               )}
                               {displayVerses.map((verse, vIndex) => {
                                 // For long texts, the middle line (index 1) is the match if we have 3 lines
@@ -636,7 +636,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                                 );
                               })}
                               {isLongText && foundIndex >= 0 && foundIndex < verses.length - 1 && (
-                                <span className="text-stone-400 dark:text-stone-500 text-xs">...</span>
+                                <span className="text-muted-foreground dark:text-muted-foreground text-xs">...</span>
                               )}
                             </div>
                           )}
@@ -644,7 +644,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
 
                         {/* Arrow indicator */}
                         <div className="flex-shrink-0 pt-1">
-                          <HugeiconsIcon icon={ArrowDownLeft01Icon} size={16} className="text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-colors" aria-hidden="true" />
+                          <HugeiconsIcon icon={ArrowDownLeft01Icon} size={16} className="text-muted-foreground group-hover:text-secondary-foreground dark:group-hover:text-secondary-foreground transition-colors" aria-hidden="true" />
                         </div>
                       </div>
                     </Link>
@@ -655,10 +655,10 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
           ) : showHistory && searchHistory.length > 0 ? (
             <div className="py-2">
               <div className="flex items-center justify-between px-3 py-2">
-                <h3 className="text-sm font-medium text-stone-600 dark:text-stone-400">جستجوهای اخیر</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">جستجوهای اخیر</h3>
                 <button
                   onClick={clearHistory}
-                  className="text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300"
+                  className="text-xs text-muted-foreground hover:text-secondary-foreground dark:hover:text-secondary-foreground"
                 >
                   پاک کردن
                 </button>
@@ -667,10 +667,10 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
                 <button
                   key={index}
                   onClick={() => handleHistoryClick(item.query)}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-right"
+                  className="w-full flex items-center gap-3 p-3 hover:bg-background dark:hover:bg-secondary transition-colors text-right"
                 >
-                  <HugeiconsIcon icon={Clock01Icon} size={16} className="text-stone-400" />
-                  <span className="text-stone-700 dark:text-stone-300">{item.query}</span>
+                  <HugeiconsIcon icon={Clock01Icon} size={16} className="text-muted-foreground" />
+                  <span className="text-secondary-foreground">{item.query}</span>
                 </button>
               ))}
             </div>
@@ -678,8 +678,8 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
         </div>
 
         {/* Footer */}
-        <div className="p-3 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-700/50 rounded-b-xl">
-          <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
+        <div className="p-3 border-t border-border bg-background dark:bg-secondary/50 rounded-b-xl">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">
                 <HugeiconsIcon icon={ArrowUp01Icon} size={14} />

@@ -76,11 +76,11 @@ export default function FaalLayoutClient({
 
   return (
     <div 
-      className="w-full mx-auto my-0 md:my-0 min-h-screen md:h-screen relative flex flex-col md:flex-row items-center justify-start md:justify-center bg-stone-950 dark:bg-stone-900 z-10 transition-colors duration-300 pt-4 md:pt-0"
+      className="w-full mx-auto my-0 md:my-0 min-h-screen md:h-screen relative flex flex-col md:flex-row items-center justify-start md:justify-center bg-background dark:bg-primary z-10 transition-colors duration-300 pt-4 md:pt-0"
     >
       {/* Right panel - main content area */}
       <div id="faalRight"
-        className="flex flex-col items-center justify-between bg-amber-900/50 backdrop-blur-xl relative overflow-hidden rounded-[2rem] md:rounded-[4rem] ml-0 md:-ml-8 z-20 w-[90%] md:w-[90%] md:h-3/4"
+        className="flex flex-col items-center justify-between bg-primary/50 backdrop-blur-xl relative overflow-hidden rounded-[2rem] md:rounded-[4rem] ml-0 md:-ml-8 z-20 w-[90%] md:w-[90%] md:h-3/4"
         style={{
           ...(isMounted && rightPanelWidth && { width: rightPanelWidth }),
           // Desktop: use height
@@ -120,17 +120,17 @@ export default function FaalLayoutClient({
         </div>
 
         <div className="w-1/2 h-64 absolute -bottom-16 z-1 flex opacity-80 left-1/2 -translate-x-1/2 blur-2xl">
-          <div className="w-1/2 h-full bg-amber-700 rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-60"></div>
-          <div className="w-1/2 h-full bg-amber-500 rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-80"></div>
-          <div className="w-1/2 h-full bg-amber-300 rounded-full aspect-square min-w-0 z-10 blur-3xl"></div>
-          <div className="w-1/2 h-full bg-amber-500 rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-80"></div>
-          <div className="w-1/2 h-full bg-amber-700 rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-60"></div>
+          <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-60"></div>
+          <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-80"></div>
+          <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 z-10 blur-3xl"></div>
+          <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-80"></div>
+          <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-60"></div>
         </div>
       </div>
 
       {/* Left panel - page content */}
       <div 
-        className={`flex items-center justify-center bg-amber-800/10 backdrop-blur-sm relative overflow-hidden rounded-b-[2rem] md:rounded-l-[4rem] mr-0 -mt-10 md:mt-0 md:-mr-24 z-10 w-[90%] md:w-[10%] mb-4 md:mb-0 md:h-3/4 transition-opacity duration-300 ${
+        className={`flex items-center justify-center bg-primary/10 backdrop-blur-sm relative overflow-hidden rounded-b-[2rem] md:rounded-l-[4rem] mr-0 -mt-10 md:mt-0 md:-mr-24 z-10 w-[90%] md:w-[10%] mb-4 md:mb-0 md:h-3/4 transition-opacity duration-300 ${
           isMounted ? 'opacity-100' : 'opacity-0'
         }`}
         style={{

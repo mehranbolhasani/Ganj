@@ -192,27 +192,27 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
       {/* Dropdown */}
       <div 
         ref={dropdownRef}
-        className={`relative bg-white dark:bg-stone-800 rounded-lg shadow-xl border border-stone-200 dark:border-stone-700 w-full mx-4 overflow-hidden ${
+        className={`relative bg-card rounded-lg shadow-xl border border-border w-full mx-4 overflow-hidden ${
           showFullHistory ? 'max-w-4xl max-h-[80vh]' : 'max-w-md max-h-96'
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
             {showFullHistory && (
               <button
                 onClick={() => setShowFullHistory(false)}
-                className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                className="p-1 rounded-lg hover:bg-muted dark:hover:bg-secondary transition-colors"
                 aria-label="بازگشت"
               >
                 <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
               </button>
             )}
-            <HugeiconsIcon icon={HistoryIcon} size={20} className="text-stone-600 dark:text-stone-400" />
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+            <HugeiconsIcon icon={HistoryIcon} size={20} className="text-muted-foreground" />
+            <h3 className="font-semibold text-foreground">
               {showFullHistory ? 'تاریخچه کامل' : 'تاریخچه بازدیدها'}
             </h3>
-            <span className="text-sm text-stone-500 dark:text-stone-400">
+            <span className="text-sm text-muted-foreground">
               ({toPersianDigits(filteredItems.length)})
             </span>
           </div>
@@ -220,7 +220,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
             {!showFullHistory && items.length > 5 && (
               <button
                 onClick={() => setShowFullHistory(true)}
-                className="flex items-center gap-1 px-3 py-1 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
+                className="flex items-center gap-1 px-3 py-1 text-sm text-muted-foreground hover:bg-muted dark:hover:bg-secondary rounded-lg transition-colors"
               >
                 <HugeiconsIcon icon={ViewIcon} size={16} />
                 مشاهده همه
@@ -228,7 +228,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
             )}
             <button
               onClick={onClose}
-              className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+              className="p-1 rounded-lg hover:bg-muted dark:hover:bg-secondary transition-colors"
               aria-label="بستن"
             >
               <HugeiconsIcon icon={Cancel01Icon} size={16} />
@@ -237,16 +237,16 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
         </div>
 
         {/* Search and Filters */}
-        <div className="p-4 border-b border-stone-200 dark:border-stone-700 space-y-3">
+        <div className="p-4 border-b border-border space-y-3">
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400" />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="جستجو در تاریخچه..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pr-10 pl-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent"
+                className="w-full pr-10 pl-3 py-2 border border-input rounded-lg bg-card dark:bg-secondary text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               />
             </div>
             {showFullHistory && (
@@ -254,8 +254,8 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                   showFilters 
-                    ? 'bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100' 
-                    : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+                    ? 'bg-muted text-foreground' 
+                    : 'text-muted-foreground hover:bg-muted dark:hover:bg-primary'
                 }`}
               >
                 <HugeiconsIcon icon={FilterIcon} size={16} />
@@ -266,15 +266,15 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
 
           {/* Filters Panel */}
           {showFilters && showFullHistory && (
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-lg p-3 space-y-3">
+            <div className="bg-background dark:bg-primary/50 rounded-lg p-3 space-y-3">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Group By */}
                 <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">گروه‌بندی:</label>
+                  <label className="text-sm font-medium text-secondary-foreground">گروه‌بندی:</label>
                   <select
                     value={groupBy}
                     onChange={(e) => setGroupBy(e.target.value as GroupBy)}
-                    className="px-2 py-1 border border-stone-300 dark:border-stone-600 rounded bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 text-sm"
+                    className="px-2 py-1 border border-input rounded bg-card dark:bg-secondary text-foreground text-sm"
                   >
                     <option value="none">بدون گروه‌بندی</option>
                     <option value="date">تاریخ</option>
@@ -284,11 +284,11 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
 
                 {/* Date Filter */}
                 <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">زمان:</label>
+                  <label className="text-sm font-medium text-secondary-foreground">زمان:</label>
                   <select
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value as DateFilter)}
-                    className="px-2 py-1 border border-stone-300 dark:border-stone-600 rounded bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 text-sm"
+                    className="px-2 py-1 border border-input rounded bg-card dark:bg-secondary text-foreground text-sm"
                   >
                     <option value="all">همه</option>
                     <option value="today">امروز</option>
@@ -305,20 +305,20 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
         {/* Content */}
         <div className={`overflow-y-auto ${showFullHistory ? 'max-h-96' : 'max-h-64'}`}>
           {loading ? (
-            <div className="p-4 text-center text-stone-500 dark:text-stone-400">
+            <div className="p-4 text-center text-muted-foreground">
               در حال بارگذاری...
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="p-4 text-center text-stone-500 dark:text-stone-400">
+            <div className="p-4 text-center text-muted-foreground">
               {searchQuery ? 'هیچ موردی یافت نشد' : 'تاریخچه‌ای وجود ندارد'}
             </div>
           ) : (
-            <div className="divide-y divide-stone-200 dark:divide-stone-700">
+            <div className="divide-y divide-border">
               {Object.entries(getDisplayItems()).map(([groupName, groupItems]) => (
                 <div key={groupName}>
                   {groupBy !== 'none' && (
-                    <div className="px-4 py-2 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700">
-                      <h4 className="text-sm font-medium text-stone-700 dark:text-stone-300 text-right">
+                    <div className="px-4 py-2 bg-background dark:bg-primary/50 border-b border-border">
+                      <h4 className="text-sm font-medium text-secondary-foreground text-right">
                         {groupName} ({toPersianDigits(groupItems.length)})
                       </h4>
                     </div>
@@ -328,23 +328,23 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
                       key={item.id}
                       href={item.url}
                       onClick={onClose}
-                      className="block p-4 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors group"
+                      className="block p-4 hover:bg-background dark:hover:bg-secondary transition-colors group"
                     >
                       <div className="flex items-start gap-3">
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-stone-900 dark:text-stone-100 text-right truncate group-hover:text-stone-700 dark:group-hover:text-stone-200 transition-colors">
+                          <h4 className="font-medium text-foreground text-right truncate group-hover:text-secondary-foreground dark:group-hover:text-secondary-foreground transition-colors">
                             {item.title}
                           </h4>
-                          <p className="text-sm text-stone-600 dark:text-stone-400 text-right">
+                          <p className="text-sm text-muted-foreground text-right">
                             {item.poetName}
                           </p>
                           {item.categoryTitle && (
-                            <p className="text-xs text-stone-500 dark:text-stone-500 text-right">
+                            <p className="text-xs text-muted-foreground text-right">
                               {item.categoryTitle}
                             </p>
                           )}
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <HugeiconsIcon icon={Clock01Icon} size={14} />
                           <span>{formatTimeAgo(item.timestamp)}</span>
                         </div>
@@ -359,10 +359,10 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="p-4 border-t border-stone-200 dark:border-stone-700">
+          <div className="p-4 border-t border-border">
             <button
               onClick={clearHistory}
-              className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
+              className="flex items-center gap-2 text-sm text-destructive hover:text-destructive transition-colors"
             >
               <HugeiconsIcon icon={Delete02Icon} size={16} />
               پاک کردن تاریخچه

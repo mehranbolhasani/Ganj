@@ -41,10 +41,10 @@ export default function PoemPagination({
             <h3 className="text-lg font-semibold mb-2 text-right leading-tight">
               {poem.title}
             </h3>
-            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base text-right flex items-center justify-start gap-2">
+            <p className="text-muted-foreground dark:text-secondary-foreground text-sm sm:text-base text-right flex items-center justify-start gap-2">
               <span className="font-medium">{poem.poetName}</span>
               {poem.chapterTitle && (
-                <span className="block text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+                <span className="block text-xs sm:text-sm text-muted-foreground mt-1">
                   {poem.chapterTitle}
                 </span>
               )}
@@ -71,7 +71,7 @@ export default function PoemPagination({
             <p className="text-sm text-right text-primary/50 flex items-center justify-start gap-2">
               <span className="font-medium">{poem.poetName}</span>
               {poem.chapterTitle && (
-                <span className="block text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+                <span className="block text-xs sm:text-sm text-muted-foreground mt-1">
                   {poem.chapterTitle}
                 </span>
               )}
@@ -85,7 +85,7 @@ export default function PoemPagination({
         {currentPage > 1 && (
           <Link
             href={generatePageUrl(currentPage - 1)}
-            className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600 active:bg-stone-400 dark:active:bg-stone-500 transition-colors touch-manipulation font-medium"
+            className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-muted text-secondary-foreground hover:bg-muted dark:hover:bg-muted active:bg-muted dark:active:bg-muted transition-colors touch-manipulation font-medium"
           >
             قبلی
           </Link>
@@ -110,8 +110,8 @@ export default function PoemPagination({
                 href={generatePageUrl(pageNum)}
                 className={`px-3 py-2 sm:px-4 sm:py-3 rounded-lg transition-colors touch-manipulation font-medium ${
                   currentPage === pageNum
-                    ? 'bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 active:bg-stone-300 dark:active:bg-stone-600'
+                    ? 'bg-primary text-primary-foreground dark:text-foreground'
+                    : 'bg-muted text-secondary-foreground hover:bg-muted dark:hover:bg-secondary active:bg-muted dark:active:bg-muted'
                 }`}
               >
                 {toPersianDigits(pageNum)}
@@ -123,7 +123,7 @@ export default function PoemPagination({
         {currentPage < totalPages && (
           <Link
             href={generatePageUrl(currentPage + 1)}
-            className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600 active:bg-stone-400 dark:active:bg-stone-500 transition-colors touch-manipulation font-medium"
+            className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-muted text-secondary-foreground hover:bg-muted dark:hover:bg-muted active:bg-muted dark:active:bg-muted transition-colors touch-manipulation font-medium"
           >
             بعدی
           </Link>
@@ -131,7 +131,7 @@ export default function PoemPagination({
       </div>
 
       {/* Page Info */}
-      <div className="text-center text-sm text-stone-500 dark:text-stone-400 mt-2">
+      <div className="text-center text-sm text-muted-foreground mt-2">
         صفحه {toPersianDigits(currentPage)} از {toPersianDigits(totalPages)} • {toPersianDigits(poems.length)} شعر
       </div>
     </div>

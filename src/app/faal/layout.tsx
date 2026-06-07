@@ -12,7 +12,7 @@ export default function FaalLayout({
       {/* Fixed background - respects theme system */}
       <div 
         data-faal-page
-        className="fixed inset-0 bg-stone-950 dark:bg-stone-900 z-0"
+        className="fixed inset-0 bg-background dark:bg-primary z-0"
         aria-hidden="true"
       />
       {/* Provider wrapper - manages state and provides context to all children */}

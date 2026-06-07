@@ -38,12 +38,12 @@ export class FaalErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-8 max-w-md text-center">
-            <HugeiconsIcon icon={AlertCircleIcon} size={48} className="text-red-500 dark:text-red-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">
+          <div className="bg-destructive/10 border border-destructive rounded-2xl p-8 max-w-md text-center">
+            <HugeiconsIcon icon={AlertCircleIcon} size={48} className="text-destructive mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-destructive mb-2">
               خطایی رخ داده است
             </h2>
-            <p className="text-red-600 dark:text-red-400 mb-6">
+            <p className="text-destructive mb-6">
               {this.state.error?.message || 'لطفاً صفحه را رفرش کنید یا دوباره تلاش کنید.'}
             </p>
             <button
@@ -51,7 +51,7 @@ export class FaalErrorBoundary extends Component<Props, State> {
                 this.setState({ hasError: false, error: null });
                 window.location.reload();
               }}
-              className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors"
+              className="px-6 py-3 bg-destructive/100 hover:bg-red-600 text-primary-foreground rounded-xl font-medium transition-colors"
             >
               رفرش صفحه
             </button>

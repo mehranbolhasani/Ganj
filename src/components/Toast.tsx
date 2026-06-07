@@ -129,9 +129,9 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
       case 'success':
         return <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} className="text-green-600 dark:text-green-400" />;
       case 'error':
-        return <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-red-600 dark:text-red-400" />;
+        return <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-destructive" />;
       case 'warning':
-        return <HugeiconsIcon icon={Alert02Icon} size={20} className="text-yellow-600 dark:text-yellow-400" />;
+        return <HugeiconsIcon icon={Alert02Icon} size={20} className="text-warning" />;
       case 'info':
         return <HugeiconsIcon icon={InformationCircleIcon} size={20} className="text-blue-600 dark:text-blue-400" />;
     }
@@ -142,9 +142,9 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
       case 'success':
         return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
       case 'error':
-        return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
+        return 'bg-destructive/10 border-destructive';
       case 'warning':
-        return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800';
+        return 'bg-warning/10 border-warning';
       case 'info':
         return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800';
     }
@@ -164,18 +164,18 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
         </div>
         
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-medium text-stone-900 dark:text-stone-100 text-right break-words">
+          <h4 className="text-sm font-medium text-foreground text-right break-words">
             {toast.title}
           </h4>
           {toast.message && (
-            <p className="text-sm text-stone-600 dark:text-stone-400 text-right mt-1 break-words">
+            <p className="text-sm text-muted-foreground text-right mt-1 break-words">
               {toast.message}
             </p>
           )}
           {toast.action && (
             <button
               onClick={toast.action.onClick}
-              className="text-sm text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 underline mt-2"
+              className="text-sm text-secondary-foreground hover:text-foreground dark:hover:text-background underline mt-2"
             >
               {toast.action.label}
             </button>
@@ -184,7 +184,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
 
         <button
           onClick={handleRemove}
-          className="flex-shrink-0 p-1 rounded-md text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
+          className="flex-shrink-0 p-1 rounded-md text-muted-foreground hover:text-muted-foreground dark:hover:text-secondary-foreground transition-colors"
           aria-label="بستن اعلان"
         >
           <HugeiconsIcon icon={Cancel01Icon} size={16} />

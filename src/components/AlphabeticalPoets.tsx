@@ -89,7 +89,7 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
 
   return (
     <div className="w-full">
-      <h2 className="text-xl abar-wght-700 text-stone-900 dark:text-stone-100 mb-8 text-right">
+      <h2 className="text-xl abar-wght-700 text-foreground mb-8 text-right">
         شاعرهای دیگر
       </h2>
 
@@ -103,11 +103,11 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
             data-letter={letter}
             className="scroll-mt-20"
           >
-            <div className="flex items-center mb-4 sticky top-1 z-2 bg-white/80 dark:bg-yellow-900/30 px-6 py-2 rounded-full backdrop-blur-md w-fit mr-2">
-              <h3 className="text-xl text-stone-800 dark:text-stone-200">
+            <div className="flex items-center mb-4 sticky top-1 z-2 bg-card/80 dark:bg-warning/30 px-6 py-2 rounded-full backdrop-blur-md w-fit mr-2">
+              <h3 className="text-xl text-foreground">
                 {letter}
               </h3>
-              <div className="h-px bg-stone-400 dark:bg-stone-500 mr-4 w-8"></div>
+              <div className="h-px bg-muted mr-4 w-8"></div>
             </div>
 
             <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">

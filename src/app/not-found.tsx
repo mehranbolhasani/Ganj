@@ -4,17 +4,17 @@ import { ArrowRight01Icon, FileRemoveIcon, Home01Icon, Search01Icon } from '@hug
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-900 p-4">
-      <div className="max-w-lg w-full bg-white dark:bg-stone-800 rounded-xl shadow-lg p-8 text-center">
-        <div className="w-20 h-20 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-6">
-          <HugeiconsIcon icon={FileRemoveIcon} size={40} className="text-stone-600 dark:text-stone-400" />
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="max-w-lg w-full bg-card rounded-xl shadow-lg p-8 text-center">
+        <div className="w-20 h-20 bg-muted dark:bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+          <HugeiconsIcon icon={FileRemoveIcon} size={40} className="text-muted-foreground" />
         </div>
         
-        <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+        <h1 className="text-3xl font-bold text-foreground mb-4">
           ۴۰۴ - صفحه یافت نشد
         </h1>
         
-        <p className="text-stone-600 dark:text-stone-400 mb-8">
+        <p className="text-muted-foreground mb-8">
           متأسفانه صفحه‌ای که به دنبال آن هستید وجود ندارد یا حذف شده است.
         </p>
 
@@ -22,7 +22,7 @@ export default function NotFound() {
           <div className="flex gap-3 justify-center">
             <Link
               href="/"
-              className="flex items-center gap-2 px-6 py-3 bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 rounded-lg hover:bg-stone-700 dark:hover:bg-stone-300 transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground dark:text-foreground rounded-lg hover:bg-secondary dark:hover:bg-muted transition-colors"
             >
               <HugeiconsIcon icon={Home01Icon} size={16} />
               صفحه اصلی
@@ -30,41 +30,41 @@ export default function NotFound() {
             
             <Link
               href="/search"
-              className="flex items-center gap-2 px-6 py-3 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors"
             >
               <HugeiconsIcon icon={Search01Icon} size={16} />
               جستجو
             </Link>
           </div>
 
-          <div className="pt-6 border-t border-stone-200 dark:border-stone-700">
-            <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
+          <div className="pt-6 border-t border-border">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               پیشنهادات ما:
             </h3>
             
             <div className="space-y-3 text-right">
               <Link
                 href="/"
-                className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-600 transition-colors group"
+                className="flex items-center justify-between p-3 bg-background dark:bg-secondary rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors group"
               >
-                <span className="text-stone-700 dark:text-stone-300">مشاهده همه شاعران</span>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300" />
+                <span className="text-secondary-foreground">مشاهده همه شاعران</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="text-muted-foreground group-hover:text-muted-foreground dark:group-hover:text-secondary-foreground" />
               </Link>
               
               <Link
                 href="/bookmarks"
-                className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-600 transition-colors group"
+                className="flex items-center justify-between p-3 bg-background dark:bg-secondary rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors group"
               >
-                <span className="text-stone-700 dark:text-stone-300">علاقه‌مندی‌های شما</span>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300" />
+                <span className="text-secondary-foreground">علاقه‌مندی‌های شما</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="text-muted-foreground group-hover:text-muted-foreground dark:group-hover:text-secondary-foreground" />
               </Link>
               
               <Link
                 href="/history"
-                className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-600 transition-colors group"
+                className="flex items-center justify-between p-3 bg-background dark:bg-secondary rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors group"
               >
-                <span className="text-stone-700 dark:text-stone-300">تاریخچه بازدیدها</span>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300" />
+                <span className="text-secondary-foreground">تاریخچه بازدیدها</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="text-muted-foreground group-hover:text-muted-foreground dark:group-hover:text-secondary-foreground" />
               </Link>
             </div>
           </div>

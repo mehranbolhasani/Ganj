@@ -146,13 +146,13 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm bg-stone-100 dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-stone-900 dark:text-stone-100 hover:bg-stone-200 dark:hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500 dark:focus:ring-stone-400 transition-colors"
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm bg-muted dark:bg-secondary border border-input rounded-lg text-foreground hover:bg-muted dark:hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
       >
         <span className="flex items-center gap-2 min-w-0 flex-1 text-right">
           {selectedPoet ? (
             <span className="truncate">{selectedPoet.name}</span>
           ) : (
-            <span className="text-stone-500 dark:text-stone-400">{placeholder}</span>
+            <span className="text-muted-foreground">{placeholder}</span>
           )}
         </span>
         <div className="flex items-center gap-1 shrink-0">
@@ -162,7 +162,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
                 e.stopPropagation();
                 handleSelect(undefined);
               }}
-              className="p-0.5 rounded hover:bg-stone-300 dark:hover:bg-stone-500 transition-colors"
+              className="p-0.5 rounded hover:bg-muted dark:hover:bg-muted transition-colors"
               aria-label="حذف انتخاب"
             >
               <HugeiconsIcon icon={Cancel01Icon} size={14} />
@@ -174,11 +174,11 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg shadow-xl z-50 max-h-[400px] flex flex-col overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 max-h-[400px] flex flex-col overflow-hidden">
           {/* Search Input */}
-          <div className="p-2 border-b border-stone-200 dark:border-stone-700">
+          <div className="p-2 border-b border-border">
             <div className="relative">
-              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400" />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 ref={searchInputRef}
                 type="text"
@@ -186,7 +186,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full pr-8 pl-3 py-2 text-sm bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-md text-stone-900 dark:text-stone-100 placeholder-stone-500 dark:placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 dark:focus:ring-stone-400"
+                className="w-full pr-8 pl-3 py-2 text-sm bg-background border border-border rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
@@ -194,7 +194,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
           {/* Poets List - Scrollable */}
           <div className="overflow-y-auto flex-1">
             {filteredGroups.length === 0 ? (
-              <div className="p-4 text-center text-sm text-stone-500 dark:text-stone-400">
+              <div className="p-4 text-center text-sm text-muted-foreground">
                 هیچ شاعری یافت نشد
               </div>
             ) : (
@@ -202,22 +202,22 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
                 {/* "All Poets" option */}
                 <button
                   onClick={() => handleSelect(undefined)}
-                  className={`w-full text-right px-4 py-2 text-sm hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors ${
-                    !selectedPoetId ? 'bg-stone-100 dark:bg-stone-700 font-medium' : ''
+                  className={`w-full text-right px-4 py-2 text-sm hover:bg-muted dark:hover:bg-secondary transition-colors ${
+                    !selectedPoetId ? 'bg-muted dark:bg-secondary font-medium' : ''
                   }`}
                 >
                   <span className="flex items-center gap-2">
-                    {!selectedPoetId && <span className="text-stone-600 dark:text-stone-400">✓</span>}
+                    {!selectedPoetId && <span className="text-muted-foreground">✓</span>}
                     همه شاعران
                   </span>
                 </button>
-                <div className="border-t border-stone-200 dark:border-stone-700 my-1" />
+                <div className="border-t border-border my-1" />
 
                 {/* Grouped Poets */}
                 {filteredGroups.map(([letter, poetsList]) => (
                   <div key={letter} className="mb-1">
                     {/* Letter Header */}
-                    <div className="sticky top-0 bg-stone-50 dark:bg-stone-900 px-4 py-1.5 text-xs font-semibold text-stone-600 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
+                    <div className="sticky top-0 bg-background px-4 py-1.5 text-xs font-semibold text-muted-foreground border-b border-border">
                       {letter}
                     </div>
                     
@@ -226,13 +226,13 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
                       <button
                         key={poet.id}
                         onClick={() => handleSelect(poet.id)}
-                        className={`w-full text-right px-4 py-2 text-sm hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors ${
-                          selectedPoetId === poet.id ? 'bg-stone-100 dark:bg-stone-700 font-medium' : ''
+                        className={`w-full text-right px-4 py-2 text-sm hover:bg-muted dark:hover:bg-secondary transition-colors ${
+                          selectedPoetId === poet.id ? 'bg-muted dark:bg-secondary font-medium' : ''
                         }`}
                       >
                         <span className="flex items-center gap-2">
                           {selectedPoetId === poet.id && (
-                            <span className="text-stone-600 dark:text-stone-400">✓</span>
+                            <span className="text-muted-foreground">✓</span>
                           )}
                           {poet.name}
                         </span>

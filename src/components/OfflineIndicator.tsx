@@ -45,7 +45,7 @@ const OfflineIndicator = () => {
           flex items-center gap-3 p-4 rounded-lg shadow-lg border
           ${isOnline
             ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-            : 'bg-red-50 dark:bg-red-900/50 border-red-200 dark:border-red-800'
+            : 'bg-destructive/10 border-destructive'
           }
         `}
       >
@@ -53,15 +53,15 @@ const OfflineIndicator = () => {
           {isOnline ? (
             <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} className="text-green-600 dark:text-green-400" />
           ) : (
-            <HugeiconsIcon icon={WifiOffIcon} size={20} className="text-red-600 dark:text-red-400" />
+            <HugeiconsIcon icon={WifiOffIcon} size={20} className="text-destructive" />
           )}
         </div>
         
         <div className="flex-1">
-          <h4 className="text-sm font-medium text-stone-900 dark:text-stone-100">
+          <h4 className="text-sm font-medium text-foreground">
             {isOnline ? 'اتصال برقرار شد' : 'اتصال قطع شد'}
           </h4>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-muted-foreground">
             {isOnline
               ? 'شما دوباره آنلاین هستید'
               : 'لطفاً اتصال اینترنت خود را بررسی کنید'
@@ -71,7 +71,7 @@ const OfflineIndicator = () => {
 
         <button
           onClick={() => setShowNotification(false)}
-          className="flex-shrink-0 p-1 rounded-md text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
+          className="flex-shrink-0 p-1 rounded-md text-muted-foreground hover:text-muted-foreground dark:hover:text-secondary-foreground transition-colors"
           aria-label="بستن اعلان"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

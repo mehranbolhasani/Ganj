@@ -49,10 +49,10 @@ export function SmoothLoadingWrapper({
 // Skeleton loader for poem cards
 export function PoemCardSkeleton() {
   return (
-    <div className="p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700">
+    <div className="p-4 bg-card/50 border border-white rounded-2xl shadow-lg/5 dark:bg-primary/50 dark:border-border">
       <div className="space-y-3">
-        <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
-        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
+        <div className="h-6 bg-muted rounded w-3/4"></div>
+        <div className="h-4 bg-muted rounded w-1/2"></div>
       </div>
     </div>
   );
@@ -61,11 +61,11 @@ export function PoemCardSkeleton() {
 // Skeleton loader for category cards
 export function CategoryCardSkeleton() {
   return (
-    <div className="p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 animate-pulse">
+    <div className="p-4 bg-card/50 border border-white rounded-2xl shadow-lg/5 dark:bg-primary/50 dark:border-border animate-pulse">
       <div className="space-y-3">
-        <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-2/3"></div>
-        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
-        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+        <div className="h-6 bg-muted rounded w-2/3"></div>
+        <div className="h-4 bg-muted rounded w-1/3"></div>
+        <div className="h-4 bg-muted rounded w-1/4"></div>
       </div>
     </div>
   );
@@ -74,10 +74,10 @@ export function CategoryCardSkeleton() {
 // Skeleton loader for chapter cards
 export function ChapterCardSkeleton() {
   return (
-    <div className="p-4 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 animate-pulse">
+    <div className="p-4 bg-card/50 border border-white rounded-2xl shadow-lg/5 dark:bg-primary/50 dark:border-border animate-pulse">
       <div className="space-y-3">
-        <div className="h-5 bg-stone-200 dark:bg-stone-700 rounded w-4/5"></div>
-        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
+        <div className="h-5 bg-muted rounded w-4/5"></div>
+        <div className="h-4 bg-muted rounded w-1/3"></div>
       </div>
     </div>
   );
@@ -86,18 +86,18 @@ export function ChapterCardSkeleton() {
 // Skeleton loader for poet cards
 export function PoetCardSkeleton() {
   return (
-    <div className="p-6 bg-white/50 border border-white rounded-2xl shadow-lg/5 dark:bg-stone-800/50 dark:border-stone-700 animate-pulse">
+    <div className="p-6 bg-card/50 border border-white rounded-2xl shadow-lg/5 dark:bg-primary/50 dark:border-border animate-pulse">
       <div className="space-y-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
+          <div className="w-16 h-16 bg-muted rounded-full"></div>
           <div className="flex-1 space-y-2">
-            <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-2/3"></div>
-            <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
+            <div className="h-6 bg-muted rounded w-2/3"></div>
+            <div className="h-4 bg-muted rounded w-1/2"></div>
           </div>
         </div>
         <div className="space-y-2">
-          <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-full"></div>
-          <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
+          <div className="h-4 bg-muted rounded w-full"></div>
+          <div className="h-4 bg-muted rounded w-3/4"></div>
         </div>
       </div>
     </div>
@@ -108,13 +108,13 @@ export function PoetCardSkeleton() {
 export function PaginationSkeleton() {
   return (
     <div className="flex items-center justify-center gap-2 animate-pulse">
-      <div className="w-16 h-8 bg-stone-200 dark:bg-stone-700 rounded"></div>
+      <div className="w-16 h-8 bg-muted rounded"></div>
       <div className="flex gap-1">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="w-8 h-8 bg-stone-200 dark:bg-stone-700 rounded"></div>
+          <div key={i} className="w-8 h-8 bg-muted rounded"></div>
         ))}
       </div>
-      <div className="w-16 h-8 bg-stone-200 dark:bg-stone-700 rounded"></div>
+      <div className="w-16 h-8 bg-muted rounded"></div>
     </div>
   );
 }
@@ -123,10 +123,10 @@ export function PaginationSkeleton() {
 export function BreadcrumbsSkeleton() {
   return (
     <div className="flex items-center gap-2 animate-pulse">
-      <div className="w-4 h-4 bg-stone-200 dark:bg-stone-700 rounded"></div>
-      <div className="w-16 h-4 bg-stone-200 dark:bg-stone-700 rounded"></div>
-      <div className="w-4 h-4 bg-stone-200 dark:bg-stone-700 rounded"></div>
-      <div className="w-20 h-4 bg-stone-200 dark:bg-stone-700 rounded"></div>
+      <div className="w-4 h-4 bg-muted rounded"></div>
+      <div className="w-16 h-4 bg-muted rounded"></div>
+      <div className="w-4 h-4 bg-muted rounded"></div>
+      <div className="w-20 h-4 bg-muted rounded"></div>
     </div>
   );
 }
@@ -135,12 +135,12 @@ export function BreadcrumbsSkeleton() {
 export function SearchResultSkeleton() {
   return (
     <div className="space-y-3 animate-pulse">
-      <div className="h-5 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+      <div className="h-5 bg-muted rounded w-1/4"></div>
       <div className="space-y-2">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="p-3 bg-stone-100 dark:bg-stone-800 rounded-lg">
-            <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4 mb-2"></div>
-            <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
+          <div key={i} className="p-3 bg-muted rounded-lg">
+            <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+            <div className="h-3 bg-muted rounded w-1/2"></div>
           </div>
         ))}
       </div>
@@ -158,7 +158,7 @@ export function LoadingSpinner({ size = 'md', className = '' }: { size?: 'sm' | 
 
   return (
     <div className={`animate-spin ${sizeClasses[size]} ${className}`}>
-      <svg className="w-full h-full text-stone-600 dark:text-stone-400" fill="none" viewBox="0 0 24 24">
+      <svg className="w-full h-full text-muted-foreground" fill="none" viewBox="0 0 24 24">
         <circle
           className="opacity-25"
           cx="12"
@@ -181,9 +181,9 @@ export function LoadingSpinner({ size = 'md', className = '' }: { size?: 'sm' | 
 export function LoadingOverlay({ message = 'در حال بارگذاری...' }: { message?: string }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-stone-800 rounded-xl p-6 flex items-center gap-3">
+      <div className="bg-card rounded-xl p-6 flex items-center gap-3">
         <LoadingSpinner />
-        <span className="text-stone-700 dark:text-stone-300">{message}</span>
+        <span className="text-secondary-foreground">{message}</span>
       </div>
     </div>
   );
@@ -194,7 +194,7 @@ export function PageLoadingSkeleton() {
   return (
     <div className="space-y-6 opacity-0 animate-delayedFadeIn">
       <BreadcrumbsSkeleton />
-      <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
+      <div className="h-8 bg-muted rounded w-1/3"></div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <PoemCardSkeleton key={i} />
@@ -212,16 +212,16 @@ export function PoetPageSkeleton() {
       <BreadcrumbsSkeleton />
       
       {/* Poet info section */}
-      <div className="border rounded-2xl shadow-2xl/5 backdrop-blur-md bg-white/80 border-white dark:bg-yellow-950/20 dark:border-yellow-900/50 p-6 md:p-8">
+      <div className="border rounded-2xl shadow-2xl/5 backdrop-blur-md bg-card/80 border-white dark:bg-warning/20 dark:border-warning/50 p-6 md:p-8">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-24 h-24 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
+          <div className="w-24 h-24 bg-muted rounded-full"></div>
           <div className="flex-1 space-y-4">
-            <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
-            <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+            <div className="h-8 bg-muted rounded w-1/3"></div>
+            <div className="h-4 bg-muted rounded w-1/4"></div>
             <div className="space-y-2">
-              <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-full"></div>
-              <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
-              <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
+              <div className="h-4 bg-muted rounded w-full"></div>
+              <div className="h-4 bg-muted rounded w-3/4"></div>
+              <div className="h-4 bg-muted rounded w-1/2"></div>
             </div>
           </div>
         </div>
@@ -229,7 +229,7 @@ export function PoetPageSkeleton() {
 
       {/* Categories section */}
       <div className="space-y-4">
-        <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+        <div className="h-6 bg-muted rounded w-1/4"></div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <CategoryCardSkeleton key={i} />
@@ -248,8 +248,8 @@ export function CategoryPageSkeleton() {
       
       {/* Category header */}
       <div className="text-center">
-        <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3 mx-auto mb-4"></div>
-        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/6 mx-auto"></div>
+        <div className="h-8 bg-muted rounded w-1/3 mx-auto mb-4"></div>
+        <div className="h-4 bg-muted rounded w-1/6 mx-auto"></div>
       </div>
 
       {/* Poems grid */}
@@ -273,8 +273,8 @@ export function ChapterPageSkeleton() {
       
       {/* Chapter header */}
       <div className="text-center">
-        <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/3 mx-auto mb-4"></div>
-        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/6 mx-auto"></div>
+        <div className="h-8 bg-muted rounded w-1/3 mx-auto mb-4"></div>
+        <div className="h-4 bg-muted rounded w-1/6 mx-auto"></div>
       </div>
 
       {/* Poems grid */}
@@ -296,26 +296,26 @@ export function SearchPageSkeleton() {
     <div className="space-y-8 opacity-0 animate-delayedFadeIn">
       {/* Search header */}
       <div className="space-y-4">
-        <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
-        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/6"></div>
+        <div className="h-8 bg-muted rounded w-1/4"></div>
+        <div className="h-4 bg-muted rounded w-1/6"></div>
       </div>
 
       {/* Search tabs */}
       <div className="flex gap-4 border-b">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-10 bg-stone-200 dark:bg-stone-700 rounded w-20"></div>
+          <div key={i} className="h-10 bg-muted rounded w-20"></div>
         ))}
       </div>
 
       {/* Search results */}
       <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="p-4 bg-white dark:bg-stone-800 rounded-lg border">
+          <div key={i} className="p-4 bg-card rounded-lg border">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-stone-200 dark:bg-stone-700 rounded"></div>
+              <div className="w-8 h-8 bg-muted rounded"></div>
               <div className="flex-1 space-y-2">
-                <div className="h-5 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
-                <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
+                <div className="h-5 bg-muted rounded w-1/3"></div>
+                <div className="h-4 bg-muted rounded w-1/2"></div>
               </div>
             </div>
           </div>
@@ -334,7 +334,7 @@ export function SuspenseFallback() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <LoadingSpinner size="lg" className="mx-auto mb-4" />
-        <p className="text-stone-600 dark:text-stone-400">در حال بارگذاری...</p>
+        <p className="text-muted-foreground">در حال بارگذاری...</p>
       </div>
     </div>
   );
@@ -353,7 +353,7 @@ export function PageTransitionSpinner() {
           {/* Main spinner */}
           <div className="relative">
             <svg 
-              className="w-10 h-10 animate-spin text-yellow-600/40 dark:text-yellow-500/40" 
+              className="w-10 h-10 animate-spin text-warning/40 dark:text-warning/40" 
               fill="none" 
               viewBox="0 0 24 24"
             >

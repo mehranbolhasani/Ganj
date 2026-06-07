@@ -21,10 +21,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <div className="max-w-6xl mx-auto w-full">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+        <h1 className="text-3xl font-bold text-foreground mb-4">
           نتایج جستجو برای
           {query && (
-            <span className="text-yellow-600 dark:text-yellow-500">
+            <span className="text-warning">
               {' '}&#xAB;{query}&#xBB;
             </span>
           )}
@@ -37,15 +37,15 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             </Suspense>
           ) : (
         <div className="text-center py-12">
-          <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 bg-muted dark:bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
+          <h3 className="text-xl font-semibold text-secondary-foreground mb-2">
             جستجو کنید
           </h3>
-          <p className="text-stone-500 dark:text-stone-400">
+          <p className="text-muted-foreground">
             برای شروع جستجو، کلمه یا عبارتی را وارد کنید
           </p>
         </div>

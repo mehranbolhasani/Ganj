@@ -17,7 +17,12 @@ export default function FontSizeControl({
   vertical = false
 }: FontSizeControlProps) {
   const { fontSize } = useFontSize();
-  const [isHydrated] = useState(() => typeof window !== 'undefined');
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsHydrated(true);
+  }, []);
 
   const increaseFontSize = useCallback(() => {
     const sizes = ['small', 'medium', 'large'] as const;
@@ -91,8 +96,8 @@ export default function FontSizeControl({
     <div className={`flex align-center font-size-control ${className}`}>
       {showLabel && (
         <div className="flex items-center gap-2 mb-2">
-          <HugeiconsIcon icon={TextIcon} size={16} className="text-stone-600 dark:text-stone-400" />
-          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+          <HugeiconsIcon icon={TextIcon} size={16} className="text-muted-foreground" />
+          <span className="text-sm font-medium text-secondary-foreground">
             اندازه فونت
           </span>
         </div>
@@ -113,8 +118,8 @@ export default function FontSizeControl({
               }}
               className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer aspect-square flex items-center justify-center ${
                 fontSize === size
-                  ? 'bg-stone-300/50 dark:bg-yellow-600/35 text-stone-900 dark:text-stone-100'
-                  : 'text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
+                  ? 'bg-muted/50 dark:bg-yellow-600/35 text-foreground'
+                  : 'text-muted-foreground dark:text-secondary-foreground hover:bg-muted dark:hover:bg-muted'
               }`}
               aria-label={`تنظیم اندازه فونت به ${getSizeLabel(size)}`}
               title={getSizeLabel(size)}
@@ -128,7 +133,7 @@ export default function FontSizeControl({
       </div>
 
       {/* Current size indicator */}
-      {/* <div className="mt-2 text-xs text-stone-500 dark:text-stone-400 text-center">
+      {/* <div className="mt-2 text-xs text-muted-foreground text-center">
         {getSizeLabel(fontSize)}
       </div> */}
     </div>

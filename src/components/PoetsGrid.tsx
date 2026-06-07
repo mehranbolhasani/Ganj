@@ -134,7 +134,7 @@ const PoetsGrid = () => {
   if (error && poets.length === 0) {
     return (
       <div className="relative w-full">
-        <p className="text-center text-sm text-stone-600 dark:text-stone-400 mb-6">
+        <p className="text-center text-sm text-muted-foreground mb-6">
           فهرست شاعران از سرور بارگذاری نشد؛ شاعرهای پرمخاطب به صورت آفلاین نمایش داده می‌شوند.
         </p>
         <FamousPoets poets={FEATURED_POETS_FALLBACK} />
@@ -149,7 +149,7 @@ const PoetsGrid = () => {
       <FamousPoets poets={famousPoets} />
 
       {loading && poets.length === 0 && (
-        <p className="mt-10 text-center text-sm text-stone-500 dark:text-stone-400">
+        <p className="mt-10 text-center text-sm text-muted-foreground">
           در حال بارگذاری فهرست کامل شاعران...
         </p>
       )}
@@ -171,15 +171,15 @@ const PoetsGrid = () => {
       </div>
 
         <div className="faal-banner-container max-w-full md:max-w-[640px] w-full mx-auto sticky bottom-0 z-50 h-28 md:h-36 flex items-center justify-center">
-          <a href="/faal" className="faal-banner w-[80%] md:w-1/2 h-20 flex items-center justify-center bg-amber-950/90 rounded-full backdrop-blur-sm shadow-xl dark:shadow-md shadow-amber-900/60 z-30 overflow-hidden relative ring-2 ring-amber-500/20 hover:ring-2 hover:ring-amber-500/40 hover:w-[45%] transition-all duration-300 ease-in-out" target="_blank">
+          <a href="/faal" className="faal-banner w-[80%] md:w-1/2 h-20 flex items-center justify-center bg-primary/90 rounded-full backdrop-blur-sm shadow-xl dark:shadow-md shadow-amber-900/60 z-30 overflow-hidden relative ring-2 ring-amber-500/20 hover:ring-2 hover:ring-amber-500/40 hover:w-[45%] transition-all duration-300 ease-in-out" target="_blank">
             <div className="faal-banner-content flex items-center justify-between w-full h-full px-6 relative z-20">
               <div className="faal-banner-content-title">
-                <h3 className="relative text-4xl text-amber-100 dark:text-amber-100 flex items-center justify-center translate-y-0.5">
+                <h3 className="relative text-4xl text-background flex items-center justify-center translate-y-0.5">
                   <span>
                     <span>فا</span>
                     <span>ل</span>
                   </span>
-                  <span className="relative -mr-4 text-amber-300">
+                  <span className="relative -mr-4 text-secondary-foreground">
                     <span>حا</span>
                     <span>فظ</span>
                   </span>
@@ -187,18 +187,18 @@ const PoetsGrid = () => {
                 </h3>
               </div>
     
-              <div className="faal-banner-content-description flex items-center justify-center gap-1 text-amber-50">
+              <div className="faal-banner-content-description flex items-center justify-center gap-1 text-background">
                 <span className="text-base font-bold">مشاهده</span>
                 <HugeiconsIcon icon={ArrowLeft01Icon} size={20} />
               </div>
             </div>
 
             <div className="w-1/2 h-24 absolute -bottom-12 flex left-1/2 -translate-x-1/2 blur-2xl z-10">
-              <div className="w-1/2 h-full bg-amber-700 rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-60"></div>
-              <div className="w-1/2 h-full bg-amber-500 rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-80"></div>
-              <div className="w-1/2 h-full bg-amber-300 rounded-full aspect-square min-w-0 z-10 blur-3xl"></div>
-              <div className="w-1/2 h-full bg-amber-500 rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-80"></div>
-              <div className="w-1/2 h-full bg-amber-700 rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-60"></div>
+              <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-60"></div>
+              <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 -translate-x-8 blur-3xl opacity-80"></div>
+              <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 z-10 blur-3xl"></div>
+              <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-80"></div>
+              <div className="w-1/2 h-full bg-warning rounded-full aspect-square min-w-0 translate-x-8 blur-3xl opacity-60"></div>
             </div>
           </a>
         </div>

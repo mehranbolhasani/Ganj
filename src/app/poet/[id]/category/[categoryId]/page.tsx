@@ -68,15 +68,15 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
     return (
 
         <div className="text-center py-8">
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
             خطا در بارگذاری
           </h1>
-          <p className="text-stone-600 dark:text-stone-300 mb-4">
+          <p className="text-muted-foreground dark:text-secondary-foreground mb-4">
             {error}
           </p>
           <Link
             href={`/poet/${poetId}`}
-            className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
+            className="inline-block px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-primary transition-colors"
           >
             بازگشت به شاعر
           </Link>
@@ -93,7 +93,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
         <div className="h-20 flex items-center">
           <h1 className="text-3xl font-bold text-right flex items-center justify-between w-full">
             <span>{categoryTitle}</span>
-            <span className="text-stone-600 dark:text-stone-300">{toPersianDigits(poems.length)}</span>
+            <span className="text-muted-foreground dark:text-secondary-foreground">{toPersianDigits(poems.length)}</span>
           </h1>
         </div>
 
@@ -105,12 +105,12 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
         {/* Show poems only if there are no chapters, or if there are direct poems */}
         {effectiveChapters.length > 0 ? (
           <div className="text-center py-8">
-            <p className="text-stone-600 dark:text-stone-400 text-right mb-4">برای مشاهده اشعار، روی یکی از فصول بالا کلیک کنید</p>
-            <p className="text-sm text-stone-500 dark:text-stone-500 text-right">این مجموعه شامل {toPersianDigits(effectiveChapters.length)} فصل است</p>
+            <p className="text-muted-foreground text-right mb-4">برای مشاهده اشعار، روی یکی از فصول بالا کلیک کنید</p>
+            <p className="text-sm text-muted-foreground text-right">این مجموعه شامل {toPersianDigits(effectiveChapters.length)} فصل است</p>
           </div>
         ) : poems.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-stone-500 dark:text-stone-300 text-right">هیچ شعری یافت نشد</p>
+            <p className="text-muted-foreground dark:text-secondary-foreground text-right">هیچ شعری یافت نشد</p>
           </div>
         ) : (
           <PoemPagination poems={poems} itemsPerPage={20} currentPage={currentPage} baseUrl={`/poet/${poetId}/category/${categoryId}`} />

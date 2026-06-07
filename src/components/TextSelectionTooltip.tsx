@@ -164,7 +164,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
   const tooltipContent = (
     <div
       ref={tooltipRef}
-      className="fixed z-9999 bg-stone-900/80 dark:bg-stone-100/80 text-white dark:text-stone-900 rounded-xl shadow-lg p-2 flex items-center gap-2 pointer-events-auto transition-opacity duration-150 backdrop-blur-sm w-52"
+      className="fixed z-9999 bg-primary/80 dark:bg-muted/80 text-primary-foreground dark:text-foreground rounded-xl shadow-lg p-2 flex items-center gap-2 pointer-events-auto transition-opacity duration-150 backdrop-blur-sm w-52"
       style={{
         left: `${adjustedPosition.x}px`,
         top: `${adjustedPosition.y}px`,
@@ -180,7 +180,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
         href={vajehyabUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-yellow-700 dark:hover:bg-stone-200 active:bg-yellow-600 dark:active:bg-stone-300 transition-colors text-sm font-medium touch-manipulation min-h-[44px] min-w-[44px] justify-center w-full"
+        className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-yellow-700 dark:hover:bg-muted active:bg-yellow-600 dark:active:bg-muted transition-colors text-sm font-medium touch-manipulation min-h-[44px] min-w-[44px] justify-center w-full"
         onClick={(e) => {
           e.stopPropagation();
           // Close tooltip after a short delay to allow navigation
@@ -205,7 +205,7 @@ const TextSelectionTooltip = ({ onClose, selectedText, position }: TextSelection
           e.stopPropagation();
           onClose();
         }}
-        className="p-2 rounded-md hover:bg-stone-800 dark:hover:bg-stone-200 active:bg-stone-700 dark:active:bg-stone-300 transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
+        className="p-2 rounded-md hover:bg-primary dark:hover:bg-muted active:bg-secondary dark:active:bg-muted transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
         aria-label="بستن"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

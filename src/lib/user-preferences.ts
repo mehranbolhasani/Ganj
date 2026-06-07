@@ -120,7 +120,7 @@ class UserPreferencesManager {
    */
   getThemeClass(): string {
     if (this.preferences.theme === 'auto') {
-      return 'dark:bg-stone-900 bg-stone-100';
+      return 'dark:bg-primary bg-muted';
     }
     return this.preferences.theme === 'dark' ? 'dark' : 'light';
   }

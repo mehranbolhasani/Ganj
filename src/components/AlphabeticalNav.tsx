@@ -29,7 +29,7 @@ export default function AlphabeticalNav({ onLetterClick, activeLetter, available
       <div className={`md:hidden fixed bottom-4 left-4 right-4 z-50 transition-all duration-300 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}>
-        <div className="bg-white dark:bg-stone-800 rounded-lg shadow-lg p-2 border border-stone-200 dark:border-stone-700">
+        <div className="bg-card rounded-lg shadow-lg p-2 border border-border">
           <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
             {availableLetters.map((letter) => (
               <button
@@ -37,8 +37,8 @@ export default function AlphabeticalNav({ onLetterClick, activeLetter, available
                 onClick={() => onLetterClick(letter)}
                 className={`px-3 py-2 text-sm font-medium rounded transition-all duration-200 touch-manipulation whitespace-nowrap shrink-0 ${
                   activeLetter === letter
-                    ? 'bg-stone-100 dark:bg-stone-700 text-stone-900 dark:text-stone-100'
-                    : 'text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 hover:text-stone-900 dark:hover:text-stone-100'
+                    ? 'bg-muted dark:bg-secondary text-foreground'
+                    : 'text-muted-foreground hover:bg-background dark:hover:bg-secondary hover:text-foreground dark:hover:text-background'
                 }`}
               >
                 {letter}
@@ -52,7 +52,7 @@ export default function AlphabeticalNav({ onLetterClick, activeLetter, available
       <div className={`hidden md:block fixed right-4 top-1/2 transform -translate-y-1/2 z-50 transition-translate transition-opacity duration-300 ${
         isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
       }`}>
-        <div className="alphabetical-nav bg-white dark:bg-stone-800 rounded-lg shadow-lg p-2 border border-stone-200 dark:border-stone-700">
+        <div className="alphabetical-nav bg-card rounded-lg shadow-lg p-2 border border-border">
           <div className="flex flex-col space-y-1 max-h-96 overflow-y-auto">
             {availableLetters.map((letter) => (
               <button
@@ -60,8 +60,8 @@ export default function AlphabeticalNav({ onLetterClick, activeLetter, available
                 onClick={() => onLetterClick(letter)}
                 className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
                   activeLetter === letter
-                    ? 'bg-stone-100 dark:bg-stone-700 text-stone-900 dark:text-stone-100'
-                    : 'text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 hover:text-stone-900 dark:hover:text-stone-100'
+                    ? 'bg-muted dark:bg-secondary text-foreground'
+                    : 'text-muted-foreground hover:bg-background dark:hover:bg-secondary hover:text-foreground dark:hover:text-background'
                 }`}
               >
                 {letter}

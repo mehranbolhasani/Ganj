@@ -12,7 +12,7 @@ export default function ChangelogPage() {
       <div className="mb-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors mb-4"
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground dark:hover:text-secondary-foreground transition-colors mb-4"
         >
           <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="rotate-180" />
           بازگشت به صفحه اصلی
@@ -20,10 +20,10 @@ export default function ChangelogPage() {
 
         <div className="flex items-center gap-3 mb-4">
           <div>
-            <h1 className="text-3xl text-stone-900 dark:text-stone-100 mb-4">
+            <h1 className="text-3xl text-foreground mb-4">
               تاریخچه تغییرات
             </h1>
-            <p className="text-stone-600 dark:text-stone-300 text-lg mb-8">
+            <p className="text-muted-foreground dark:text-secondary-foreground text-lg mb-8">
               تمام تغییرات و بهبودهای انجام شده در گنج
             </p>
           </div>
@@ -34,21 +34,21 @@ export default function ChangelogPage() {
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-xl p-4 mb-16 border border-blue-200 dark:border-blue-800/50">
         <div className="flex items-center gap-3 mb-9">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <HugeiconsIcon icon={StarIcon} size={16} className="text-white" />
+            <HugeiconsIcon icon={StarIcon} size={16} className="text-primary-foreground" />
           </div>
           <div>
-            <h2 className="text-xl text-stone-900 dark:text-stone-100">نسخه ۰/۳</h2>
-            <p className="text-stone-600 dark:text-stone-300">آخرین به‌روزرسانی - ۱۶ دسامبر ۲۰۲۵</p>
+            <h2 className="text-xl text-foreground">نسخه ۰/۳</h2>
+            <p className="text-muted-foreground dark:text-secondary-foreground">آخرین به‌روزرسانی - ۱۶ دسامبر ۲۰۲۵</p>
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-3">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+            <h3 className="font-semibold text-foreground flex items-center gap-2">
               <HugeiconsIcon icon={PlusSignIcon} size={16} className="text-green-600" />
               ویژگی‌های جدید
             </h3>
-            <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+            <ul className="space-y-2 text-sm text-secondary-foreground">
               <li>• <strong>فال حافظ</strong></li>
               <li>• <strong>جستجو در اشعار شاعر</strong> - جستجوی اختصاصی در اشعار هر شاعر</li>
               <li>• <strong>فیلتر شاعر در جستجوی سراسری</strong> - محدود کردن نتایج جستجو به شاعر خاص</li>
@@ -56,11 +56,11 @@ export default function ChangelogPage() {
           </div>
 
           <div className="space-y-3">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <HugeiconsIcon icon={FlashIcon} size={16} className="text-yellow-600" />
+            <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <HugeiconsIcon icon={FlashIcon} size={16} className="text-warning" />
               بهبودها
             </h3>
-            <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+            <ul className="space-y-2 text-sm text-secondary-foreground">
               <li>• بهبود عملکرد و بهینه‌سازی کد</li>
               <li>• رفع تمام خطاهای ESLint و TypeScript</li>
               <li>• بهبود مدیریت state در کامپوننت‌های React</li>
@@ -68,11 +68,11 @@ export default function ChangelogPage() {
           </div>
 
           <div className="space-y-3">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <HugeiconsIcon icon={Bug01Icon} size={16} className="text-red-600" />
+            <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <HugeiconsIcon icon={Bug01Icon} size={16} className="text-destructive" />
               رفع مشکلات
             </h3>
-            <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+            <ul className="space-y-2 text-sm text-secondary-foreground">
               <li>• رفع مشکلات React Hooks و setState در effects</li>
               <li>• رفع مشکلات TypeScript با انواع داده</li>
               <li>• بهبود مدیریت وابستگی‌های hooks</li>
@@ -83,29 +83,29 @@ export default function ChangelogPage() {
 
       {/* Previous Versions */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-6">
+        <h2 className="text-2xl font-bold text-foreground mb-6">
           نسخه‌های قبلی
         </h2>
 
         {/* Version 0.2 */}
-        <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700 mb-6">
+        <div className="bg-card rounded-xl p-6 border border-border mb-6">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <HugeiconsIcon icon={StarIcon} size={16} className="text-white" />
+              <HugeiconsIcon icon={StarIcon} size={16} className="text-primary-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">نسخه ۰/۲</h3>
-              <p className="text-stone-600 dark:text-stone-300">۱۰ نوامبر ۲۰۲۵</p>
+              <h3 className="text-lg font-bold text-foreground">نسخه ۰/۲</h3>
+              <p className="text-muted-foreground dark:text-secondary-foreground">۱۰ نوامبر ۲۰۲۵</p>
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                 <HugeiconsIcon icon={PlusSignIcon} size={16} className="text-green-600" />
                 ویژگی‌های جدید
               </h4>
-              <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <ul className="space-y-2 text-sm text-secondary-foreground">
                 <li>• جستجوی معنی کلمات با انتخاب متن در شعرها (واژه‌یاب)</li>
                 <li>• ناوبری بین اشعار (قبلی/بعدی)</li>
                 <li>• جستجوی نامحدود با پشتیبانی از ۲۷,۰۰۰+ نتیجه</li>
@@ -116,11 +116,11 @@ export default function ChangelogPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <HugeiconsIcon icon={FlashIcon} size={16} className="text-yellow-600" />
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <HugeiconsIcon icon={FlashIcon} size={16} className="text-warning" />
                 بهبودها
               </h4>
-              <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <ul className="space-y-2 text-sm text-secondary-foreground">
                 <li>• بهبود دسترسی‌پذیری (WCAG 2.1 AA)</li>
                 <li>• رفع Layout Shifts برای تجربه بهتر</li>
                 <li>• بهبود نسبت کنتراست رنگ‌ها</li>
@@ -131,11 +131,11 @@ export default function ChangelogPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <HugeiconsIcon icon={Bug01Icon} size={16} className="text-red-600" />
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <HugeiconsIcon icon={Bug01Icon} size={16} className="text-destructive" />
                 رفع مشکلات
               </h4>
-              <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <ul className="space-y-2 text-sm text-secondary-foreground">
                 <li>• رفع مشکلات دسترسی‌پذیری در Vercel</li>
                 <li>• رفع Layout Shifts در صفحات شعر و شاعر</li>
                 <li>• رفع خطاهای ESLint و TypeScript</li>
@@ -147,24 +147,24 @@ export default function ChangelogPage() {
         </div>
 
         {/* Version 0.1 */}
-        <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
+        <div className="bg-card rounded-xl p-6 border border-border">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-              <HugeiconsIcon icon={HeartIcon} size={16} className="text-white" />
+              <HugeiconsIcon icon={HeartIcon} size={16} className="text-primary-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">نسخه ۰/۱</h3>
-              <p className="text-stone-600 dark:text-stone-300">۱۹ اکتبر ۲۰۲۵ - اولین نسخه</p>
+              <h3 className="text-lg font-bold text-foreground">نسخه ۰/۱</h3>
+              <p className="text-muted-foreground dark:text-secondary-foreground">۱۹ اکتبر ۲۰۲۵ - اولین نسخه</p>
             </div>
           </div>
 
           <div className="grid md:grid-cols-1 gap-8">
             <div>
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                 <HugeiconsIcon icon={PlusSignIcon} size={16} className="text-green-600" />
                 ویژگی‌های اصلی
               </h4>
-              <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <ul className="space-y-2 text-sm text-secondary-foreground">
                 <li>• نمایش ۶ شاعر معروف فارسی</li>
                 <li>• ناوبری الفبایی برای تمام شاعران</li>
                 <li>• صفحات اختصاصی برای هر شاعر</li>
@@ -174,11 +174,11 @@ export default function ChangelogPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                 <HugeiconsIcon icon={Settings01Icon} size={16} className="text-blue-600" />
                 فناوری
               </h4>
-              <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <ul className="space-y-2 text-sm text-secondary-foreground">
                 <li>• Next.js ۱۶ با Turbopack</li>
                 <li>• TypeScript برای امنیت نوع</li>
                 <li>• Tailwind CSS برای طراحی</li>
@@ -188,11 +188,11 @@ export default function ChangelogPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3 flex items-center gap-2">
-                <HugeiconsIcon icon={Bug01Icon} size={16} className="text-red-600" />
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <HugeiconsIcon icon={Bug01Icon} size={16} className="text-destructive" />
                 رفع مشکلات
               </h4>
-              <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
+              <ul className="space-y-2 text-sm text-secondary-foreground">
                 <li>• رفع مشکلات موبایل</li>
                 <li>• بهبود بارگذاری تصاویر</li>
                 <li>• رفع مشکلات API</li>

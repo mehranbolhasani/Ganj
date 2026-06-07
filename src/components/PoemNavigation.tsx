@@ -28,8 +28,8 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
   }
 
   return (
-    <nav 
-      className="mt-8 flex w-full min-w-0 max-w-full flex-col gap-3 overflow-x-clip border-t border-stone-200 pt-8 dark:border-stone-700 md:flex-row md:items-stretch md:justify-between md:gap-4"
+    <nav
+      className="mt-8 flex w-full min-w-0 max-w-full flex-col gap-3 overflow-x-clip border-t border-border pt-8 dark:border-border md:flex-row md:items-stretch md:justify-between md:gap-4"
       aria-label="ناوبری بین اشعار"
     >
       {/* Previous Poem */}
@@ -38,21 +38,21 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
           <Link
             href={`/poem/${previousPoem.id}`}
             onClick={(e) => handleNavigation(e, previousPoem.id)}
-            className="group flex w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-lg bg-stone-100 px-3 py-3 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 sm:px-4"
+            className="group flex w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-lg bg-muted px-3 py-3 transition-colors hover:bg-muted sm:px-4"
             aria-label={`شعر قبلی: ${previousPoem.title}`}
           >
-            <HugeiconsIcon icon={ArrowRight01Icon} className="h-5 w-5 shrink-0 text-stone-600 transition-colors group-hover:text-stone-900 dark:text-stone-400 dark:group-hover:text-stone-200" aria-hidden="true" />
+            <HugeiconsIcon icon={ArrowRight01Icon} className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground dark:text-muted-foreground dark:group-hover:text-secondary-foreground" aria-hidden="true" />
             <div className="min-w-0 flex-1 text-right">
-              <div className="mb-1 text-xs text-stone-600 dark:text-stone-400">قبلی</div>
-              <div className="break-words text-sm font-medium text-stone-900 [overflow-wrap:anywhere] line-clamp-3 dark:text-stone-100">
+              <div className="mb-1 text-xs text-muted-foreground">قبلی</div>
+              <div className="break-words text-sm font-medium text-foreground [overflow-wrap:anywhere] line-clamp-3">
                 {previousPoem.title}
               </div>
             </div>
           </Link>
         ) : (
           <div className="px-4 py-3 opacity-50" aria-hidden="true">
-            <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">قبلی</div>
-            <div className="text-sm text-stone-500 dark:text-stone-600">—</div>
+            <div className="text-xs text-muted-foreground mb-1">قبلی</div>
+            <div className="text-sm text-muted-foreground dark:text-muted-foreground">—</div>
           </div>
         )}
       </div>
@@ -63,21 +63,21 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
           <Link
             href={`/poem/${nextPoem.id}`}
             onClick={(e) => handleNavigation(e, nextPoem.id)}
-            className="group flex w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-lg bg-stone-100 px-3 py-3 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 sm:px-4"
+            className="group flex w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-lg bg-muted px-3 py-3 transition-colors hover:bg-muted sm:px-4"
             aria-label={`شعر بعدی: ${nextPoem.title}`}
           >
             <div className="min-w-0 flex-1 text-left">
-              <div className="mb-1 text-xs text-stone-600 dark:text-stone-400">بعدی</div>
-              <div className="break-words text-sm font-medium text-stone-900 [overflow-wrap:anywhere] line-clamp-3 dark:text-stone-100">
+              <div className="mb-1 text-xs text-muted-foreground">بعدی</div>
+              <div className="break-words text-sm font-medium text-foreground [overflow-wrap:anywhere] line-clamp-3">
                 {nextPoem.title}
               </div>
             </div>
-            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5 shrink-0 text-stone-600 transition-colors group-hover:text-stone-900 dark:text-stone-400 dark:group-hover:text-stone-200" aria-hidden="true" />
+            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground dark:text-muted-foreground dark:group-hover:text-secondary-foreground" aria-hidden="true" />
           </Link>
         ) : (
           <div className="px-4 py-3 opacity-50 text-left" aria-hidden="true">
-            <div className="text-xs text-stone-600 dark:text-stone-400 mb-1">بعدی</div>
-            <div className="text-sm text-stone-500 dark:text-stone-600">—</div>
+            <div className="text-xs text-muted-foreground mb-1">بعدی</div>
+            <div className="text-sm text-muted-foreground dark:text-muted-foreground">—</div>
           </div>
         )}
       </div>
@@ -86,4 +86,3 @@ const PoemNavigation = ({ previousPoem, nextPoem }: PoemNavigationProps) => {
 };
 
 export default PoemNavigation;
-

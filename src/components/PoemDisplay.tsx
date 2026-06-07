@@ -18,7 +18,12 @@ type ReadingTheme = 'default' | 'sepia' | 'night';
 
 const PoemDisplay = ({ poem }: PoemDisplayProps) => {
   const { poemClasses, fontSize } = useFontSize();
-  const [isHydrated] = useState(() => typeof window !== 'undefined');
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsHydrated(true);
+  }, []);
   const [isDistractFree, setIsDistractFree] = useState(false);
   const [readingTheme, setReadingTheme] = useState<ReadingTheme>('default');
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -231,10 +236,10 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         };
       default:
         return {
-          bg: 'bg-stone-50 dark:bg-stone-900',
-          text: 'text-stone-900 dark:text-stone-100',
-          secondaryText: 'text-stone-500 dark:text-stone-400',
-          controlsBg: 'bg-white/80 dark:bg-stone-800/80',
+          bg: 'bg-background',
+          text: 'text-foreground',
+          secondaryText: 'text-muted-foreground',
+          controlsBg: 'bg-card/80',
           filter: '',
         };
     }
@@ -265,7 +270,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         className={`fixed inset-0 z-50 overflow-y-auto animate-fadeIn distract-free-scroll ${theme.bg}`}
       >
         {/* Progress bar at top */}
-        <div className="fixed top-0 left-0 right-0 h-1 bg-stone-200/30 dark:bg-stone-700/30 z-50">
+        <div className="fixed top-0 left-0 right-0 h-1 bg-muted/30 dark:bg-secondary/30 z-50">
           <div
             className="h-full bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-600 transition-all duration-300 ease-out"
             style={{ width: `${scrollProgress}%` }}
@@ -305,8 +310,8 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
                 <div
                   className={`rounded-full transition-all duration-200 ${
                     readingTheme === 'default'
-                      ? 'w-2.5 h-2.5 bg-stone-500 dark:bg-stone-400'
-                      : 'w-1.5 h-1.5 bg-stone-400/40 dark:bg-stone-600/40'
+                      ? 'w-2.5 h-2.5 bg-muted dark:bg-muted'
+                      : 'w-1.5 h-1.5 bg-muted/40 dark:bg-muted/40'
                   }`}
                 />
 
@@ -396,9 +401,9 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
   return (
     <div className="w-full min-w-0 max-w-full overflow-x-clip sm:mx-auto sm:max-w-4xl">
       <div className="mb-4 text-center sm:mb-8">
-        <div className="mb-4 flex w-full min-w-0 flex-row items-center">
+        <div className="mb-4 flex w-full min-w-0 flex-row items-center border-b border-primary/10 py-4">
           <div className="flex w-full min-w-0 justify-between text-right">
-            <h1 className="min-w-0 max-w-full break-words text-2xl font-normal leading-tight text-stone-900 dark:text-stone-300 [overflow-wrap:anywhere] sm:text-4xl sm:leading-14">
+            <h1 className="min-w-0 max-w-full break-words text-2xl font-normal leading-tight text-foreground [overflow-wrap:anywhere] sm:text-4xl sm:leading-14">
               {poem.title}
             </h1>
           </div>
@@ -407,7 +412,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         {/* Mobile-first responsive layout */}
         <div className="flex w-full min-w-0 max-w-full flex-col-reverse justify-between gap-8 align-end sm:flex-row-reverse sm:gap-2">
           {/* Controls - Mobile: full width, Desktop: right side */}
-          <div className="flex h-fit w-fit shrink-0 flex-row gap-1 self-end justify-center rounded-xl bg-white/75 p-1 shadow-sm backdrop-blur-sm dark:bg-yellow-900/20 sm:w-auto sm:justify-end">
+          <div className="flex h-fit w-fit shrink-0 flex-row gap-1 self-end justify-center rounded-xl bg-card/75 p-1 shadow-sm backdrop-blur-sm dark:bg-warning/20 sm:w-auto sm:justify-end">
             {/* Font Size Control - reserve space to prevent layout shift */}
             <div className="flex justify-end border-l-yellow-900/40 dark:border-l-yellow-900/40 border-l pl-2">
               <FontSizeControl showLabel={false} />
@@ -418,7 +423,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
               {isHydrated ? (
                 <button
                   onClick={() => setIsDistractFree(true)}
-                  className="flex items-center justify-center w-10 h-10 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-600 transition-all duration-200 cursor-pointer touch-target"
+                  className="flex items-center justify-center w-10 h-10 rounded-lg text-muted-foreground hover:bg-muted dark:hover:bg-muted transition-all duration-200 cursor-pointer touch-target"
                   aria-label="حالت تمرکز (بدون حواس‌پرتی)"
                   title="حالت تمرکز (F)"
                 >
@@ -447,11 +452,11 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
 
           {/* Poet info - Mobile: below controls, Desktop: left side */}
           <div className="min-w-0 max-w-full text-right">
-            <p className="break-words text-base font-normal text-stone-600 [overflow-wrap:anywhere] dark:text-stone-300 sm:text-lg">
+            <p className="break-words text-base font-normal text-muted-foreground [overflow-wrap:anywhere] dark:text-secondary-foreground sm:text-lg">
               {poem.poetName}
             </p>
             {poem.categoryTitle && (
-              <p className="mt-1 break-words text-sm font-normal text-stone-500 [overflow-wrap:anywhere] dark:text-stone-300">
+              <p className="mt-1 break-words text-sm font-normal text-muted-foreground [overflow-wrap:anywhere] dark:text-secondary-foreground">
                 از مجموعه: {poem.categoryTitle}
               </p>
             )}
@@ -459,7 +464,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         </div>
       </div>
 
-      <div className="min-w-0 max-w-full rounded-2xl border border-white bg-white/50 p-4 shadow-lg/5 backdrop-blur-md dark:border-yellow-900/40 dark:bg-yellow-900/10 sm:p-8">
+      <div className="min-w-0 max-w-full rounded-xl bg-card p-4 shadow-xl shadow-primary/10 sm:p-8 dark:shadow-none">
         {hasVerses ? (
           <div
             ref={poemContentRef}
@@ -468,7 +473,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
             {poem.verses.map((verse, index) => (
               <p
                 key={index}
-                className={`break-words text-right text-stone-900 [overflow-wrap:anywhere] [word-break:break-word] leading-relaxed mobile-leading-relaxed dark:text-stone-300 mb-3 even:mb-9 ${isHydrated ? poemClasses : ''}`}
+                className={`break-words text-right text-foreground [overflow-wrap:anywhere] [word-break:break-word] leading-relaxed mobile-leading-relaxed dark:text-secondary-foreground mb-3 even:mb-9 ${isHydrated ? poemClasses : ''}`}
               >
                 {verse}
               </p>
@@ -476,10 +481,10 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-stone-600 dark:text-stone-400 text-lg mb-4">
+            <p className="text-muted-foreground text-lg mb-4">
               متن این شعر در دسترس نیست
             </p>
-            <p className="text-stone-500 dark:text-stone-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               ممکن است این شعر در پایگاه داده موجود نباشد یا خطایی در بارگذاری رخ داده باشد.
             </p>
           </div>

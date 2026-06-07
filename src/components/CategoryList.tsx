@@ -33,7 +33,7 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
   if (categories.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-stone-500 dark:text-stone-300">
+        <p className="text-muted-foreground dark:text-secondary-foreground">
           هیچ مجموعه‌ای یافت نشد
         </p>
       </div>
@@ -43,15 +43,15 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
   const styles = isFamous
     ? {
         card: 'bg-card hover:shadow-primary/20',
-        iconWrapper: 'bg-amber-100/50 dark:bg-amber-800/30',
-        icon: 'text-amber-700 dark:text-amber-300',
-        title: 'text-amber-900 dark:text-amber-100',
+        iconWrapper: 'bg-warning/10',
+        icon: 'text-secondary-foreground',
+        title: 'text-foreground',
       }
     : {
         card: 'bg-card hover:shadow-primary/20',
-        iconWrapper: 'bg-stone-100 dark:bg-stone-700',
-        icon: 'text-stone-600 dark:text-stone-400',
-        title: 'text-stone-900 dark:text-stone-300',
+        iconWrapper: 'bg-muted dark:bg-secondary',
+        icon: 'text-muted-foreground',
+        title: 'text-foreground',
       };
 
   return (
@@ -73,7 +73,7 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
                 {category.title}
               </h3>
             {category.poemCount !== undefined && (
-              <p className="text-stone-500 dark:text-stone-300 text-xs">
+              <p className="text-muted-foreground dark:text-secondary-foreground text-xs">
                 {toPersianDigits(category.poemCount)} شعر
               </p>
             )}

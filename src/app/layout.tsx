@@ -111,7 +111,7 @@ export default function RootLayout({
         {/* Hidden via JavaScript for non-faal pages, faded out via CSS for faal pages once content loads */}
         <div
           id="faal-preload-bg"
-          className="fixed inset-0 bg-stone-950 dark:bg-stone-900 z-[9998] pointer-events-none transition-opacity duration-300"
+          className="fixed inset-0 bg-background dark:bg-primary z-[9998] pointer-events-none transition-opacity duration-300"
           style={{
             display: 'none', // Hidden by default, shown via CSS for faal pages
           }}

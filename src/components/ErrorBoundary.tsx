@@ -53,26 +53,26 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-900 p-4">
-          <div className="max-w-md w-full bg-white dark:bg-stone-800 rounded-xl shadow-lg p-6 text-center">
-            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <HugeiconsIcon icon={Alert02Icon} size={32} className="text-red-600 dark:text-red-400" />
+        <div className="min-h-screen flex items-center justify-center bg-background p-4">
+          <div className="max-w-md w-full bg-card rounded-xl shadow-lg p-6 text-center">
+            <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <HugeiconsIcon icon={Alert02Icon} size={32} className="text-destructive" />
             </div>
             
-            <h1 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-2">
+            <h1 className="text-xl font-semibold text-foreground mb-2">
               خطایی رخ داده است
             </h1>
             
-            <p className="text-stone-600 dark:text-stone-400 mb-6">
+            <p className="text-muted-foreground mb-6">
               متأسفانه مشکلی در بارگذاری صفحه پیش آمده است. لطفاً دوباره تلاش کنید.
             </p>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mb-6 text-left">
-                <summary className="cursor-pointer text-sm text-stone-500 dark:text-stone-400 mb-2">
+                <summary className="cursor-pointer text-sm text-muted-foreground mb-2">
                   جزئیات خطا (فقط در حالت توسعه)
                 </summary>
-                <pre className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 p-3 rounded overflow-auto">
+                <pre className="text-xs text-destructive bg-destructive/10 p-3 rounded overflow-auto">
                   {this.state.error.toString()}
                   {this.state.errorInfo?.componentStack}
                 </pre>
@@ -82,7 +82,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             <div className="flex gap-3 justify-center">
               <button
                 onClick={this.retry}
-                className="flex items-center gap-2 px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors"
               >
                 <HugeiconsIcon icon={RefreshIcon} size={16} />
                 تلاش مجدد
@@ -90,7 +90,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               
               <Link
                 href="/"
-                className="flex items-center gap-2 px-4 py-2 bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 rounded-lg hover:bg-stone-700 dark:hover:bg-stone-300 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground dark:text-foreground rounded-lg hover:bg-secondary dark:hover:bg-muted transition-colors"
               >
                 <HugeiconsIcon icon={Home01Icon} size={16} />
                 صفحه اصلی

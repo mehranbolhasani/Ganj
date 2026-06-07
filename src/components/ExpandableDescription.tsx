@@ -34,8 +34,8 @@ export default function ExpandableDescription({
     <div className="text-sm md:text-md max-w-3xl mx-auto px-6 py-0 pb-6 leading-relaxed">
       <p className={`${
         isFamous
-          ? 'text-stone-800 dark:text-yellow-100'
-          : 'text-stone-700 dark:text-stone-300'
+          ? 'text-foreground'
+          : 'text-secondary-foreground'
       }`}>
         {displayText}
       </p>
@@ -46,8 +46,8 @@ export default function ExpandableDescription({
             onClick={() => setIsExpanded(!isExpanded)}
             className={`inline-flex items-center flex-row-reverse gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${
               isFamous
-                ? 'bg-stone-200/75 dark:bg-amber-800/30 text-stone-600 dark:text-amber-300 hover:bg-amber-200/50 dark:hover:bg-amber-700/40'
-                : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
+                ? 'bg-muted/75 dark:bg-warning/30 text-muted-foreground dark:text-secondary-foreground hover:bg-warning/20/50 dark:hover:bg-warning/40'
+                : 'bg-muted dark:bg-secondary text-muted-foreground dark:text-secondary-foreground hover:bg-muted dark:hover:bg-muted'
             }`}
           >
             {isExpanded ? (

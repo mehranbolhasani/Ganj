@@ -73,15 +73,15 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
     return (
       
         <div className="text-center py-8">
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-300 mb-4">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
             خطا در بارگذاری
           </h1>
-          <p className="text-stone-600 dark:text-stone-300 mb-4">
+          <p className="text-muted-foreground dark:text-secondary-foreground mb-4">
             {error}
           </p>
           <Link 
             href={`/poet/${poetId}/category/${categoryId}`}
-            className="inline-block px-4 py-2 bg-stone-200 dark:bg-stone-700 text-stone-900 dark:text-stone-300 rounded-lg hover:bg-stone-300 dark:hover:bg-stone-800 transition-colors"
+            className="inline-block px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-primary transition-colors"
           >
             بازگشت به {categoryTitle}
           </Link>
@@ -99,20 +99,20 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
       ]} />
       
       <div className="">
-        <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-300 text-right flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-foreground text-right flex items-center justify-between">
           <span>{chapterTitle}</span>
-          <span className="text-stone-600 dark:text-stone-300">
+          <span className="text-muted-foreground dark:text-secondary-foreground">
             {toPersianDigits(poems.length)}
           </span>
         </h1>
-        <p className="text-stone-600 dark:text-stone-400 text-right mt-2">
+        <p className="text-muted-foreground text-right mt-2">
           از {categoryTitle} • {poetName}
         </p>
       </div>
 
       {poems.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-stone-500 dark:text-stone-300 text-right">
+          <p className="text-muted-foreground dark:text-secondary-foreground text-right">
             هیچ شعری یافت نشد
           </p>
         </div>
