@@ -17,7 +17,7 @@ export default function Footer() {
         {/* Left side - Version */}
         <Link
           href="/changelog"
-          className="px-4 py-2 rounded-md text-sm text-foreground hover:bg-muted dark:hover:bg-primary transition-colors"
+          className="px-4 py-2 rounded-md text-sm text-foreground hover:bg-accent/50 transition-colors"
         >
           نسخه ۰/۲
         </Link>
@@ -28,7 +28,7 @@ export default function Footer() {
             href="https://ganjoor.net"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 rounded-md text-sm text-foreground hover:bg-muted dark:hover:bg-primary transition-colors"
+            className="px-4 py-2 rounded-md text-sm text-foreground hover:bg-muted transition-colors"
           >
             سایت گنجور
           </Link>

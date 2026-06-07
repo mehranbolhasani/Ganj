@@ -27,7 +27,7 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <div className="rounded-xl overflow-hidden border border-border bg-card dark:bg-primary p-4">
+      <div className="rounded-xl overflow-hidden border border-border bg-card p-4">
         <ContactForm />
       </div>
 

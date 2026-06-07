@@ -9,12 +9,22 @@ import TextSelectionTooltip from './TextSelectionTooltip';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { BookOpen01Icon, Cancel01Icon, ColorsIcon } from '@hugeicons/core-free-icons';
 import { toPersianDigits } from '@/lib/persian-digits';
+import { motion, useReducedMotion, Variants } from 'motion/react';
 
 interface PoemDisplayProps {
   poem: Poem;
 }
 
 type ReadingTheme = 'default' | 'sepia' | 'night';
+
+const verseVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
+  },
+};
 
 const PoemDisplay = ({ poem }: PoemDisplayProps) => {
   const { poemClasses, fontSize } = useFontSize();
@@ -30,6 +40,18 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
   const [selectedText, setSelectedText] = useState<string>('');
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const poemContentRef = useRef<HTMLDivElement>(null);
+
+  const shouldReduce = useReducedMotion();
+
+  const verseContainerVariantsComputed: Variants = shouldReduce ? {} : {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: poem.verses.length > 20 ? 0.03 : 0.06,
+        delayChildren: 0.1,
+      },
+    },
+  };
 
   // Get distract-free mode font sizes (larger than normal)
   const getDistractFreeFontSize = () => {
@@ -466,19 +488,23 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
 
       <div className="min-w-0 max-w-full rounded-xl bg-card p-4 shadow-xl shadow-primary/10 sm:p-8 dark:shadow-none">
         {hasVerses ? (
-          <div
+          <motion.div
             ref={poemContentRef}
             className="prose prose-lg min-w-0 max-w-full select-text text-center"
+            variants={shouldReduce ? undefined : verseContainerVariantsComputed}
+            initial={shouldReduce ? false : 'hidden'}
+            animate="show"
           >
             {poem.verses.map((verse, index) => (
-              <p
+              <motion.p
                 key={index}
+                variants={shouldReduce ? undefined : verseVariants}
                 className={`break-words text-right text-foreground [overflow-wrap:anywhere] [word-break:break-word] leading-relaxed mobile-leading-relaxed dark:text-secondary-foreground mb-3 even:mb-9 ${isHydrated ? poemClasses : ''}`}
               >
                 {verse}
-              </p>
+              </motion.p>
             ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg mb-4">

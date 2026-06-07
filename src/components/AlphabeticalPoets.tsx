@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Poet } from '@/lib/types';
 import PoetCard from './PoetCard';
+import { motion, useReducedMotion, Variants } from 'motion/react';
 
 interface AlphabeticalPoetsProps {
   poets: Poet[];
@@ -14,6 +15,24 @@ interface AlphabeticalPoetsProps {
 const PERSIAN_LETTERS = [
   'الف', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ک', 'گ', 'ل', 'م', 'ن', 'و', 'ه', 'ی'
 ];
+
+const groupVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] },
+  },
+};
 
 const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }: AlphabeticalPoetsProps) => {
   const [, setActiveLetter] = useState<string>('');
@@ -58,19 +77,9 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
     }
   }, [sortedGroups, onAvailableLettersChange]);
 
-  // const _handleLetterClick = (letter: string) => {
-  //   setActiveLetter(letter);
-  //   const element = sectionRefs.current[letter];
-  //   if (element) {
-  //     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  //   }
-  // };
-
   // Update active letter based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      // const _scrollY = window.scrollY;
-
       for (const letter of sortedGroups) {
         const element = sectionRefs.current[letter];
         if (element) {
@@ -86,6 +95,8 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [sortedGroups]);
+
+  const shouldReduce = useReducedMotion();
 
   return (
     <div className="w-full">
@@ -110,11 +121,22 @@ const AlphabeticalPoets = ({ poets, famousPoetSlugs, onAvailableLettersChange }:
               <div className="h-px bg-muted mr-4 w-8"></div>
             </div>
 
-            <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+            <motion.div
+              className="grid md:grid-cols-2 sm:grid-cols-1 gap-4"
+              variants={groupVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-40px' }}
+            >
               {groupedPoets[letter].map((poet) => (
-                <PoetCard key={poet.id} poet={poet} />
+                <motion.div
+                  key={poet.id}
+                  variants={shouldReduce ? undefined : cardVariants}
+                >
+                  <PoetCard poet={poet} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         ))}
       </div>

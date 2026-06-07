@@ -1,9 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { Category } from '@/lib/types';
 import React from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { BookBookmark01Icon, BookOpen01Icon, File02Icon, FileCheckIcon, HeartIcon, LibraryIcon, ScrollIcon, StarIcon } from '@hugeicons/core-free-icons';
 import { toPersianDigits } from '@/lib/persian-digits';
+import { motion, useReducedMotion, Variants } from 'motion/react';
 
 interface CategoryListProps {
   categories: Category[];
@@ -36,7 +39,28 @@ interface CardEntry {
   href: string;
 }
 
+const gridContainerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const gridItemVariants: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] },
+  },
+};
+
 function CategoryList({ categories, poetId, isFamous = false }: CategoryListProps) {
+  const shouldReduce = useReducedMotion();
+
   if (categories.length === 0) {
     return (
       <div className="text-center py-8">
@@ -84,33 +108,49 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+    <motion.div
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"
+        variants={shouldReduce ? undefined : gridContainerVariants}
+      initial={shouldReduce ? false : 'hidden'}
+      animate="show"
+    >
       {cards.map((card) => {
         const IconComponent = getCategoryIcon(card.title);
 
         return (
-          <Link
+          <motion.div
             key={card.key}
-            href={card.href}
-            className={`flex items-center gap-3 p-4 rounded-xl shadow-xl shadow-primary/10 dark:shadow-none transition-all duration-200 backdrop-blur-md ${styles.card}`}
+            variants={shouldReduce ? undefined : gridItemVariants}
+            whileHover={shouldReduce ? {} : { y: -2, scale: 1.01 }}
+            whileTap={shouldReduce ? {} : { scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
           >
-            <div className={`p-2 rounded-lg ${styles.iconWrapper}`}>
-              <HugeiconsIcon icon={IconComponent} size={20} className={`w-5 h-5 ${styles.icon}`} />
-            </div>
-            <div className="flex flex-col gap-0">
-              <h3 className={`text-lg font-semibold ${styles.title}`}>
-                {card.title}
-              </h3>
-              {card.poemCount !== undefined && (
-                <p className="text-muted-foreground dark:text-secondary-foreground text-xs">
-                  {toPersianDigits(card.poemCount)} شعر
-                </p>
-              )}
-            </div>
-          </Link>
+            <Link
+              href={card.href}
+              className={`flex items-center gap-3 p-4 bg-card rounded-xl shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/15 dark:shadow-none [active:scale-[0.98]](active:scale-[0.98]) backdrop-blur-md hover:bg-accent/50 ${styles.card}`}
+            >
+              <motion.div
+                className={`p-2 rounded-lg ${styles.iconWrapper}`}
+                whileHover={shouldReduce ? {} : { rotate: 8, scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+              >
+                <HugeiconsIcon icon={IconComponent} size={20} className={`w-5 h-5 ${styles.icon}`} />
+              </motion.div>
+              <div className="flex flex-col gap-0">
+                <h3 className={`text-lg font-semibold ${styles.title}`}>
+                  {card.title}
+                </h3>
+                {card.poemCount !== undefined && (
+                  <p className="text-muted-foreground dark:text-secondary-foreground text-xs">
+                    {toPersianDigits(card.poemCount)} شعر
+                  </p>
+                )}
+              </div>
+            </Link>
+          </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }
 

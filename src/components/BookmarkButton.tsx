@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { addBookmark, removeBookmark } from '@/lib/bookmarks-manager';
 import { useToast } from './Toast';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { HeartIcon } from '@hugeicons/core-free-icons';
+import { motion, useReducedMotion } from 'motion/react';
 
 interface BookmarkButtonProps {
   poemId: number;
@@ -29,7 +30,6 @@ export default function BookmarkButton({
   showLabel = false,
 }: BookmarkButtonProps) {
   const { bookmarks } = useBookmarks();
-  const [isAnimating, setIsAnimating] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [undoTimeout, setUndoTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -40,18 +40,33 @@ export default function BookmarkButton({
     return bookmarks.some(bookmark => bookmark.poemId === poemId);
   }, [bookmarks, poemId]);
 
+  const [heartAnimKey, setHeartAnimKey] = useState(0);
+  const prevBookmarked = useRef(isBookmarked);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (isBookmarked && !prevBookmarked.current) {
+        setHeartAnimKey(k => k + 1);
+      }
+      prevBookmarked.current = isBookmarked;
+    }, 0);
+    return () => clearTimeout(timeoutId);
+  }, [isBookmarked]);
+
+  const shouldReduce = useReducedMotion();
+
   const handleToggle = useCallback(async () => {
     try {
       if (isBookmarked) {
         await removeBookmark(poemId);
-        
+
         // Show undo option
         const timeoutId = setTimeout(() => {
           setUndoTimeout(null);
         }, 3000);
-        
+
         setUndoTimeout(timeoutId);
-        
+
         toast.success('حذف شد', 'از علاقه‌مندی‌ها حذف شد', {
           action: {
             label: 'بازگردانی',
@@ -83,13 +98,9 @@ export default function BookmarkButton({
           categoryTitle,
           url: `/poem/${poemId}`,
         });
-        
+
         toast.success('افزوده شد', 'به علاقه‌مندی‌ها افزوده شد');
       }
-      
-      // Trigger animation
-      setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 300);
     } catch (error) {
       console.error('Failed to toggle bookmark:', error);
       toast.error('خطا', 'خطا در ذخیره علاقه‌مندی');
@@ -109,7 +120,7 @@ export default function BookmarkButton({
             )) {
           return;
         }
-        
+
         e.preventDefault();
         handleToggle();
       }
@@ -121,26 +132,34 @@ export default function BookmarkButton({
 
   return (
     <div className="relative">
-      <button
+      <motion.button
         onClick={handleToggle}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        className={`flex items-center justify-center gap-2 w-10 h-10 rounded-lg transition-all duration-200 cursor-pointer ${
+        whileTap={{ scale: shouldReduce ? 1 : 0.82 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 22 }}
+        className={`flex items-center justify-center gap-2 w-10 h-10 rounded-lg transition-colors duration-200 cursor-pointer ${
           isBookmarked
             ? 'bg-destructive/10 text-destructive hover:bg-destructive/20'
             : 'text-muted-foreground hover:bg-muted dark:hover:bg-muted'
-        } ${isAnimating ? 'scale-110' : 'scale-100'} ${className}`}
+        } ${className}`}
         aria-label={isBookmarked ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
       >
-        <HugeiconsIcon icon={HeartIcon} size={16} className={`transition-all duration-200 ${
-            isBookmarked ? 'fill-current' : ''
-          } ${isAnimating ? 'animate-pulse' : ''}`} />
+        <motion.div
+          key={heartAnimKey}
+          animate={heartAnimKey > 0 && !shouldReduce
+            ? { scale: [1, 1.5, 0.9, 1.15, 1] }
+            : { scale: 1 }}
+          transition={{ duration: 0.4, times: [0, 0.2, 0.5, 0.7, 1] }}
+        >
+          <HugeiconsIcon icon={HeartIcon} size={16} className={isBookmarked ? 'fill-current' : ''} />
+        </motion.div>
         {showLabel && (
           <span className="text-sm font-medium">
             {isBookmarked ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
           </span>
         )}
-      </button>
+      </motion.button>
 
       {/* Tooltip - Hidden on mobile to prevent horizontal scrolling */}
       {showTooltip && (

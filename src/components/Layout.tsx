@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
+import PageTransition from './PageTransition';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -44,7 +45,9 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
         <Header />
         <main id="main-content" className="w-full min-w-0 max-w-full flex flex-col gap-4">
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </main>
         <Footer />
       </div>

@@ -219,7 +219,7 @@
   --secondary-foreground: var(--color-stone-700);
   --muted: var(--color-stone-100);
   --muted-foreground: var(--color-stone-600);
-  --accent: var(--color-stone-100);
+  --accent: var(--color-amber-400);
   --accent-foreground: var(--color-stone-700);
   --destructive: var(--color-red-600);
   --destructive-foreground: var(--color-white);
@@ -242,7 +242,7 @@
 .dark {
   --background: var(--color-stone-900);
   --foreground: var(--color-stone-200);
-  --card: var(--color-stone-800);
+  --card: lch(from var(--color-stone-700) l c h / 0.5);
   --card-foreground: var(--color-stone-100);
   --popover: var(--color-stone-800);
   --popover-foreground: var(--color-stone-100);

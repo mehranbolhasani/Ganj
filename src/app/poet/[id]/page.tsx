@@ -164,7 +164,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
       <Suspense fallback={<PoetPageSkeleton />}>
         <Breadcrumbs items={[{ label: poet.name }]} />
 
-        <div className={`rounded-2xl shadow-xl shadow-primary/10 dark:shadow-none h-full overflow-hidden z-20 ${isFamous ? "bg-card" : "bg-card"}`}>
+        <div className={`rounded-2xl shadow-xl shadow-primary/5 dark:shadow-none h-full overflow-hidden z-20 ${isFamous ? "bg-card" : "bg-card"}`}>
           <div className="text-right flex flex-col sm:flex-row items-stretch h-full">
             <div className={`relative w-full min-h-full flex-1 ${isFamous ? "border-l" : "border-l hidden"}`}>
               {/* Poet Image - only for famous poets - reserve space to prevent layout shift */}
