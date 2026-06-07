@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Poem } from '@/lib/types';
 import { useFontSize } from '@/lib/user-preferences';
 import FontSizeControl from './FontSizeControl';
 import BookmarkButton from './BookmarkButton';
 import TextSelectionTooltip from './TextSelectionTooltip';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { BookOpen01Icon, Cancel01Icon, ColorsIcon } from '@hugeicons/core-free-icons';
+import { BookOpen01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
 import { toPersianDigits } from '@/lib/persian-digits';
 import { motion, useReducedMotion, Variants } from 'motion/react';
 
@@ -15,7 +16,7 @@ interface PoemDisplayProps {
   poem: Poem;
 }
 
-type ReadingTheme = 'default' | 'sepia' | 'night';
+
 
 const verseVariants: Variants = {
   hidden: { opacity: 0, y: 8 },
@@ -35,8 +36,18 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
     setIsHydrated(true);
   }, []);
   const [isDistractFree, setIsDistractFree] = useState(false);
-  const [readingTheme, setReadingTheme] = useState<ReadingTheme>('default');
+  const [isDark, setIsDark] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const updateDark = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    updateDark();
+    const observer = new MutationObserver(updateDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
   const [selectedText, setSelectedText] = useState<string>('');
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const poemContentRef = useRef<HTMLDivElement>(null);
@@ -237,57 +248,31 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
     }
   }, [isDistractFree]);
 
-  // Get theme styles
+  // Get theme styles: sepia for light mode, night for dark mode
   const getThemeStyles = () => {
-    switch (readingTheme) {
-      case 'sepia':
-        return {
-          bg: 'bg-[#f4ecd8] dark:bg-[#2d2416]', // Light: warm paper, Dark: warm dark brown
-          text: 'text-[#5c4b37] dark:text-[#e8dcc4]', // Light: brown, Dark: light beige
-          secondaryText: 'text-[#8b7355] dark:text-[#b8a888]', // Light: lighter brown, Dark: muted beige
-          controlsBg: 'bg-[#ffffff]/90 dark:bg-[#3d3220]/90', // Light: light beige, Dark: darker brown
-          filter: '',
-        };
-      case 'night':
-        return {
-          bg: 'bg-[#1a1a1a]',
-          text: 'text-[#d4d4d4]',
-          secondaryText: 'text-[#a3a3a3]',
-          controlsBg: 'bg-[#2a2a2a]/90',
-          filter: 'brightness(90%) contrast(90%)', // Blue light filter effect
-        };
-      default:
-        return {
-          bg: 'bg-background',
-          text: 'text-foreground',
-          secondaryText: 'text-muted-foreground',
-          controlsBg: 'bg-card/80',
-          filter: '',
-        };
+    if (isDark) {
+      return {
+        bg: 'bg-[#1a1a1a]',
+        text: 'text-[#d4d4d4]',
+        secondaryText: 'text-[#a3a3a3]',
+        controlsBg: 'bg-[#2a2a2a]/90',
+        filter: 'brightness(90%) contrast(90%)', // Blue light filter effect
+      };
     }
+    return {
+      bg: 'bg-[#f4ecd8]',
+      text: 'text-[#5c4b37]',
+      secondaryText: 'text-[#8b7355]',
+      controlsBg: 'bg-[#ffffff]/90',
+      filter: '',
+    };
   };
 
   const theme = getThemeStyles();
 
-  // Cycle through themes
-  const cycleTheme = () => {
-    const themes: ReadingTheme[] = ['default', 'sepia', 'night'];
-    const currentIndex = themes.indexOf(readingTheme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setReadingTheme(themes[nextIndex]);
-  };
-
-  const getThemeLabel = () => {
-    switch (readingTheme) {
-      case 'sepia': return 'کاغذی';
-      case 'night': return 'شب';
-      default: return 'پیش‌فرض';
-    }
-  };
-
   // Distract-free reading mode
   if (isDistractFree) {
-    return (
+    return createPortal(
       <div
         className={`fixed inset-0 z-50 overflow-y-auto animate-fadeIn distract-free-scroll ${theme.bg}`}
       >
@@ -312,50 +297,10 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         {/* Floating controls - bottom left */}
         {isHydrated && (
           <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 flex flex-row gap-1 items-stretch justify-center">
-            {/* Font size control - vertical layout */}
+            {/* Font size control */}
             <div className={`${theme.controlsBg} backdrop-blur-sm rounded-t-xl p-2`}>
               <FontSizeControl showLabel={false} vertical={false} />
             </div>
-
-            {/* Theme toggle button with color indicators */}
-            <button
-              onClick={cycleTheme}
-              className={`${theme.controlsBg} backdrop-blur-sm rounded-t-xl p-3 flex flex-col items-center gap-2 hover:scale-105 transition-all duration-200`}
-              aria-label="تغییر تم"
-              title={`تم: ${getThemeLabel()}`}
-            >
-              <HugeiconsIcon icon={ColorsIcon} size={20} className={`w-5 h-5 ${theme.text}`} />
-
-              {/* Theme indicators - 3 colored dots */}
-              <div className="flex items-center gap-1">
-                {/* Default theme dot */}
-                <div
-                  className={`rounded-full transition-all duration-200 ${
-                    readingTheme === 'default'
-                      ? 'w-2.5 h-2.5 bg-muted dark:bg-muted'
-                      : 'w-1.5 h-1.5 bg-muted/40 dark:bg-muted/40'
-                  }`}
-                />
-
-                {/* Sepia theme dot */}
-                <div
-                  className={`rounded-full transition-all duration-200 ${
-                    readingTheme === 'sepia'
-                      ? 'w-2.5 h-2.5 bg-[#8b7355]'
-                      : 'w-1.5 h-1.5 bg-[#8b7355]/40'
-                  }`}
-                />
-
-                {/* Night theme dot */}
-                <div
-                  className={`rounded-full transition-all duration-200 ${
-                    readingTheme === 'night'
-                      ? 'w-2.5 h-2.5 bg-blue-400'
-                      : 'w-1.5 h-1.5 bg-blue-400/40'
-                  }`}
-                />
-              </div>
-            </button>
           </div>
         )}
 
@@ -366,24 +311,24 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
         >
           <div className="max-w-3xl w-full">
             {/* Title */}
-            <h1 className={`text-3xl sm:text-5xl ${theme.text} text-center mb-4 sm:mb-6 leading-tight`}>
+            <h1 className={`text-3xl sm:text-4xl ${theme.text} text-center mb-4 leading-tight font-bold`}>
               {poem.title}
             </h1>
 
             {/* Poet name - subtle */}
-            <p className={`text-center text-base sm:text-lg ${theme.secondaryText} mb-12 sm:mb-16 font-normal`}>
+            <p className={`text-center text-base sm:text-lg ${theme.secondaryText} mb-12 font-normal`}>
               {poem.poetName}
             </p>
 
             {/* Verses - large, spacious, centered */}
             <div
               ref={poemContentRef}
-              className="space-y-4 sm:space-y-6 select-text"
+              className="space-y-1 select-text"
             >
               {poem.verses.map((verse, index) => (
                 <p
                   key={index}
-                  className={`${theme.text} text-center leading-loose sm:leading-loose ${getDistractFreeFontSize()} ${index % 2 === 1 ? 'mb-8 sm:mb-12' : ''}`}
+                  className={`${theme.text} text-center leading-loose sm:leading-loose ${getDistractFreeFontSize()} ${index % 2 === 1 ? 'mb-6 sm:mb-10' : ''}`}
                   style={{
                     lineHeight: '2.5',
                   }}
@@ -412,7 +357,8 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
             </p>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
