@@ -58,20 +58,20 @@ export default function PoemPagination({
   return (
     <div>
       {/* Poems Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-12">
+      <div className="grid grid-cols-1 gap-4 mb-12">
         {currentPoems.map((poem) => (
           <Link
             key={poem.id}
             href={`/poem/${poem.id}`}
-            className="block p-4 sm:p-6 bg-card rounded-xl shadow-xl shadow-primary/10 dark:shadow-none hover:shadow-primary/15 active:scale-[0.98] transition-all duration-200 touch-manipulation"
+            className="flex items-center justify-between p-5 bg-card rounded-xl shadow-xl shadow-primary/10 dark:shadow-none hover:shadow-primary/15 active:scale-[0.98] transition-all duration-200 touch-manipulation"
           >
-            <h3 className="text-lg mb-2 text-right leading-tight">
+            <h3 className="font-medium text-lg mb-0 text-right leading-tight [word-spacing:-0.2rem] flex-1 pl-4">
               {poem.title}
             </h3>
-            <p className="text-sm text-right text-primary/50 flex items-center justify-start gap-2">
-              <span className="font-medium">{poem.poetName}</span>
+            <p className="text-xs text-right text-primary/50 flex items-center justify-start gap-2">
+              {/*<span className="font-medium">{poem.poetName}</span>*/}
               {poem.chapterTitle && (
-                <span className="block text-xs sm:text-sm text-muted-foreground mt-1">
+                <span className="block text-xs text-muted-foreground">
                   {poem.chapterTitle}
                 </span>
               )}

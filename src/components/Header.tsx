@@ -89,7 +89,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="w-full sm:container-responsive min-h-16 h-16 flex items-center justify-between z-30 flex-row-reverse relative">
+    <header className="w-full sm:container-responsive min-h-16 h-24 flex items-center justify-between z-30 flex-row-reverse relative">
       {/* Mobile Menu & Search Buttons */}
       <div className="md:hidden flex items-center gap-2">
         {/* Mobile Search Button */}

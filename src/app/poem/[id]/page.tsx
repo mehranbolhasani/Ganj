@@ -6,7 +6,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import HistoryTracker from '@/components/HistoryTracker';
 import { BreadcrumbStructuredData, ArticleStructuredData, CreativeWorkStructuredData } from '@/components/StructuredData';
 import GanjoorOutageCard from '@/components/GanjoorOutageCard';
-import { hybridApi } from '@/lib/hybrid-api';
+import { hybridApi, findChapterById } from '@/lib/hybrid-api';
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
@@ -83,6 +83,8 @@ export default async function PoemPage({ params }: PoemPageProps) {
   let poem: Poem | null = null;
   let poetName: string = '';
   let categoryTitle: string = '';
+  let categoryHref: string | undefined;
+  let categoryStructuredUrl: string | undefined;
   let error: string | null = null;
   let previousPoem: Poem | null = null;
   let nextPoem: Poem | null = null;
@@ -92,6 +94,25 @@ export default async function PoemPage({ params }: PoemPageProps) {
     poem = await hybridApi.getPoem(poemId);
     poetName = poem.poetName;
     categoryTitle = poem.categoryTitle || 'مجموعه';
+
+    // Determine correct category breadcrumb link
+    if (poem.categoryId) {
+      try {
+        const poetData = await hybridApi.getPoet(poem.poetId);
+        const chapterInfo = findChapterById(poetData.categories, poem.categoryId);
+        if (chapterInfo) {
+          categoryHref = `/poet/${poem.poetId}/category/${chapterInfo.containerId}/chapter/${poem.categoryId}`;
+          categoryStructuredUrl = `https://ganj.directory/poet/${poem.poetId}/category/${chapterInfo.containerId}/chapter/${poem.categoryId}`;
+        } else {
+          categoryHref = `/poet/${poem.poetId}/category/${poem.categoryId}`;
+          categoryStructuredUrl = `https://ganj.directory/poet/${poem.poetId}/category/${poem.categoryId}`;
+        }
+      } catch {
+        // Fallback to flat category link if poet data fails
+        categoryHref = `/poet/${poem.poetId}/category/${poem.categoryId}`;
+        categoryStructuredUrl = `https://ganj.directory/poet/${poem.poetId}/category/${poem.categoryId}`;
+      }
+    }
 
     // Debug: Log poem data in development
     if (process.env.NODE_ENV === 'development') {
@@ -174,7 +195,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
 
   const breadcrumbItems = [
     { name: poetName, url: `https://ganj.directory/poet/${poem.poetId}` },
-    ...(poem.categoryId ? [{ name: categoryTitle, url: `https://ganj.directory/poet/${poem.poetId}/category/${poem.categoryId}` }] : []),
+    ...(poem.categoryId && categoryStructuredUrl ? [{ name: categoryTitle, url: categoryStructuredUrl }] : []),
     { name: poem.title, url: `https://ganj.directory/poem/${poem.id}` },
   ];
 
@@ -202,10 +223,10 @@ export default async function PoemPage({ params }: PoemPageProps) {
       />
       <HistoryTracker poem={poem} />
 
-      <article className="w-full min-w-0 max-w-full overflow-x-clip min-h-fit bg-primary/5 p-6 rounded-3xl flex flex-col gap-0 backdrop-blur-sm">
+      <article className="w-full min-w-0 max-w-full overflow-x-clip min-h-fit bg-primary/5 p-4 sm:p-6 rounded-3xl flex flex-col gap-0 backdrop-blur-sm">
         <Breadcrumbs items={[
           { label: poetName, href: `/poet/${poem.poetId}` },
-          { label: categoryTitle, href: poem.categoryId ? `/poet/${poem.poetId}/category/${poem.categoryId}` : undefined },
+          { label: categoryTitle, href: categoryHref },
           { label: poem.title }
         ]} />
 

@@ -76,32 +76,6 @@ def fix_search_results_tabs(content):
     return content
 
 
-def fix_roadmap_content(content):
-    # Replace feature icon definitions
-    replacements = {
-        'icon: Search,': 'icon: Search01Icon,',
-        'icon: Bookmark,': 'icon: Bookmark03Icon,',
-        'icon: Eye,': 'icon: ViewIcon,',
-        'icon: Smartphone,': 'icon: SmartPhone01Icon,',
-        'icon: Filter,': 'icon: FilterIcon,',
-        'icon: Share,': 'icon: Share08Icon,',
-        'icon: Users,': 'icon: Group01Icon,',
-    }
-    for old, new in replacements.items():
-        content = content.replace(old, new)
-    
-    # Replace JSX usage
-    content = content.replace(
-        '<feature.icon className="w-5 h-5 text-green-600" />',
-        '<HugeiconsIcon icon={feature.icon} size={20} className="w-5 h-5 text-green-600" />'
-    )
-    content = content.replace(
-        '<feature.icon className="w-5 h-5 text-blue-600" />',
-        '<HugeiconsIcon icon={feature.icon} size={20} className="w-5 h-5 text-blue-600" />'
-    )
-    return content
-
-
 def fix_missing_size_props(content):
     """Fix HugeiconsIcon components that have w-X h-X in className but no size prop."""
     # Pattern: <HugeiconsIcon icon={...} className="... w-X h-X ..." />
@@ -311,9 +285,6 @@ def process_file(filepath):
     
     if 'SearchResults.tsx' in filepath:
         content = fix_search_results_tabs(content)
-    
-    if 'RoadmapContent.tsx' in filepath:
-        content = fix_roadmap_content(content)
     
     # Fix missing size props
     content = fix_missing_size_props(content)

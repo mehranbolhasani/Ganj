@@ -403,7 +403,7 @@ const PoemDisplay = ({ poem }: PoemDisplayProps) => {
       <div className="mb-4 text-center sm:mb-8">
         <div className="mb-4 flex w-full min-w-0 flex-row items-center border-b border-primary/10 py-4">
           <div className="flex w-full min-w-0 justify-between text-right">
-            <h1 className="min-w-0 max-w-full break-words text-2xl font-normal leading-tight text-foreground [overflow-wrap:anywhere] sm:text-4xl sm:leading-14">
+            <h1 className="min-w-0 max-w-full break-words text-xl font-bold leading-tight text-foreground [overflow-wrap:anywhere] sm:text-3xl sm:leading-10 [word-spacing:-0.2rem]">
               {poem.title}
             </h1>
           </div>

@@ -18,7 +18,6 @@ const GANJOOR_TTL = {
   category: 6 * 60 * 60 * 1000,
   chapter: 6 * 60 * 60 * 1000,
   poem: 2 * 60 * 60 * 1000,
-  randomPoem: 5 * 60 * 1000,
 };
 
 let circuitOpenedUntil = 0;
@@ -511,70 +510,6 @@ export const ganjoorApi = {
         categoryTitle: catTitle,
       };
     }, GANJOOR_TTL.poem);
-  },
-
-  // Get a random poem from all poets
-  async getRandomPoem(): Promise<Poem> {
-    return withDurableCache('ganjoor:/random-poem', async () => {
-      try {
-        // Get all poets first
-        const poets = await this.getPoets();
-        
-        // Pick a random poet
-        const randomPoet = poets[Math.floor(Math.random() * poets.length)];
-        
-        // Get poet's categories
-        const { categories } = await this.getPoet(randomPoet.id);
-        
-        if (categories.length === 0) {
-          // Fallback to a known poem if no categories
-          const fallbackPoem = await this.getPoem(2133); // Hafez poem as fallback
-          return {
-            ...fallbackPoem,
-            poetId: randomPoet.id,
-            poetName: randomPoet.name,
-          };
-        }
-        
-        // Pick a random category
-        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-        
-        // Get poems from that category
-        const poems = await this.getCategoryPoems(randomPoet.id, randomCategory.id);
-        
-        if (poems.length === 0) {
-          // Fallback to a known poem if no poems in category
-          const fallbackPoem = await this.getPoem(2133);
-          return {
-            ...fallbackPoem,
-            poetId: randomPoet.id,
-            poetName: randomPoet.name,
-          };
-        }
-        
-        // Pick a random poem
-        const randomPoem = poems[Math.floor(Math.random() * poems.length)];
-        
-        // Get the full poem details
-        const fullPoem = await this.getPoem(randomPoem.id);
-        
-        // Ensure poet information is set correctly
-        return {
-          ...fullPoem,
-          poetId: randomPoet.id,
-          poetName: randomPoet.name,
-        };
-      } catch (error) {
-        console.error('Error getting random poem:', error);
-        // Fallback to a known poem with proper poet info
-        const fallbackPoem = await this.getPoem(2133);
-        return {
-          ...fallbackPoem,
-          poetId: 2, // Hafez ID
-          poetName: 'حافظ',
-        };
-      }
-    }, GANJOOR_TTL.randomPoem);
   },
 
   // Note: Search functions removed - now handled by Supabase API

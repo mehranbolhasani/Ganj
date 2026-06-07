@@ -28,7 +28,7 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
   const categoryId = parseInt(resolvedParams.categoryId);
   const chapterId = parseInt(resolvedParams.chapterId);
   const currentPage = parseInt(resolvedSearchParams.page || '1');
-  
+
   if (isNaN(poetId) || isNaN(categoryId) || isNaN(chapterId)) {
     notFound();
   }
@@ -39,14 +39,13 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
   let chapterTitle: string = '';
   let error: string | null = null;
   let ganjoorUnavailable = false;
-  let migratedPoet = false;
 
   try {
     // Get chapter details and poems
     const chapterData = await hybridApi.getChapter(poetId, categoryId, chapterId);
     poems = chapterData.poems;
     chapterTitle = chapterData.chapter.title;
-    
+
     // Get poet and category info for breadcrumbs
     const poetData = await hybridApi.getPoet(poetId);
     poetName = poetData.poet.name;
@@ -55,12 +54,11 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
   } catch (err) {
     if (err instanceof GanjoorUnavailableError) {
       ganjoorUnavailable = true;
-      migratedPoet = await hybridApi.isPoetMigrated(poetId);
     }
     error = err instanceof Error ? err.message : 'خطا در بارگذاری اشعار';
   }
 
-  if (ganjoorUnavailable && !migratedPoet) {
+  if (ganjoorUnavailable) {
     return (
       <GanjoorOutageCard
         backHref={`/poet/${poetId}/category/${categoryId}`}
@@ -71,7 +69,7 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
 
   if (error) {
     return (
-      
+
         <div className="text-center py-8">
           <h1 className="text-2xl font-bold text-foreground mb-4">
             خطا در بارگذاری
@@ -79,51 +77,52 @@ export default async function ChapterPoemsPage({ params, searchParams }: Chapter
           <p className="text-muted-foreground dark:text-secondary-foreground mb-4">
             {error}
           </p>
-          <Link 
+          <Link
             href={`/poet/${poetId}/category/${categoryId}`}
             className="inline-block px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-primary transition-colors"
           >
             بازگشت به {categoryTitle}
           </Link>
         </div>
-      
+
     );
   }
 
   return (
     <Suspense fallback={<ChapterPageSkeleton />}>
-      <Breadcrumbs items={[
-        { label: poetName, href: `/poet/${poetId}` },
-        { label: categoryTitle, href: `/poet/${poetId}/category/${categoryId}` },
-        { label: chapterTitle }
-      ]} />
-      
-      <div className="">
-        <h1 className="text-3xl font-bold text-foreground text-right flex items-center justify-between">
-          <span>{chapterTitle}</span>
-          <span className="text-muted-foreground dark:text-secondary-foreground">
-            {toPersianDigits(poems.length)}
-          </span>
-        </h1>
-        <p className="text-muted-foreground text-right mt-2">
-          از {categoryTitle} • {poetName}
-        </p>
-      </div>
+      <div className="min-h-fit bg-primary/5 p-4 sm:p-6 rounded-3xl flex flex-col gap-4 backdrop-blur-md">
+        <Breadcrumbs items={[
+          { label: poetName, href: `/poet/${poetId}` },
+          { label: chapterTitle }
+        ]} />
 
-      {poems.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-muted-foreground dark:text-secondary-foreground text-right">
-            هیچ شعری یافت نشد
+        <div className="">
+          <h1 className="text-3xl font-bold text-foreground text-right flex items-center justify-between">
+            <span>{chapterTitle}</span>
+            <span className="text-muted-foreground dark:text-secondary-foreground">
+              {toPersianDigits(poems.length)}
+            </span>
+          </h1>
+          <p className="text-muted-foreground text-right mt-2">
+            {poetName}
           </p>
         </div>
-      ) : (
-        <PoemPagination
-          poems={poems}
-          itemsPerPage={20}
-          currentPage={currentPage}
-          baseUrl={`/poet/${poetId}/category/${categoryId}/chapter/${chapterId}`}
-        />
-      )}
+
+        {poems.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground dark:text-secondary-foreground text-right">
+              هیچ شعری یافت نشد
+            </p>
+          </div>
+        ) : (
+          <PoemPagination
+            poems={poems}
+            itemsPerPage={20}
+            currentPage={currentPage}
+            baseUrl={`/poet/${poetId}/category/${categoryId}/chapter/${chapterId}`}
+          />
+        )}
+      </div>
     </Suspense>
   );
 }

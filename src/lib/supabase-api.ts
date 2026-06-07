@@ -42,6 +42,29 @@ class SupabaseApiError extends Error {
 }
 
 /**
+ * Get descendant category IDs up to a bounded depth.
+ */
+async function getDescendantCategoryIds(parentId: number, maxDepth = 3): Promise<number[]> {
+  if (!supabase) return [];
+  const ids: number[] = [];
+  const seen = new Set<number>([parentId]);
+  let currentIds = [parentId];
+  let depth = 0;
+  while (currentIds.length > 0 && depth < maxDepth) {
+    const { data } = await supabase
+      .from('categories')
+      .select('id')
+      .in('parent_id', currentIds);
+    const nextIds = (data || []).map(c => c.id).filter(id => !seen.has(id));
+    ids.push(...nextIds);
+    nextIds.forEach(id => seen.add(id));
+    currentIds = nextIds;
+    depth++;
+  }
+  return ids;
+}
+
+/**
  * Check if Supabase is available
  */
 export function isSupabaseAvailable(): boolean {
@@ -121,26 +144,13 @@ export const supabaseApi = {
       // Fetch categories separately (more reliable than nested query)
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
-        .select('id, title, url_slug, poem_count, poet_id')
+        .select('id, title, poem_count, poet_id, parent_id')
         .eq('poet_id', id)
         .order('id', { ascending: true });
 
       if (categoriesError) {
         console.error('[Supabase] Categories query error:', categoriesError);
         // Continue with empty categories array rather than failing
-      }
-      
-      // Verbose logs (development only)
-      if (process.env.NODE_ENV === 'development') {
-        console.log('='.repeat(60));
-        console.log(`[Supabase] POET ID: ${id}`);
-        console.log(`[Supabase] Categories error:`, categoriesError);
-        console.log(`[Supabase] Categories count:`, categoriesData?.length || 0);
-        if (categoriesData && categoriesData.length > 0) {
-          console.log(`[Supabase] First category:`, categoriesData[0]);
-          console.log(`[Supabase] All category titles:`, categoriesData.map(c => c.title));
-        }
-        console.log('='.repeat(60));
       }
 
       // Transform poet data
@@ -152,75 +162,58 @@ export const supabaseApi = {
         birthYear: poetData.birth_year || undefined,
         deathYear: poetData.death_year || undefined,
       };
-      
-      // Debug logging (development only)
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[Supabase] Poet data:`, {
-          name: poet.name,
-          hasDescription: !!poet.description,
-          descriptionLength: poet.description?.length || 0,
-          birthYear: poet.birthYear,
-          deathYear: poet.deathYear,
-        });
-      }
 
-      // Transform categories data
-      let categories: Category[] = (categoriesData || []).map((cat) => {
-        return {
-          id: cat.id,
-          title: cat.title,
-          description: '',
-          poetId: id,
-          poemCount: cat.poem_count || undefined,
-        };
-      });
-
-      // Filter out categories that match the poet's name (these are usually parent/root categories)
-      // Also filter out categories with 0 poems (either not imported or genuinely empty)
-      const poetName = poetData.name;
-      categories = categories.filter(category => {
-        // Exclude if poem count is 0 or undefined
-        if (!category.poemCount || category.poemCount === 0) {
-          return false;
-        }
-        
-        // Normalize both strings for comparison (remove extra spaces, diacritics, etc.)
-        const normalizeString = (str: string) => {
-          return str.trim().replace(/\s+/g, ' ').toLowerCase();
-        };
-        
-        const normalizedCategoryTitle = normalizeString(category.title);
-        const normalizedPoetName = normalizeString(poetName);
-        
-        // Exclude if they match
-        if (normalizedCategoryTitle === normalizedPoetName) {
-          return false;
-        }
-        
-        // Also check if category title contains only the poet name (sometimes has extra words)
-        // But only if the category title is very similar (< 5 chars difference)
-        const lengthDiff = Math.abs(normalizedCategoryTitle.length - normalizedPoetName.length);
-        if (lengthDiff < 5 && normalizedCategoryTitle.includes(normalizedPoetName)) {
-          return false;
-        }
-        
-        return true;
-      });
-      
-      // Debug logging for category filtering (development only)
-      if (process.env.NODE_ENV === 'development') {
-        const originalCount = categoriesData?.length || 0;
-        console.log(`[Supabase] FILTERED: ${originalCount} -> ${categories.length}`);
-        if (originalCount !== categories.length) {
-          console.log(`[Supabase] Removed poet name category from list`);
-        }
-        console.log(`[Supabase] Final categories:`, categories.map(c => `${c.title} (${c.poemCount || 0})`));
-      }
-
-      categories = categories.map(category => ({
-        ...category,
-        poemCount: category.poemCount || 0,
+      const allRows = (categoriesData || []).map(cat => ({
+        id: cat.id,
+        title: cat.title,
+        poemCount: cat.poem_count ?? 0,
+        parentId: cat.parent_id,
       }));
+
+      const topLevelRows = allRows.filter(c => c.parentId === null);
+      const childRows = allRows.filter(c => c.parentId !== null);
+
+      const categories: Category[] = topLevelRows
+        .map(top => {
+          const children = childRows.filter(c => c.parentId === top.id);
+          if (children.length > 0) {
+            // Layout A — container poet: top-level category has children (real chapters)
+            const chapters: Chapter[] = children.map(child => ({
+              id: child.id,
+              title: child.title,
+              categoryId: top.id,
+              poemCount: child.poemCount,
+            }));
+            const totalPoemCount = children.reduce((sum, c) => sum + c.poemCount, 0);
+            return {
+              id: top.id,
+              title: top.title,
+              description: '',
+              poetId: id,
+              poemCount: totalPoemCount,
+              hasChapters: true,
+              chapters,
+            };
+          }
+          // Layout B — flat poet: top-level category has no children
+          return {
+            id: top.id,
+            title: top.title,
+            description: '',
+            poetId: id,
+            poemCount: top.poemCount,
+            hasChapters: false,
+            chapters: undefined,
+          };
+        })
+        .filter(category => {
+          // Always keep container categories (even if their own direct poem count is 0)
+          if (category.hasChapters) {
+            return true;
+          }
+          // Drop only genuinely empty flat categories
+          return category.poemCount > 0;
+        });
 
       return { poet, categories };
     }, 30 * 60 * 1000); // Cache for 30 minutes
@@ -263,7 +256,7 @@ export const supabaseApi = {
         );
       }
 
-      return (data || []).map(poem => {
+      const poems = (data || []).map(poem => {
         const poetData = poem.poets as unknown;
         const categoryData = poem.categories as unknown;
         const poet = (Array.isArray(poetData) ? poetData[0] : poetData) as { name: string } | null;
@@ -279,6 +272,33 @@ export const supabaseApi = {
           categoryTitle: category?.title || '',
         };
       });
+
+      // If direct poems exist, return them (flat poets)
+      if (poems.length > 0) {
+        return poems;
+      }
+
+      // Zero direct poems — check if this category is a container (has children)
+      const { data: childCategories, error: childError } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('parent_id', categoryId)
+        .limit(1);
+
+      if (childError) {
+        throw new SupabaseApiError(
+          `Failed to check child categories for ${categoryId}`,
+          childError.code,
+          childError
+        );
+      }
+
+      if (childCategories && childCategories.length > 0) {
+        // Container category — return empty so UI shows chapter list
+        return [];
+      }
+
+      return poems;
     }, 30 * 60 * 1000); // Cache for 30 minutes
   },
 
@@ -423,19 +443,90 @@ export const supabaseApi = {
   },
 
   /**
-   * Get chapter details (not implemented in Supabase yet, returns empty)
+   * Get chapter details and poems from Supabase.
+   * A chapter is a child category (parent_id points to the top-level category).
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getChapter(_poetId: number, _categoryId: number, _chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
-    throw new SupabaseApiError('Chapters are not yet implemented in Supabase');
+  async getChapter(poetId: number, categoryId: number, chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
+    if (!supabase) {
+      throw new SupabaseApiError('Supabase client not initialized');
+    }
+
+    return withCache(`supabase:/chapter/${chapterId}`, async () => {
+      // 1. Fetch the chapter row
+      const { data: chapterRow, error: chapterError } = await supabase
+        .from('categories')
+        .select('id, title, poem_count, parent_id')
+        .eq('id', chapterId)
+        .single();
+
+      if (chapterError || !chapterRow) {
+        throw new SupabaseApiError(
+          `Chapter ${chapterId} not found in Supabase`,
+          chapterError?.code
+        );
+      }
+
+      // 2. Gather poems from the chapter and its descendants
+      const descendantIds = await getDescendantCategoryIds(chapterId);
+      const allCategoryIds = [chapterId, ...descendantIds];
+
+      const { data: poemsData, error: poemsError } = await supabase
+        .from('poems')
+        .select(`
+          id,
+          title,
+          verses_array,
+          poet_id,
+          category_id,
+          poets (
+            name
+          ),
+          categories (
+            title
+          )
+        `)
+        .in('category_id', allCategoryIds)
+        .eq('poet_id', poetId)
+        .order('id', { ascending: true });
+
+      if (poemsError) {
+        throw new SupabaseApiError(
+          `Failed to fetch poems for chapter ${chapterId}`,
+          poemsError.code,
+          poemsError
+        );
+      }
+
+      const poems = (poemsData || []).map(poem => {
+        const poetData = poem.poets as unknown;
+        const categoryData = poem.categories as unknown;
+        const poet = (Array.isArray(poetData) ? poetData[0] : poetData) as { name: string } | null;
+        const category = (Array.isArray(categoryData) ? categoryData[0] : categoryData) as { title: string } | null;
+
+        return {
+          id: poem.id,
+          title: poem.title,
+          verses: poem.verses_array || [],
+          poetId: poem.poet_id,
+          poetName: poet?.name || '',
+          categoryId: poem.category_id || undefined,
+          categoryTitle: category?.title || '',
+          chapterId: chapterId,
+          chapterTitle: chapterRow.title,
+        };
+      });
+
+      const chapter: Chapter = {
+        id: chapterId,
+        title: chapterRow.title,
+        categoryId: categoryId,
+        poemCount: chapterRow.poem_count ?? 0,
+      };
+
+      return { chapter, poems };
+    }, 30 * 60 * 1000);
   },
 
-  /**
-   * Get random poem (not implemented in Supabase yet)
-   */
-  async getRandomPoem(): Promise<Poem> {
-    throw new SupabaseApiError('Random poem is not yet implemented in Supabase');
-  },
 };
 
 /**

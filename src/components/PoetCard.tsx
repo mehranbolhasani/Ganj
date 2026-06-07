@@ -32,7 +32,7 @@ function PoetCard({ poet }: PoetCardProps) {
       }}
       className={`relative block backdrop-blur-md bg-card/70 dark:bg-warning/20 border border-white rounded-xl shadow-lg/5 hover:shadow-sm transition-all duration-200 w-full flex-1 min-w-[310px] dark:border-warning/50 hover:bg-muted dark:hover:bg-warning/80 active:scale-[0.98] touch-manipulation ${isNavigating ? 'opacity-75' : ''}`}
     >
-      <div className="flex items-center justify-between p-4 sm:p-6 flex-row-reverse">
+      <div className="flex items-center justify-between p-4 flex-row-reverse">
         {/* Arrow icon */}
         <div className="w-8 h-8 flex items-center justify-center rotate-180 rounded-full bg-muted/70 dark:bg-secondary aspect-square">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-muted-foreground dark:text-secondary-foreground">
@@ -54,10 +54,10 @@ function PoetCard({ poet }: PoetCardProps) {
 
           {yearRange && (
             <div className="flex items-center gap-2 w-full justify-end flex-row-reverse">
-              <span className="text-sm sm:text-base text-muted-foreground dark:text-secondary-foreground text-right leading-tight font-medium">
+              <span className="text-sm text-muted-foreground dark:text-secondary-foreground text-right leading-tight font-medium">
                 {yearRange}
               </span>
-              <HugeiconsIcon icon={Calendar03Icon} size={16} className="sm:w-5 sm:h-5 text-muted-foreground dark:text-secondary-foreground" />
+              <HugeiconsIcon icon={Calendar03Icon} size={12} className="sm:w-4 sm:h-4 text-muted-foreground dark:text-secondary-foreground" />
             </div>
           )}
         </div>

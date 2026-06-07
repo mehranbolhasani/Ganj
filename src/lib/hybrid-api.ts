@@ -5,26 +5,11 @@
  * Strategy:
  * 1. Try Supabase first (50-200ms response time)
  * 2. Fallback to Ganjoor API if data not found (500-2000ms response time)
- * 3. Track performance metrics for monitoring
  */
 
 import { Poet, Category, Poem, Chapter } from './types';
 import { supabaseApi, isSupabaseAvailable } from './supabase-api';
 import { ganjoorApi } from './ganjoor-api';
-import { FEATURED_POETS_FALLBACK } from './featured-poets-fallback';
-
-// Performance tracking
-interface PerformanceMetric {
-  source: 'supabase' | 'ganjoor' | 'hybrid';
-  endpoint: string;
-  duration: number;
-  success: boolean;
-  fallback: boolean;
-  timestamp: number;
-}
-
-const performanceMetrics: PerformanceMetric[] = [];
-const MAX_METRICS = 100; // Keep last 100 metrics
 
 // Module-level cache for migrated poet ID Set
 let migratedPoetSetCache: Set<number> | null = null;
@@ -56,62 +41,6 @@ export async function isMigratedPoet(id: number): Promise<boolean> {
 }
 
 /**
- * Track API call performance
- */
-function trackPerformance(metric: Omit<PerformanceMetric, 'timestamp'>) {
-  performanceMetrics.push({
-    ...metric,
-    timestamp: Date.now(),
-  });
-
-  // Keep only last MAX_METRICS
-  if (performanceMetrics.length > MAX_METRICS) {
-    performanceMetrics.shift();
-  }
-
-  // Log performance in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log(
-      `[${metric.source}] ${metric.endpoint}: ${Math.round(metric.duration)}ms ${
-        metric.fallback ? '(fallback)' : ''
-      }`
-    );
-  }
-}
-
-/**
- * Get performance statistics
- */
-export function getPerformanceStats() {
-  if (performanceMetrics.length === 0) {
-    return null;
-  }
-
-  const supabaseMetrics = performanceMetrics.filter(m => m.source === 'supabase' && m.success);
-  const ganjoorMetrics = performanceMetrics.filter(m => m.source === 'ganjoor' && m.success);
-  const fallbackCount = performanceMetrics.filter(m => m.fallback).length;
-
-  return {
-    totalRequests: performanceMetrics.length,
-    supabase: {
-      count: supabaseMetrics.length,
-      avgDuration: supabaseMetrics.length > 0
-        ? Math.round(supabaseMetrics.reduce((sum, m) => sum + m.duration, 0) / supabaseMetrics.length)
-        : 0,
-    },
-    ganjoor: {
-      count: ganjoorMetrics.length,
-      avgDuration: ganjoorMetrics.length > 0
-        ? Math.round(ganjoorMetrics.reduce((sum, m) => sum + m.duration, 0) / ganjoorMetrics.length)
-        : 0,
-    },
-    fallbackRate: performanceMetrics.length > 0
-      ? Math.round((fallbackCount / performanceMetrics.length) * 100)
-      : 0,
-  };
-}
-
-/**
  * Hybrid API client with smart fallback
  */
 export const hybridApi = {
@@ -119,71 +48,25 @@ export const hybridApi = {
    * Get all poets (prefer Supabase, fallback to Ganjoor)
    */
   async getPoets(): Promise<Poet[]> {
-    const startTime = performance.now();
-
-    // Try Supabase first if available
     if (isSupabaseAvailable()) {
       try {
         const poets = await supabaseApi.getPoets();
-        const duration = performance.now() - startTime;
-        
-        trackPerformance({
-          source: 'supabase',
-          endpoint: 'getPoets',
-          duration,
-          success: true,
-          fallback: false,
-        });
-
         if (poets.length > 0) {
           return poets;
         }
-        console.warn('Supabase getPoets returned empty list, falling back to Ganjoor API');
       } catch (error) {
-        console.warn('Supabase getPoets failed, falling back to Ganjoor API:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Supabase getPoets failed, falling back to Ganjoor API:', error);
+        }
       }
     }
-
-    // Fallback to Ganjoor API
-    const fallbackStartTime = performance.now();
-    try {
-      const poets = await ganjoorApi.getPoets();
-      const duration = performance.now() - fallbackStartTime;
-
-      trackPerformance({
-        source: 'ganjoor',
-        endpoint: 'getPoets',
-        duration,
-        success: true,
-        fallback: true,
-      });
-
-      if (poets.length > 0) {
-        return poets;
-      }
-      console.warn('Ganjoor getPoets returned empty list, using static featured poets');
-      return [...FEATURED_POETS_FALLBACK];
-    } catch (error) {
-      const duration = performance.now() - fallbackStartTime;
-      console.warn('Ganjoor getPoets failed, using static featured poets list:', error);
-      trackPerformance({
-        source: 'ganjoor',
-        endpoint: 'getPoets',
-        duration,
-        success: false,
-        fallback: true,
-      });
-      return [...FEATURED_POETS_FALLBACK];
-    }
+    return ganjoorApi.getPoets();
   },
 
   /**
    * Get poet details (prefer Supabase, fallback to Ganjoor)
    */
   async getPoet(id: number): Promise<{ poet: Poet; categories: Category[] }> {
-    const startTime = performance.now();
-
-    // Try Supabase first for famous poets
     if (isSupabaseAvailable()) {
       try {
         // Check if poet exists in Supabase first (fast check)
@@ -191,14 +74,6 @@ export const hybridApi = {
         
         if (hasPoet) {
           const data = await supabaseApi.getPoet(id);
-          const duration = performance.now() - startTime;
-          trackPerformance({
-            source: 'supabase',
-            endpoint: 'getPoet',
-            duration,
-            success: true,
-            fallback: false,
-          });
           return data;
         } else {
           console.log(`Poet ${id} not in Supabase, using Ganjoor API`);
@@ -209,55 +84,19 @@ export const hybridApi = {
     }
 
     // Fallback to Ganjoor API
-    const fallbackStartTime = performance.now();
-    const data = await ganjoorApi.getPoet(id);
-    const duration = performance.now() - fallbackStartTime;
-
-    trackPerformance({
-      source: 'ganjoor',
-      endpoint: 'getPoet',
-      duration,
-      success: true,
-      fallback: true,
-    });
-
-    return data;
+    return ganjoorApi.getPoet(id);
   },
 
   /**
    * Get category poems (prefer Supabase, fallback to Ganjoor)
    */
   async getCategoryPoems(poetId: number, categoryId: number): Promise<Poem[]> {
-    const startTime = performance.now();
-
     const migratedPoet = await isMigratedPoet(poetId);
 
     if (migratedPoet) {
-      try {
-        const poems = await supabaseApi.getCategoryPoems(poetId, categoryId);
-        const duration = performance.now() - startTime;
-
-        trackPerformance({
-          source: 'supabase',
-          endpoint: 'getCategoryPoems',
-          duration,
-          success: true,
-          fallback: false,
-        });
-
-        // Intentionally return Supabase result (even if empty) for migrated poets.
-        return poems;
-      } catch (error) {
-        const duration = performance.now() - startTime;
-        trackPerformance({
-          source: 'supabase',
-          endpoint: 'getCategoryPoems',
-          duration,
-          success: false,
-          fallback: false,
-        });
-        throw error;
-      }
+      const poems = await supabaseApi.getCategoryPoems(poetId, categoryId);
+      // Intentionally return Supabase result (even if empty) for migrated poets.
+      return poems;
     }
 
     // Try Supabase first for better performance
@@ -267,16 +106,6 @@ export const hybridApi = {
         
         // Only use Supabase data if we got results
         if (poems.length > 0) {
-          const duration = performance.now() - startTime;
-          
-          trackPerformance({
-            source: 'supabase',
-            endpoint: 'getCategoryPoems',
-            duration,
-            success: true,
-            fallback: false,
-          });
-
           return poems;
         } else {
           console.log(`Category ${categoryId} has no poems in Supabase, using Ganjoor API`);
@@ -287,27 +116,13 @@ export const hybridApi = {
     }
 
     // Fallback to Ganjoor API
-    const fallbackStartTime = performance.now();
-    const poems = await ganjoorApi.getCategoryPoems(poetId, categoryId);
-    const duration = performance.now() - fallbackStartTime;
-
-    trackPerformance({
-      source: 'ganjoor',
-      endpoint: 'getCategoryPoems',
-      duration,
-      success: true,
-      fallback: true,
-    });
-
-    return poems;
+    return ganjoorApi.getCategoryPoems(poetId, categoryId);
   },
 
   /**
    * Get individual poem (prefer Supabase, fallback to Ganjoor)
    */
   async getPoem(id: number): Promise<Poem> {
-    const startTime = performance.now();
-
     // Try Supabase first for better performance
     if (isSupabaseAvailable()) {
       try {
@@ -317,14 +132,6 @@ export const hybridApi = {
         if (hasPoem) {
           const poem = await supabaseApi.getPoem(id);
           if (poem.verses && poem.verses.length > 0) {
-            const duration = performance.now() - startTime;
-            trackPerformance({
-              source: 'supabase',
-              endpoint: 'getPoem',
-              duration,
-              success: true,
-              fallback: false,
-            });
             return poem;
           }
           console.log(`Poem ${id} has no verses in Supabase, using Ganjoor API`);
@@ -337,61 +144,28 @@ export const hybridApi = {
     }
 
     // Fallback to Ganjoor API
-    const fallbackStartTime = performance.now();
-    const poem = await ganjoorApi.getPoem(id);
-    const duration = performance.now() - fallbackStartTime;
-
-    trackPerformance({
-      source: 'ganjoor',
-      endpoint: 'getPoem',
-      duration,
-      success: true,
-      fallback: true,
-    });
-
-    return poem;
+    return ganjoorApi.getPoem(id);
   },
 
   /**
-   * Get chapter details (Ganjoor API only, not in Supabase yet)
+   * Get chapter details.
+   * Try Supabase first (chapters are child categories), fallback to Ganjoor API.
    */
   async getChapter(poetId: number, categoryId: number, chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
-    if (await isMigratedPoet(poetId)) {
-      throw new Error('فصل برای شاعرهای مهاجرت‌کرده فعلا فقط از سوپابیس پشتیبانی می‌شود');
+    if (isSupabaseAvailable() && await isMigratedPoet(poetId)) {
+      try {
+        const data = await supabaseApi.getChapter(poetId, categoryId, chapterId);
+        if (data && data.poems.length > 0) {
+          return data;
+        }
+        // empty result — fall through to Ganjoor as a safety net
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Supabase getChapter failed, falling back to Ganjoor:`, error);
+        }
+      }
     }
-
-    const startTime = performance.now();
-    const data = await ganjoorApi.getChapter(poetId, categoryId, chapterId);
-    const duration = performance.now() - startTime;
-
-    trackPerformance({
-      source: 'ganjoor',
-      endpoint: 'getChapter',
-      duration,
-      success: true,
-      fallback: false,
-    });
-
-    return data;
-  },
-
-  /**
-   * Get random poem (Ganjoor API only, not in Supabase yet)
-   */
-  async getRandomPoem(): Promise<Poem> {
-    const startTime = performance.now();
-    const poem = await ganjoorApi.getRandomPoem();
-    const duration = performance.now() - startTime;
-
-    trackPerformance({
-      source: 'ganjoor',
-      endpoint: 'getRandomPoem',
-      duration,
-      success: true,
-      fallback: false,
-    });
-
-    return poem;
+    return ganjoorApi.getChapter(poetId, categoryId, chapterId);
   },
 
   async getMigratedPoetIds(): Promise<number[]> {
@@ -404,6 +178,27 @@ export const hybridApi = {
 };
 
 /**
- * Export for monitoring and debugging
+ * Given the categories array from getPoet and a target categoryId,
+ * determine whether categoryId is a container (top-level with chapters).
  */
-export { performanceMetrics };
+export function isContainerCategory(categories: Category[], categoryId: number): boolean {
+  const cat = categories.find(c => c.id === categoryId);
+  return Boolean(cat?.hasChapters && cat.chapters && cat.chapters.length > 0);
+}
+
+/**
+ * Given categories from getPoet and a chapterId, find the chapter and its container.
+ * Returns { chapter, containerId } or null if not found.
+ */
+export function findChapterById(
+  categories: Category[],
+  chapterId: number
+): { chapter: Chapter; containerId: number } | null {
+  for (const cat of categories) {
+    if (cat.chapters) {
+      const chapter = cat.chapters.find(ch => ch.id === chapterId);
+      if (chapter) return { chapter, containerId: cat.id };
+    }
+  }
+  return null;
+}

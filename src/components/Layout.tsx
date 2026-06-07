@@ -37,7 +37,11 @@ const Layout = ({ children }: LayoutProps) => {
       </div>
 
       {/* Content Container - Mobile optimized */}
-      <div className="relative z-10 flex flex-col items-center min-h-dvh gap-4 sm:gap-8 container-responsive">
+      <div className="relative z-10 flex flex-col items-center min-h-dvh gap-0 container-responsive">
+        <div className="fixed w-150 h-70 -top-20 left-1/2 -translate-x-1/2 -z-10 *:w-full flex items-start aspect-square blur-2xl opacity-25">
+          <span className="block w-1/2 h-full bg-amber-500 rounded-full -translate-x-16 blur-3xl mix-blend-color-dodge"></span>
+          <span className="block w-1/2 h-full bg-amber-700 rounded-full translate-x-16 blur-3xl mix-blend-color-dodge"></span>
+        </div>
         <Header />
         <main id="main-content" className="w-full min-w-0 max-w-full flex flex-col gap-4">
           {children}

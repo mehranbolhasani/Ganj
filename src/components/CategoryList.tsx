@@ -29,6 +29,13 @@ const getCategoryIcon = (title: string) => {
   return iconMap[title] || BookOpen01Icon; // Default to BookOpen if not found
 };
 
+interface CardEntry {
+  key: string;
+  title: string;
+  poemCount?: number;
+  href: string;
+}
+
 function CategoryList({ categories, poetId, isFamous = false }: CategoryListProps) {
   if (categories.length === 0) {
     return (
@@ -54,15 +61,37 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
         title: 'text-foreground',
       };
 
+  const cards: CardEntry[] = [];
+
+  for (const category of categories) {
+    if (category.hasChapters && Array.isArray(category.chapters) && category.chapters.length > 0) {
+      for (const chapter of category.chapters) {
+        cards.push({
+          key: `chapter-${chapter.id}`,
+          title: chapter.title,
+          poemCount: chapter.poemCount,
+          href: `/poet/${poetId}/category/${chapter.categoryId}/chapter/${chapter.id}`,
+        });
+      }
+    } else {
+      cards.push({
+        key: `category-${category.id}`,
+        title: category.title,
+        poemCount: category.poemCount,
+        href: `/poet/${poetId}/category/${category.id}`,
+      });
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-      {categories.map((category) => {
-        const IconComponent = getCategoryIcon(category.title);
+      {cards.map((card) => {
+        const IconComponent = getCategoryIcon(card.title);
 
         return (
           <Link
-            key={category.id}
-            href={`/poet/${poetId}/category/${category.id}`}
+            key={card.key}
+            href={card.href}
             className={`flex items-center gap-3 p-4 rounded-xl shadow-xl shadow-primary/10 dark:shadow-none transition-all duration-200 backdrop-blur-md ${styles.card}`}
           >
             <div className={`p-2 rounded-lg ${styles.iconWrapper}`}>
@@ -70,13 +99,13 @@ function CategoryList({ categories, poetId, isFamous = false }: CategoryListProp
             </div>
             <div className="flex flex-col gap-0">
               <h3 className={`text-lg font-semibold ${styles.title}`}>
-                {category.title}
+                {card.title}
               </h3>
-            {category.poemCount !== undefined && (
-              <p className="text-muted-foreground dark:text-secondary-foreground text-xs">
-                {toPersianDigits(category.poemCount)} شعر
-              </p>
-            )}
+              {card.poemCount !== undefined && (
+                <p className="text-muted-foreground dark:text-secondary-foreground text-xs">
+                  {toPersianDigits(card.poemCount)} شعر
+                </p>
+              )}
             </div>
           </Link>
         );

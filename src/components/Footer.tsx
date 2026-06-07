@@ -25,15 +25,6 @@ export default function Footer() {
         {/* Right side - Navigation */}
         <nav className="flex items-center gap-1">
           <Link
-            href="/roadmap"
-            className="px-4 py-2 rounded-md text-sm text-foreground hover:bg-muted dark:hover:bg-primary transition-colors"
-          >
-            نقشه راه
-          </Link>
-
-          <div className="w-2 h-px bg-muted dark:bg-muted mx-1"></div>
-
-          <Link
             href="https://ganjoor.net"
             target="_blank"
             rel="noopener noreferrer"

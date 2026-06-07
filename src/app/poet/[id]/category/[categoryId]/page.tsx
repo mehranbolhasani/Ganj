@@ -7,7 +7,7 @@ import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { CategoryPageSkeleton } from '@/components/LoadingStates';
 import { hybridApi } from '@/lib/hybrid-api';
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';
 import { toPersianDigits } from '@/lib/persian-digits';
 
@@ -39,6 +39,7 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
   let error: string | null = null;
   let ganjoorUnavailable = false;
   let migratedPoet = false;
+  let shouldRedirect = false;
 
   try {
     poems = await hybridApi.getCategoryPoems(poetId, categoryId);
@@ -47,12 +48,20 @@ export default async function CategoryPoemsPage({ params, searchParams }: Catego
     poetName = poetData.poet.name;
     category = poetData.categories.find(cat => cat.id === categoryId);
     categoryTitle = category?.title || 'مجموعه';
+    const isContainer = Boolean(category?.hasChapters && category.chapters && category.chapters.length > 0);
+    if (isContainer) {
+      shouldRedirect = true;
+    }
   } catch (err) {
     if (err instanceof GanjoorUnavailableError) {
       ganjoorUnavailable = true;
       migratedPoet = await hybridApi.isPoetMigrated(poetId);
     }
     error = err instanceof Error ? err.message : 'خطا در بارگذاری اشعار';
+  }
+
+  if (shouldRedirect) {
+    redirect(`/poet/${poetId}`);
   }
 
   if (ganjoorUnavailable && !migratedPoet) {

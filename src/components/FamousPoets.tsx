@@ -47,20 +47,20 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
   });
 
   return (
-    <div className="w-full mb-24 relative">
+    <div className="w-full mb-24 relative min-h-fit bg-primary/5 p-4 sm:p-6 rounded-3xl flex flex-col gap-4 backdrop-blur-md">
       <h2 className="sr-only mb-8 text-right">
         شاعرهای پرمخاطب
       </h2>
 
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-2 xs:grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 xs:grid-cols-2 gap-4">
         {famousPoets.map((poet) => (
           <Link
             key={poet.id}
             href={`/poet/${poet.id}`}
-            className="flex flex-col items-center group cursor-pointer w-full bg-card rounded-2xl shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/15 transition-all duration-200 min-h-[200px] sm:min-h-[230px] gap-1 p-1 active:scale-[0.98] touch-manipulation dark:shadow-none"
+            className="grid grid-cols-4 sm:flex sm:flex-col items-center group cursor-pointer w-full bg-card rounded-2xl shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/15 transition-all duration-200 min-h-fit sm:min-h-[230px] gap-1 p-1 active:scale-[0.98] touch-manipulation dark:shadow-none"
           >
             {/* Poet Image with explicit dimensions to prevent CLS */}
-            <div className="w-full aspect-square rounded-xl overflow-hidden mix-blend-multiply dark:mix-blend-hard-light dark:opacity-70">
+            <div className="w-fit h-fit sm:h-full sm:w-full aspect-square rounded-xl overflow-hidden mix-blend-multiply dark:mix-blend-hard-light dark:opacity-70 col-span-1">
               <Image
                 src={`/images/${getPoetImage(normalizedPoetSlug(poet.slug))}`}
                 alt={`تصویر ${poet.name}`}
@@ -73,8 +73,8 @@ export default function FamousPoets({ poets }: FamousPoetsProps) {
             </div>
 
             {/* Poet Name */}
-            <div className="text-right py-3 sm:py-4 w-full px-4">
-              <h3 className="text-base font-medium transition-colors leading-tight [word-spacing:-0.1rem]">
+            <div className="text-right py-3 sm:py-3 w-full px-2 col-span-3">
+              <h3 className="text-base font-medium transition-colors leading-tight [word-spacing:-0.2rem]">
                 {poet.name}
               </h3>
 

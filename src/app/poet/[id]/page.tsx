@@ -146,7 +146,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
   const isFamous = isFamousPoet(poet.slug || "");
 
   return (
-    <div className="min-h-fit bg-primary/5 p-6 rounded-3xl flex flex-col gap-4">
+    <div className="min-h-fit bg-primary/5 p-4 sm:p-6 rounded-3xl flex flex-col gap-4 backdrop-blur-md">
       <BreadcrumbStructuredData
         items={[
           { name: "دفتر گنج", url: "https://ganj.directory" },
@@ -165,8 +165,8 @@ export default async function PoetPage({ params }: PoetPageProps) {
         <Breadcrumbs items={[{ label: poet.name }]} />
 
         <div className={`rounded-2xl shadow-xl shadow-primary/10 dark:shadow-none h-full overflow-hidden z-20 ${isFamous ? "bg-card" : "bg-card"}`}>
-          <div className="text-right flex items-stretch h-full">
-            <div className={`relative w-full min-h-full flex-1 ${isFamous ? "border-l" : "border-l"}`}>
+          <div className="text-right flex flex-col sm:flex-row items-stretch h-full">
+            <div className={`relative w-full min-h-full flex-1 ${isFamous ? "border-l" : "border-l hidden"}`}>
               {/* Poet Image - only for famous poets - reserve space to prevent layout shift */}
               {getPoetImage(poet.slug || "") ? (
                 <div className="relative w-full h-full shrink-0">
@@ -187,7 +187,7 @@ export default async function PoetPage({ params }: PoetPageProps) {
 
             <div className="flex-2">
               <div className={`flex items-center gap-6 ${isFamous ? "p-6" : "p-6"}`}>
-                <div className="flex flex-col gap-1 align-center md:align-start text-center md:text-right">
+                <div className="flex flex-col gap-1 align-start md:align-start text-right md:text-right">
                   <h1 className={`text-3xl font-bold ${isFamous ? "text-foreground" : "text-foreground"}`}>
                     {poet.name}
                   </h1>
