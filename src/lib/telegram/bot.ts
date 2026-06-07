@@ -118,13 +118,17 @@ bot.on('message:text', async (ctx) => {
   const userId = ctx.from?.id;
   if (!userId) return;
 
+  const text = ctx.message.text.trim();
+  // Skip commands so they are handled only by bot.command(...) handlers
+  if (text.startsWith('/')) return;
+
   const allowed = await checkRateLimit(userId);
   if (!allowed) {
     await ctx.reply(messages.RATE_LIMITED);
     return;
   }
 
-  const query = ctx.message.text.trim();
+  const query = text;
   if (query.length < 2) {
     await ctx.reply(messages.QUERY_TOO_SHORT);
     return;
