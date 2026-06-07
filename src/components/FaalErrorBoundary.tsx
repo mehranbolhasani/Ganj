@@ -3,6 +3,25 @@
 import { Component, ReactNode } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { AlertCircleIcon } from '@hugeicons/core-free-icons';
+import { motion, useReducedMotion } from 'motion/react';
+
+// Small wrapper so we can use the `useReducedMotion` hook inside a class component
+function RefreshButton() {
+  const shouldReduce = useReducedMotion();
+  return (
+    <motion.button
+      onClick={() => {
+        window.location.reload();
+      }}
+      className="px-6 py-3 bg-destructive/100 hover:bg-red-600 text-primary-foreground rounded-xl font-medium cursor-pointer"
+      whileHover={shouldReduce ? {} : { scale: 1.05 }}
+      whileTap={shouldReduce ? {} : { scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+    >
+      رفرش صفحه
+    </motion.button>
+  );
+}
 
 interface Props {
   children: ReactNode;
@@ -46,15 +65,7 @@ export class FaalErrorBoundary extends Component<Props, State> {
             <p className="text-destructive mb-6">
               {this.state.error?.message || 'لطفاً صفحه را رفرش کنید یا دوباره تلاش کنید.'}
             </p>
-            <button
-              onClick={() => {
-                this.setState({ hasError: false, error: null });
-                window.location.reload();
-              }}
-              className="px-6 py-3 bg-destructive/100 hover:bg-red-600 text-primary-foreground rounded-xl font-medium transition-colors"
-            >
-              رفرش صفحه
-            </button>
+            <RefreshButton />
           </div>
         </div>
       );

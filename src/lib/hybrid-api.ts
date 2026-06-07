@@ -74,7 +74,15 @@ export const hybridApi = {
         
         if (hasPoet) {
           const data = await supabaseApi.getPoet(id);
-          return data;
+          // If Supabase has the poet but returns no categories, the data is
+          // incomplete — fall back to Ganjoor API so callers like the Faal page
+          // can still find the category they need.
+          if (data.categories.length > 0) {
+            return data;
+          }
+          console.warn(
+            `Poet ${id} found in Supabase but has no categories, falling back to Ganjoor API`
+          );
         } else {
           console.log(`Poet ${id} not in Supabase, using Ganjoor API`);
         }

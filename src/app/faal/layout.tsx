@@ -8,20 +8,10 @@ export default function FaalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      {/* Fixed background - respects theme system */}
-      <div 
-        data-faal-page
-        className="fixed inset-0 bg-background dark:bg-primary z-0"
-        aria-hidden="true"
-      />
-      {/* Provider wrapper - manages state and provides context to all children */}
-      <FaalProviderWrapper>
-        {/* Client component handles all interactive/dynamic parts */}
-        <FaalLayoutClient>
-          {children}
-        </FaalLayoutClient>
-      </FaalProviderWrapper>
-    </>
+    <FaalProviderWrapper>
+      <FaalLayoutClient>
+        {children}
+      </FaalLayoutClient>
+    </FaalProviderWrapper>
   );
 }

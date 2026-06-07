@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
 import "./globals.css";
-import "./faal-critical.css";
 import { ThemeProvider } from "next-themes";
 import ThemeSync from "@/components/ThemeSync";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -102,21 +101,8 @@ export default function RootLayout({
       <head>
         {/* Set color-scheme to support both themes */}
         <meta name="color-scheme" content="light dark" />
-        {/* Script to handle Faal page preload background - respects theme system */}
-        <script dangerouslySetInnerHTML={{ __html: `!function(){var p=location.pathname;var d=document;if(p==='/faal'||p.startsWith('/faal')){d.documentElement.setAttribute('data-faal-route','true');}else{setTimeout(function(){var bg=d.getElementById('faal-preload-bg');if(bg)bg.style.display='none';},0);}}();`}} />
       </head>
       <body className="antialiased" style={{ fontFamily: 'Estedad, sans-serif' }}>
-        {/* Server-rendered background for Faal page - respects theme system */}
-        {/* High z-index ensures it covers any backgrounds during initial paint */}
-        {/* Hidden via JavaScript for non-faal pages, faded out via CSS for faal pages once content loads */}
-        <div
-          id="faal-preload-bg"
-          className="fixed inset-0 bg-background dark:bg-primary z-[9998] pointer-events-none transition-opacity duration-300"
-          style={{
-            display: 'none', // Hidden by default, shown via CSS for faal pages
-          }}
-          aria-hidden="true"
-        />
         <OrganizationStructuredData
           name="دفتر گنج"
           url="https://ganj.directory"

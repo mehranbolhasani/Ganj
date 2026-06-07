@@ -3,27 +3,42 @@
 import Link from 'next/link';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
+import { motion, useReducedMotion } from 'motion/react';
 
 export default function FaalHeader() {
+  const shouldReduce = useReducedMotion();
+
   return (
     <header className="w-full sm:container-responsive flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between z-10 relative">
-      {/* Right side - Logo */}
-      <div className="flex items-center gap-1">
-        <Link href="/" className="flex items-center gap-1 flex-row-reverse text-background dark:text-background0 hover:opacity-80 transition-opacity">
-          <span className="text-md translate-y-0.5">دفتر گنج</span>
+      {/* Right side — Logo */}
+      <motion.div
+        className="flex items-center gap-1"
+        whileHover={shouldReduce ? {} : { opacity: 0.8 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Link
+          href="/"
+          className="flex items-center gap-2 flex-row-reverse text-background dark:text-background0"
+        >
+          <span className="sr-only text-md font-medium">دفتر گنج</span>
           <div className="w-8 h-8 grid items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" color="currentColor" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M19.543 1.25c.4142 0 .75.336.75.75s-.3358.75-.75.75H6.5c-.9534 0-1.7283.762-1.749 1.711.0007.013.0029.027.003.04v.104c.0541.918.815 1.645 1.746 1.645H16c.4538 0 .87-.001 1.248.009-.001-.352-.0049-.582-.0283-.756-.013-.097-.0281-.145-.0371-.167a.1506.1506 0 0 0-.0049-.011l-.0009-.002-.002-.001c-.0019-.001-.0057-.003-.0107-.005-.0218-.009-.0705-.024-.167-.037-.2107-.028-.5047-.03-.9971-.03H6.5a.7501.7501 0 0 1-.75-.75c0-.414.3358-.75.75-.75H16c.4502 0 .8634-.002 1.1973.043.3554.048.731.161 1.04.47.309.309.4219.684.4697 1.04.0421.312.042.694.042 1.111.4472.109.8527.299 1.1953.642.4554.455.6412 1.021.7256 1.649.0815.606.0801 1.373.0801 2.295v7c0 .922.0014 1.689-.0801 2.295-.0844.628-.2702 1.194-.7256 1.649-.4553.456-1.0218.641-1.6494.726-.6062.081-1.3733.08-2.2949.08h-5.9961c-1.3927 0-2.5131.002-3.3916-.116-.9001-.121-1.6588-.381-2.2607-.983-.6017-.601-.8605-1.359-.9815-2.259-.118-.879-.1162-1.999-.1162-3.392V4.636C3.2521 4.591 3.25 4.545 3.25 4.5c0-1.795 1.455-3.25 3.25-3.25h13.043ZM4.754 16c0 1.435.001 2.436.1025 3.191.0986.734.2798 1.123.5566 1.4.2767.276.665.457 1.3984.555.7554.102 1.757.104 3.1924.104H16c.964 0 1.6117-.001 2.0947-.066.4614-.062.6588-.17.7891-.3.1303-.131.2378-.328.2998-.789.0325-.242.0491-.525.0576-.867L19.25 18v-7c0-.964-.0015-1.612-.0664-2.095-.0621-.461-.1695-.658-.2998-.789-.1303-.13-.3277-.238-.7891-.3-.483-.065-1.1307-.066-2.0947-.066H6.5c-.643 0-1.2416-.188-1.746-.51V16Zm7.746-.25c.4142 0 .75.336.75.75s-.3358.75-.75.75h-4a.7501.7501 0 0 1-.75-.75c0-.414.3358-.75.75-.75h4Zm3-4c.4142 0 .75.336.75.75s-.3358.75-.75.75h-7a.7501.7501 0 0 1-.75-.75c0-.414.3358-.75.75-.75h7Z" clipRule="evenodd"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" className="w-full h-full"><g clipPath="url(#a)"><path fill="#F19000" d="M0 12.8c0-4.48 0-6.72.872-8.432A8 8 0 0 1 4.368.872C6.08 0 8.32 0 12.8 0h6.4c4.48 0 6.72 0 8.432.872a8 8 0 0 1 3.496 3.496C32 6.08 32 8.32 32 12.8v6.4c0 4.48 0 6.72-.872 8.432a8 8 0 0 1-3.496 3.496C25.92 32 23.68 32 19.2 32h-6.4c-4.48 0-6.72 0-8.432-.872a8 8 0 0 1-3.496-3.496C0 25.92 0 23.68 0 19.2z"/><path stroke="#fffbeb" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.705" d="M24.59 14.273H9.764a2.84 2.84 0 0 0-2.838 2.996m0 0a2.84 2.84 0 0 0 2.838 2.688h10.799c2.143 0 3.215 0 3.88.666.666.666.666 1.737.666 3.88v7.958c0 2.143 0 3.215-.666 3.88-.665.667-1.737.667-3.88.667h-6.817c-3.215 0-4.822 0-5.821-.999s-.999-2.606-.999-5.821zm0 0v-.152m2.838-.002h10.799c1.071 0 1.607 0 1.94.333s.333.869.333 1.94M19.994 26.209h-7.957m4.547 4.547h-4.547"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 12.8c0-4.48 0-6.72.872-8.432A8 8 0 0 1 4.368.872C6.08 0 8.32 0 12.8 0h6.4c4.48 0 6.72 0 8.432.872a8 8 0 0 1 3.496 3.496C32 6.08 32 8.32 32 12.8v6.4c0 4.48 0 6.72-.872 8.432a8 8 0 0 1-3.496 3.496C25.92 32 23.68 32 19.2 32h-6.4c-4.48 0-6.72 0-8.432-.872a8 8 0 0 1-3.496-3.496C0 25.92 0 23.68 0 19.2z"/></clipPath></defs></svg>
           </div>
         </Link>
-      </div>
+      </motion.div>
 
-      <Link
+      <motion.div
+        whileHover={shouldReduce ? {} : { x: 4 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+      >
+        <Link
           href="/"
-          className="text-sm text-background0 hover:text-warning dark:hover:text-warning transition-colors flex items-center gap-1"
+          className="text-sm text-background flex items-center gap-1"
         >
           بازگشت به صفحه اصلی
           <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
         </Link>
+      </motion.div>
     </header>
   );
 }

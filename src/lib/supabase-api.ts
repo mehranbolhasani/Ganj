@@ -173,47 +173,60 @@ export const supabaseApi = {
       const topLevelRows = allRows.filter(c => c.parentId === null);
       const childRows = allRows.filter(c => c.parentId !== null);
 
-      const categories: Category[] = topLevelRows
-        .map(top => {
-          const children = childRows.filter(c => c.parentId === top.id);
-          if (children.length > 0) {
-            // Layout A — container poet: top-level category has children (real chapters)
-            const chapters: Chapter[] = children.map(child => ({
+      const categories: Category[] = [];
+      for (const top of topLevelRows) {
+        const children = childRows.filter(c => c.parentId === top.id);
+
+        if (children.length > 0 && top.poemCount === 0) {
+          // Root container (e.g. "حافظ") with no direct poems — promote
+          // children to top-level categories so they match the Ganjoor API
+          // flat structure that callers like the Faal page expect.
+          for (const child of children) {
+            categories.push({
               id: child.id,
               title: child.title,
-              categoryId: top.id,
-              poemCount: child.poemCount,
-            }));
-            const totalPoemCount = children.reduce((sum, c) => sum + c.poemCount, 0);
-            return {
-              id: top.id,
-              title: top.title,
               description: '',
               poetId: id,
-              poemCount: totalPoemCount,
-              hasChapters: true,
-              chapters,
-            };
+              poemCount: child.poemCount,
+              hasChapters: false,
+              chapters: undefined,
+            });
           }
-          // Layout B — flat poet: top-level category has no children
-          return {
+          continue;
+        }
+
+        if (children.length > 0) {
+          // Real container with chapters
+          const chapters: Chapter[] = children.map(child => ({
+            id: child.id,
+            title: child.title,
+            categoryId: top.id,
+            poemCount: child.poemCount,
+          }));
+          const totalPoemCount = children.reduce((sum, c) => sum + c.poemCount, 0);
+          categories.push({
             id: top.id,
             title: top.title,
             description: '',
             poetId: id,
-            poemCount: top.poemCount,
-            hasChapters: false,
-            chapters: undefined,
-          };
-        })
-        .filter(category => {
-          // Always keep container categories (even if their own direct poem count is 0)
-          if (category.hasChapters) {
-            return true;
-          }
-          // Drop only genuinely empty flat categories
-          return category.poemCount > 0;
+            poemCount: totalPoemCount,
+            hasChapters: true,
+            chapters,
+          });
+          continue;
+        }
+
+        // Flat category
+        categories.push({
+          id: top.id,
+          title: top.title,
+          description: '',
+          poetId: id,
+          poemCount: top.poemCount,
+          hasChapters: false,
+          chapters: undefined,
         });
+      }
 
       return { poet, categories };
     }, 30 * 60 * 1000); // Cache for 30 minutes

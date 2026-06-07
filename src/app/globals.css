@@ -296,17 +296,6 @@ html.dark {
   background-color: var(--color-amber-950); /* stone-900 */
 }
 
-/* Faal page backgrounds - respects theme system */
-html:not(.dark)[data-faal-route],
-html:not(.dark):has([data-faal-page]) {
-  background-color: #0c0a09; /* stone-950 for light mode Faal (intentional dark aesthetic) */
-}
-
-html.dark[data-faal-route],
-html.dark:has([data-faal-page]) {
-  background-color: #1c1917; /* stone-900 for dark mode Faal */
-}
-
 /* Body backgrounds follow html */
 html:not(.dark) body {
   background-color: #f5f5f4;
@@ -314,22 +303,6 @@ html:not(.dark) body {
 
 html.dark body {
   background-color: var(--color-amber-950);
-}
-
-html:not(.dark)[data-faal-route] body,
-html:not(.dark):has([data-faal-page]) body {
-  background-color: #0c0a09;
-}
-
-html.dark[data-faal-route] body,
-html.dark:has([data-faal-page]) body {
-  background-color: #1c1917;
-}
-
-/* Hide grid background on faal page */
-html[data-faal-route] .grid-background,
-html:has([data-faal-page]) .grid-background {
-  display: none !important;
 }
 
 /* Custom utilities */
@@ -637,16 +610,5 @@ html:has([data-faal-page]) .grid-background {
   }
   body {
     @apply bg-background text-foreground;
-  }
-  /* Faal page body background - respects theme system */
-  html:not(.dark) body:has([data-faal-page]) {
-    background-color: #0c0a09; /* stone-950 for light mode Faal */
-  }
-  html.dark body:has([data-faal-page]) {
-    background-color: #1c1917; /* stone-900 for dark mode Faal */
-  }
-
-  html[data-faal-route="true"] #faalRight {
-    background-color: color-mix(in oklab, var(--color-amber-900) 50%, transparent) !important;
   }
 }

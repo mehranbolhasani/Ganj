@@ -122,6 +122,10 @@ export function FaalProviderWrapper({ children }: FaalProviderWrapperProps) {
         );
 
         if (!ghazaliatCategory) {
+          // Clear stale cache so the next attempt fetches fresh data
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem(HAFEZ_CACHE_KEY);
+          }
           throw new Error('دسته‌بندی غزلیات یافت نشد');
         }
 
