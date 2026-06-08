@@ -2,6 +2,7 @@ import { Bot, InlineKeyboard } from 'grammy';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { botSupabase } from './supabase-bot-client';
+import { recordEvent } from './analytics';
 import { searchPoems, getPoemById } from './search';
 import { getRandomHafezGhazal } from '@/lib/faal-core';
 import { Poem } from '@/lib/types';
@@ -116,6 +117,8 @@ bot.command('faal', async (ctx) => {
       return;
     }
     const text = formatPoem(poem, messages.FAAL_PREFIX);
+    // Fire-and-forget analytics — do not await
+    void recordEvent('faal');
     await ctx.reply(text);
   } catch (err) {
     console.error('Faal command error:', err);
@@ -145,6 +148,9 @@ bot.on('message:text', async (ctx) => {
   }
 
   const poems = await searchPoems(query);
+
+  // Fire-and-forget analytics — do not await
+  void recordEvent('search', query, poems.length);
 
   if (poems.length === 0) {
     await ctx.reply(messages.NO_RESULTS);
