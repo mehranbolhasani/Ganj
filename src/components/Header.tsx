@@ -11,6 +11,7 @@ import { Poet } from '@/lib/types';
 import { toPersianDigits } from '@/lib/persian-digits';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Cancel01Icon, HeartIcon, HistoryIcon, Menu01Icon, Search01Icon } from '@hugeicons/core-free-icons';
+import AuthAvatar from './AuthAvatar';
 
 // Dynamic imports for heavy modal components
 const ViewHistory = dynamic(() => import('./ViewHistory'), {
@@ -92,6 +93,8 @@ const Header = () => {
     <header className="w-full sm:container-responsive min-h-16 h-24 flex items-center justify-between z-30 flex-row-reverse relative">
       {/* Mobile Menu & Search Buttons */}
       <div className="md:hidden flex items-center gap-2">
+        <AuthAvatar />
+
         {/* Mobile Search Button */}
         <button
           onClick={() => setIsSearchOpen(true)}
@@ -160,6 +163,9 @@ const Header = () => {
 
           <PoetsDropdown />
         </nav>
+
+        <div className="w-px h-6 bg-border" />
+        <AuthAvatar />
       </div>
 
       {/* Right side - Logo */}

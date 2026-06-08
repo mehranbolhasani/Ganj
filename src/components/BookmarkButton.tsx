@@ -3,6 +3,8 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { addBookmark, removeBookmark } from '@/lib/bookmarks-manager';
+import { useAuth } from '@/hooks/useAuth';
+import { addCloudBookmark, removeCloudBookmark, isCloudBookmarked } from '@/lib/cloud-bookmarks-api';
 import { useToast } from './Toast';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { HeartIcon } from '@hugeicons/core-free-icons';
@@ -30,15 +32,29 @@ export default function BookmarkButton({
   showLabel = false,
 }: BookmarkButtonProps) {
   const { bookmarks } = useBookmarks();
+  const { user } = useAuth();
   const [showTooltip, setShowTooltip] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [undoTimeout, setUndoTimeout] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
+  const [cloudBookmarked, setCloudBookmarked] = useState<boolean | null>(null);
+  const isLoggedIn = !!user;
+
+  // Check cloud bookmark status when logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      isCloudBookmarked(poemId).then(setCloudBookmarked);
+    }
+  }, [isLoggedIn, poemId]);
+
   // Check if poem is bookmarked
   const isBookmarked = useMemo(() => {
-    return bookmarks.some(bookmark => bookmark.poemId === poemId);
-  }, [bookmarks, poemId]);
+    if (isLoggedIn) {
+      return cloudBookmarked ?? false;
+    }
+    return bookmarks.some((bookmark) => bookmark.poemId === poemId);
+  }, [isLoggedIn, cloudBookmarked, bookmarks, poemId]);
 
   const [heartAnimKey, setHeartAnimKey] = useState(0);
   const prevBookmarked = useRef(isBookmarked);
@@ -46,7 +62,7 @@ export default function BookmarkButton({
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (isBookmarked && !prevBookmarked.current) {
-        setHeartAnimKey(k => k + 1);
+        setHeartAnimKey((k) => k + 1);
       }
       prevBookmarked.current = isBookmarked;
     }, 0);
@@ -58,7 +74,12 @@ export default function BookmarkButton({
   const handleToggle = useCallback(async () => {
     try {
       if (isBookmarked) {
-        await removeBookmark(poemId);
+        if (isLoggedIn) {
+          await removeCloudBookmark(poemId);
+          setCloudBookmarked(false);
+        } else {
+          await removeBookmark(poemId);
+        }
 
         // Show undo option
         const timeoutId = setTimeout(() => {
@@ -75,29 +96,39 @@ export default function BookmarkButton({
                 clearTimeout(timeoutId);
                 setUndoTimeout(null);
               }
-              addBookmark({
-                poemId,
-                poetId,
-                poetName,
-                title,
-                categoryId,
-                categoryTitle,
-                url: `/poem/${poemId}`,
-              });
+              if (isLoggedIn) {
+                addCloudBookmark(poemId);
+                setCloudBookmarked(true);
+              } else {
+                addBookmark({
+                  poemId,
+                  poetId,
+                  poetName,
+                  title,
+                  categoryId,
+                  categoryTitle,
+                  url: `/poem/${poemId}`,
+                });
+              }
               toast.success('بازگردانی شد', 'به علاقه‌مندی‌ها بازگردانده شد');
-            }
-          }
+            },
+          },
         });
       } else {
-        await addBookmark({
-          poemId,
-          poetId,
-          poetName,
-          title,
-          categoryId,
-          categoryTitle,
-          url: `/poem/${poemId}`,
-        });
+        if (isLoggedIn) {
+          await addCloudBookmark(poemId);
+          setCloudBookmarked(true);
+        } else {
+          await addBookmark({
+            poemId,
+            poetId,
+            poetName,
+            title,
+            categoryId,
+            categoryTitle,
+            url: `/poem/${poemId}`,
+          });
+        }
 
         toast.success('افزوده شد', 'به علاقه‌مندی‌ها افزوده شد');
       }
@@ -105,7 +136,17 @@ export default function BookmarkButton({
       console.error('Failed to toggle bookmark:', error);
       toast.error('خطا', 'خطا در ذخیره علاقه‌مندی');
     }
-  }, [isBookmarked, poemId, poetId, poetName, title, categoryId, categoryTitle, toast]);
+  }, [
+    isBookmarked,
+    isLoggedIn,
+    poemId,
+    poetId,
+    poetName,
+    title,
+    categoryId,
+    categoryTitle,
+    toast,
+  ]);
 
   // Keyboard shortcut handling
   useEffect(() => {
@@ -113,11 +154,12 @@ export default function BookmarkButton({
       if (e.key === 'b' && !e.ctrlKey && !e.metaKey && !e.altKey) {
         // Check if no input is focused
         const activeElement = document.activeElement;
-            if (activeElement && (
-              activeElement.tagName === 'INPUT' || 
-              activeElement.tagName === 'TEXTAREA' || 
-              (activeElement as HTMLElement).contentEditable === 'true'
-            )) {
+        if (
+          activeElement &&
+          (activeElement.tagName === 'INPUT' ||
+            activeElement.tagName === 'TEXTAREA' ||
+            (activeElement as HTMLElement).contentEditable === 'true')
+        ) {
           return;
         }
 
@@ -147,9 +189,11 @@ export default function BookmarkButton({
       >
         <motion.div
           key={heartAnimKey}
-          animate={heartAnimKey > 0 && !shouldReduce
-            ? { scale: [1, 1.5, 0.9, 1.15, 1] }
-            : { scale: 1 }}
+          animate={
+            heartAnimKey > 0 && !shouldReduce
+              ? { scale: [1, 1.5, 0.9, 1.15, 1] }
+              : { scale: 1 }
+          }
           transition={{ duration: 0.4, times: [0, 0.2, 0.5, 0.7, 1] }}
         >
           <HugeiconsIcon icon={HeartIcon} size={16} className={isBookmarked ? 'fill-current' : ''} />
