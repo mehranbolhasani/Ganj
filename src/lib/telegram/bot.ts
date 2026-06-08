@@ -55,7 +55,17 @@ function formatPoem(poem: Poem, prefix?: string): string {
     contentLines.push(poem.poetName);
     contentLines.push('');
   }
-  contentLines.push(...poem.verses);
+  // Group verses into beyts (pairs of mesra'), with a blank line between beyts
+  for (let i = 0; i < poem.verses.length; i += 2) {
+    contentLines.push(poem.verses[i]);
+    if (i + 1 < poem.verses.length) {
+      contentLines.push(poem.verses[i + 1]);
+    }
+    // Blank line between beyts, but not after the final beyt
+    if (i + 2 < poem.verses.length) {
+      contentLines.push('');
+    }
+  }
   contentLines.push(''); // blank line before footer
 
   const footerLines = [

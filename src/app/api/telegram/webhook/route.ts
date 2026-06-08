@@ -1,7 +1,10 @@
 import { bot } from '@/lib/telegram/bot';
+import { webhookCallback } from 'grammy';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+const handleUpdate = webhookCallback(bot, 'std/http');
 
 export async function POST(request: Request) {
   const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
@@ -12,16 +15,7 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  try {
-    const body = await request.json();
-    // Ensure grammY is initialized before handling updates
-    await bot.init();
-    await bot.handleUpdate(body);
-    return new Response('OK', { status: 200 });
-  } catch (err) {
-    console.error('Telegram webhook error:', err);
-    return new Response('Internal Server Error', { status: 500 });
-  }
+  return handleUpdate(request);
 }
 
 export async function GET() {
