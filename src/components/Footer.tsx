@@ -32,6 +32,15 @@ export default function Footer() {
           >
             سایت گنجور
           </Link>
+
+          <Link
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-md text-sm text-foreground hover:bg-muted transition-colors"
+          >
+            حریم خصوصی
+          </Link>
         </nav>
       </div>
     </footer>
