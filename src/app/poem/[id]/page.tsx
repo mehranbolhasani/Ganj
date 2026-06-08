@@ -223,7 +223,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
       />
       <HistoryTracker poem={poem} />
 
-      <article className="w-full min-w-0 max-w-full overflow-x-clip min-h-fit bg-primary/5 p-4 sm:p-6 rounded-3xl flex flex-col gap-0 backdrop-blur-sm">
+      <article className="w-full min-w-0 max-w-full min-h-fit bg-primary/5 p-4 sm:p-6 rounded-3xl flex flex-col gap-0 backdrop-blur-sm">
         <Breadcrumbs items={[
           { label: poetName, href: `/poet/${poem.poetId}` },
           { label: categoryTitle, href: categoryHref },
