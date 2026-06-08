@@ -281,27 +281,29 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
       onClick={handleBackdropClick}
     >
       <div
-        className="w-full max-w-2xl bg-card rounded-xl shadow-xl"
+        className="relative w-full max-w-2xl bg-card rounded-xl shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}
         <div className="p-4 border-b border-border space-y-3">
-          <div className="flex items-center gap-3">
-            <HugeiconsIcon icon={Search01Icon} size={20} className="text-muted-foreground" aria-hidden="true" />
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder={selectedPoetId ? `جستجو در اشعار ${poets.find(p => p.id === selectedPoetId)?.name || ''}...` : "جستجو در شاعران، مجموعه‌ها و اشعار..."}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setShowHistory(query === '')}
-              className="flex-1 bg-transparent text-foreground placeholder-muted-foreground focus:outline-none"
-            />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="w-full flex items-center justify-between gap-2 px-3 py-4 text-sm bg-card border border-input rounded-md text-foreground transition-colors has-focus:bg-white dark:has-focus:bg-secondary has-focus:ring-2 flex-1">
+              <HugeiconsIcon icon={Search01Icon} size={20} className="text-muted-foreground" aria-hidden="true" />
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder={selectedPoetId ? `جستجو در اشعار ${poets.find(p => p.id === selectedPoetId)?.name || ''}...` : "جستجو در شاعران، مجموعه‌ها و اشعار..."}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setShowHistory(query === '')}
+                className="flex-1 bg-transparent text-foreground placeholder-muted-foreground focus:outline-none"
+              />
+            </div>
 
             {/* Poet Filter */}
-            <div className="flex items-center gap-2 w-56">
-              <HugeiconsIcon icon={FilterIcon} size={16} className="text-muted-foreground shrink-0" />
+            <div className="flex items-center gap-2 w-full flex-1">
+              <HugeiconsIcon icon={FilterIcon} size={20} className="text-muted-foreground shrink-0 w-8" />
               <PoetSelector
                 poets={poets}
                 selectedPoetId={selectedPoetId}
@@ -318,10 +320,11 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
 
             <button
               onClick={onClose}
-              className="p-1 rounded-md text-muted-foreground hover:text-foreground dark:hover:text-secondary-foreground transition-colors"
+              className="absolute -top-12 left-0 flex items-center gap-1 text-sm p-2 rounded-md bg-background border border-border transition-colors"
               aria-label="بستن جستجو"
             >
-              <HugeiconsIcon icon={Cancel01Icon} size={20} aria-hidden="true" />
+              <HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" />
+              <span>بستن</span>
             </button>
 
           </div>
@@ -678,7 +681,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
         </div>
 
         {/* Footer */}
-        <div className="p-3 border-t border-border bg-background dark:bg-secondary/50 rounded-b-xl">
+        <div className="p-3 border-t border-border bg-background dark:bg-secondary/50 rounded-b-xl hidden sm:block">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">

@@ -549,10 +549,10 @@ html.dark body {
   }
 
   /* Optimize container queries for mobile */
-  .container-responsive {
+  /*.container-responsive {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-  }
+  }*/
 }
 
 /* Faal Hafez - Mystical animations */

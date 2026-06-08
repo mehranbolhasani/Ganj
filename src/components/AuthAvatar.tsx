@@ -4,12 +4,21 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { UserCircle, LogOut, Heart, User } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { User02Icon, Logout05Icon, HeartIcon, HistoryIcon } from '@hugeicons/core-free-icons';
 import { useAuth } from '@/hooks/useAuth';
 import { getMyProfile } from '@/lib/user-profile-api';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { toPersianDigits } from '@/lib/persian-digits';
+import Image from 'next/image';
 
-export default function AuthAvatar() {
+interface AuthAvatarProps {
+  onOpenHistory: () => void;
+  historyCount: number;
+  bookmarksCount: number;
+}
+
+export default function AuthAvatar({ onOpenHistory, historyCount, bookmarksCount }: AuthAvatarProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -51,69 +60,106 @@ export default function AuthAvatar() {
 
   if (loading) return null;
 
-  // Logged out state
-  if (!user) {
-    return (
-      <Link
-        href="/auth"
-        className="p-2 rounded-lg text-foreground hover:bg-primary/10 hover:backdrop-blur-xs transition-colors flex items-center gap-1 cursor-pointer"
-        aria-label="ورود"
-      >
-        <UserCircle size={20} />
-      </Link>
-    );
-  }
-
-  const initial = displayName.trim().charAt(0) || user.email?.charAt(0) || '؟';
+  const initial = user
+    ? (displayName.trim().charAt(0) || user.email?.charAt(0) || '؟')
+    : '';
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setDropdownOpen((prev) => !prev)}
-        className="flex items-center justify-center w-9 h-9 rounded-full overflow-hidden border border-border hover:ring-2 hover:ring-ring transition-all focus:outline-none focus:ring-2 focus:ring-ring"
+        className="flex items-center justify-center p-3 rounded-lg text-foreground hover:bg-warning/20 dark:hover:bg-destructive/20 active:bg-accent dark:active:bg-destructive/30 transition-colors touch-manipulation"
         aria-label="منوی کاربر"
         aria-expanded={dropdownOpen}
       >
-        {avatarUrl ? (
-          <img
+        {user && avatarUrl ? (
+          <Image
             src={avatarUrl}
             alt={displayName}
             className="w-9 h-9 object-cover"
           />
-        ) : (
+
+        ) : user ? (
           <div className="w-9 h-9 bg-stone-200 dark:bg-stone-700 flex items-center justify-center text-sm font-bold text-stone-600 dark:text-stone-300">
             {initial}
+          </div>
+          ) : (
+          <div className="flex items-center gap-1">
+            <HugeiconsIcon icon={User02Icon} size={24} aria-hidden="true" />
+            <span className="text-sm">حساب کاربری</span>
           </div>
         )}
       </button>
 
       {dropdownOpen && (
-        <div className="absolute top-full left-0 mt-2 w-48 bg-card dark:bg-warning/10 border border-border rounded-xl shadow-lg shadow-primary/5 z-50 overflow-hidden">
+        <div className="absolute top-full left-0 mt-2 w-56 bg-card dark:bg-warning/10 border border-border rounded-xl shadow-lg shadow-primary/5 z-50 overflow-hidden">
           <div className="py-1">
-            <Link
-              href="/profile"
-              onClick={() => setDropdownOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
+            {/* History */}
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                onOpenHistory();
+              }}
+              className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
             >
-              <User size={16} />
-              <span>پروفایل</span>
-            </Link>
+              <div className="flex items-center gap-2">
+                <HugeiconsIcon icon={HistoryIcon} size={24} aria-hidden="true" />
+                <span>تاریخچه</span>
+              </div>
+              {historyCount > 0 && (
+                <span className="bg-muted text-muted-foreground text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold">
+                  {historyCount > 9 ? '۹+' : toPersianDigits(historyCount)}
+                </span>
+              )}
+            </button>
+
+            {/* Bookmarks */}
             <Link
               href="/bookmarks"
               onClick={() => setDropdownOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
+              className="flex items-center justify-between px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
             >
-              <Heart size={16} />
-              <span>علاقه‌مندی‌ها</span>
+              <div className="flex items-center gap-2">
+                <HugeiconsIcon icon={HeartIcon} size={24} aria-hidden="true" />
+                <span>علاقه‌مندی‌ها</span>
+              </div>
+              {bookmarksCount > 0 && (
+                <span className="bg-destructive/20 text-destructive text-xs rounded-md w-5 h-5 flex items-center justify-center font-bold">
+                  {bookmarksCount > 9 ? '۹+' : toPersianDigits(bookmarksCount)}
+                </span>
+              )}
             </Link>
+
             <div className="my-1 border-t border-border" />
-            <button
-              onClick={handleSignOut}
-              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
-            >
-              <LogOut size={16} />
-              <span>خروج</span>
-            </button>
+
+            {user ? (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
+                >
+                  <HugeiconsIcon icon={User02Icon} size={24} aria-hidden="true" />
+                  <span>پروفایل</span>
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                >
+                  <HugeiconsIcon icon={Logout05Icon} size={24} aria-hidden="true" />
+                  <span>خروج</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/auth"
+                onClick={() => setDropdownOpen(false)}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
+              >
+                <HugeiconsIcon icon={User02Icon} size={24} aria-hidden="true" />
+                <span>ورود / ثبت‌نام</span>
+              </Link>
+            )}
           </div>
         </div>
       )}

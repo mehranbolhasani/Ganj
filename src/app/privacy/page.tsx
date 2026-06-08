@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <div className="min-h-[60vh] py-12 px-4">
-      <div className="max-w-[680px] mx-auto bg-card/80 dark:bg-warning/10 backdrop-blur-sm rounded-3xl border border-border p-8 shadow-lg shadow-primary/5">
+      <div className="max-w-[680px] mx-auto bg-card/80 dark:bg-warning/10 backdrop-blur-sm rounded-3xl p-6 shadow-lg shadow-primary/5">
         {/* Persian Section — RTL */}
         <div dir="rtl" className="space-y-6">
           <h1 className="text-2xl font-bold text-foreground">
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
           <div className="space-y-1">
             <p className="font-bold text-foreground">۷. تماس</p>
             <p className="text-foreground leading-relaxed">
-              اگر سوالی درباره‌ی حریم خصوصی دارید، با ما از طریق صفحه‌ی تماس یا ایمیل hi@ganj.directory در تماس باشید.
+              اگر سوالی درباره‌ی حریم خصوصی دارید، با ما از طریق صفحه‌ی تماس یا ایمیل hi@interfacelogic.studio در تماس باشید.
             </p>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
         <div className="my-8 border-t border-border" />
 
         {/* English Section — LTR */}
-        <div dir="ltr" className="space-y-6">
+        <div dir="ltr" className="space-y-6 text-left">
           <h2 className="text-xl font-bold text-foreground">
             Privacy Policy (English Summary)
           </h2>
@@ -134,14 +134,14 @@ export default function PrivacyPage() {
           <div className="space-y-1">
             <p className="font-bold text-foreground">Data deletion</p>
             <p className="text-foreground leading-relaxed">
-              To delete your account and all associated data, contact us at hi@ganj.directory. Requests are processed within 7 business days.
+              To delete your account and all associated data, contact us at hi@interfacelogic.studio. Requests are processed within 7 business days.
             </p>
           </div>
 
           <div className="space-y-1">
             <p className="font-bold text-foreground">Contact</p>
             <p className="text-foreground leading-relaxed">
-              hi@ganj.directory
+              hi@interfacelogic.studio
             </p>
           </div>
         </div>

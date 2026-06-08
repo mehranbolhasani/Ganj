@@ -15,23 +15,23 @@ interface PoetSelectorProps {
 // Get the first letter of a Persian name for grouping
 const getFirstLetter = (name: string): string => {
   if (!name || name.length === 0) return 'سایر';
-  
+
   // Get first character
   const firstChar = name.trim()[0];
-  
+
   // Persian alphabet ranges
   const persianLetters = 'آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی';
-  
+
   // Check if it's a Persian letter
   if (persianLetters.includes(firstChar)) {
     return firstChar;
   }
-  
+
   // Check if it's a number
   if (/[۰-۹0-9]/.test(firstChar)) {
     return '۰-۹';
   }
-  
+
   // Default to 'سایر' (Other)
   return 'سایر';
 };
@@ -48,7 +48,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
   // Group poets by first letter
   const groupedPoets = useMemo(() => {
     const groups: Record<string, Poet[]> = {};
-    
+
     poets.forEach(poet => {
       const letter = getFirstLetter(poet.name);
       if (!groups[letter]) {
@@ -56,7 +56,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
       }
       groups[letter].push(poet);
     });
-    
+
     // Sort groups by Persian alphabet order
     const persianOrder = 'آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی۰-۹سایر';
     const sortedGroups = Object.entries(groups).sort((a, b) => {
@@ -67,12 +67,12 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
       if (indexB === -1) return -1;
       return indexA - indexB;
     });
-    
+
     // Sort poets within each group
     sortedGroups.forEach(([, poetsList]) => {
       poetsList.sort((a, b) => a.name.localeCompare(b.name, 'fa'));
     });
-    
+
     return sortedGroups;
   }, [poets]);
 
@@ -81,19 +81,19 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
     if (!searchQuery.trim()) {
       return groupedPoets;
     }
-    
+
     const query = searchQuery.toLowerCase().trim();
     const filtered: Array<[string, Poet[]]> = [];
-    
+
     groupedPoets.forEach(([letter, poetsList]) => {
-      const matchingPoets = poetsList.filter(poet => 
+      const matchingPoets = poetsList.filter(poet =>
         poet.name.toLowerCase().includes(query)
       );
       if (matchingPoets.length > 0) {
         filtered.push([letter, matchingPoets]);
       }
     });
-    
+
     return filtered;
   }, [groupedPoets, searchQuery]);
 
@@ -146,7 +146,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm bg-muted dark:bg-secondary border border-input rounded-lg text-foreground hover:bg-muted dark:hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+        className="w-full flex items-center justify-between gap-2 px-3 py-4 text-sm bg-muted dark:bg-secondary border border-input rounded-lg text-foreground hover:bg-muted dark:hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
       >
         <span className="flex items-center gap-2 min-w-0 flex-1 text-right">
           {selectedPoet ? (
@@ -220,7 +220,7 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
                     <div className="sticky top-0 bg-background px-4 py-1.5 text-xs font-semibold text-muted-foreground border-b border-border">
                       {letter}
                     </div>
-                    
+
                     {/* Poets in this group */}
                     {poetsList.map((poet) => (
                       <button
@@ -250,4 +250,3 @@ const PoetSelector = ({ poets, selectedPoetId, onSelect, placeholder = 'همه �
 };
 
 export default PoetSelector;
-
