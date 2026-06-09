@@ -68,31 +68,35 @@ export default function AuthAvatar({ onOpenHistory, historyCount, bookmarksCount
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setDropdownOpen((prev) => !prev)}
-        className="flex items-center justify-center p-3 rounded-lg text-foreground hover:bg-warning/20 dark:hover:bg-destructive/20 active:bg-accent dark:active:bg-destructive/30 transition-colors touch-manipulation"
+        className="flex items-center justify-center rounded-md text-primary bg-primary/5 hover:bg-primary/15 transition-all touch-manipulation"
         aria-label="منوی کاربر"
         aria-expanded={dropdownOpen}
       >
         {user && avatarUrl ? (
-          <Image
-            src={avatarUrl}
-            alt={displayName}
-            className="w-9 h-9 object-cover"
-          />
+          <div className="p-0.5 w-9 h-9 grid place-items-center">
+            <Image
+              src={avatarUrl}
+              alt={displayName}
+              width={32}
+              height={32}
+              className="w-7 h-7 object-cover rounded-sm"
+            />
+          </div>
 
         ) : user ? (
-          <div className="w-9 h-9 bg-stone-200 dark:bg-stone-700 flex items-center justify-center text-sm font-bold text-stone-600 dark:text-stone-300">
+          <div className="w-9 h-9 flex items-center justify-center p-2">
             {initial}
           </div>
           ) : (
-          <div className="flex items-center gap-1">
-            <HugeiconsIcon icon={User02Icon} size={24} aria-hidden="true" />
-            <span className="text-sm">حساب کاربری</span>
+          <div className="flex items-center gap-1 p-2">
+            <HugeiconsIcon icon={User02Icon} size={20} aria-hidden="true" />
+            <span className="sr-only text-xs">حساب کاربری</span>
           </div>
         )}
       </button>
 
       {dropdownOpen && (
-        <div className="absolute top-full left-0 mt-2 w-56 bg-card dark:bg-warning/10 border border-border rounded-xl shadow-lg shadow-primary/5 z-50 overflow-hidden">
+        <div className="absolute top-full left-0 mt-2 w-56 bg-card dark:bg-stone-800/90 backdrop-blur-lg rounded-xl shadow-lg shadow-primary/5 z-50 overflow-hidden">
           <div className="py-1">
             {/* History */}
             <button
@@ -100,10 +104,10 @@ export default function AuthAvatar({ onOpenHistory, historyCount, bookmarksCount
                 setDropdownOpen(false);
                 onOpenHistory();
               }}
-              className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
+              className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={HistoryIcon} size={24} aria-hidden="true" />
+                <HugeiconsIcon icon={HistoryIcon} size={20} aria-hidden="true" />
                 <span>تاریخچه</span>
               </div>
               {historyCount > 0 && (
@@ -120,7 +124,7 @@ export default function AuthAvatar({ onOpenHistory, historyCount, bookmarksCount
               className="flex items-center justify-between px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
             >
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={HeartIcon} size={24} aria-hidden="true" />
+                <HugeiconsIcon icon={HeartIcon} size={20} aria-hidden="true" />
                 <span>علاقه‌مندی‌ها</span>
               </div>
               {bookmarksCount > 0 && (
@@ -139,14 +143,14 @@ export default function AuthAvatar({ onOpenHistory, historyCount, bookmarksCount
                   onClick={() => setDropdownOpen(false)}
                   className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
                 >
-                  <HugeiconsIcon icon={User02Icon} size={24} aria-hidden="true" />
+                  <HugeiconsIcon icon={User02Icon} size={20} aria-hidden="true" />
                   <span>پروفایل</span>
                 </Link>
                 <button
                   onClick={handleSignOut}
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
                 >
-                  <HugeiconsIcon icon={Logout05Icon} size={24} aria-hidden="true" />
+                  <HugeiconsIcon icon={Logout05Icon} size={20} aria-hidden="true" />
                   <span>خروج</span>
                 </button>
               </>
@@ -156,7 +160,7 @@ export default function AuthAvatar({ onOpenHistory, historyCount, bookmarksCount
                 onClick={() => setDropdownOpen(false)}
                 className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition-colors"
               >
-                <HugeiconsIcon icon={User02Icon} size={24} aria-hidden="true" />
+                <HugeiconsIcon icon={User02Icon} size={20} aria-hidden="true" />
                 <span>ورود / ثبت‌نام</span>
               </Link>
             )}

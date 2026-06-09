@@ -51,11 +51,16 @@ const Header = () => {
         {/* Search Button */}
         <button
           onClick={() => setIsSearchOpen(true)}
-          className="p-3 rounded-lg text-foreground hover:bg-warning/20 dark:hover:bg-destructive/20 active:bg-accent dark:active:bg-destructive/30 transition-colors touch-manipulation"
+          className="flex items-center gap-4 p-2 rounded-md bg-primary/5 text-primary hover:bg-primary/15 hover:gap-12 transition-all touch-manipulation"
           aria-label="جستجو"
         >
-          <HugeiconsIcon icon={Search01Icon} size={22} aria-hidden="true" />
-          <span className="sr-only">جستجو</span>
+          <div>
+            <HugeiconsIcon icon={Search01Icon} size={20} aria-hidden="true" />
+            <span className="sr-only">جستجو</span>
+          </div>
+
+
+          <span dir="ltr" className="text-xs font-mono text-primary/50">⌘K</span>
         </button>
 
         <AuthAvatar

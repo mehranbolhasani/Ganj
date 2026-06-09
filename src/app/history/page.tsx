@@ -59,14 +59,14 @@ export default function HistoryPage() {
 
     // Group items
     const grouped: Record<string, typeof filtered> = {};
-    
+
     if (groupBy === 'date') {
       filtered.forEach(item => {
         const date = new Date(item.timestamp);
         const today = new Date();
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
-        
+
         let groupKey: string;
         if (date.toDateString() === today.toDateString()) {
           groupKey = 'امروز';
@@ -79,7 +79,7 @@ export default function HistoryPage() {
         } else {
           groupKey = date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long' });
         }
-        
+
         if (!grouped[groupKey]) {
           grouped[groupKey] = [];
         }
@@ -100,7 +100,7 @@ export default function HistoryPage() {
     // Calculate statistics
     const poetCounts: Record<string, number> = {};
     const categoryCounts: Record<string, number> = {};
-    
+
     items.forEach(item => {
       poetCounts[item.poetName] = (poetCounts[item.poetName] || 0) + 1;
       if (item.categoryTitle) {
@@ -111,8 +111,8 @@ export default function HistoryPage() {
     const mostReadPoet = Object.entries(poetCounts).reduce((a, b) => poetCounts[a[0]] > poetCounts[b[0]] ? a : b, ['', 0]);
     const mostReadCategory = Object.entries(categoryCounts).reduce((a, b) => categoryCounts[a[0]] > categoryCounts[b[0]] ? a : b, ['', 0]);
 
-    return { 
-      filteredItems: filtered, 
+    return {
+      filteredItems: filtered,
       groupedItems: grouped,
       statistics: {
         totalItems: items.length,
@@ -196,7 +196,7 @@ export default function HistoryPage() {
         {/* Statistics */}
         {items.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-card/50 rounded-xl p-4 border border-white dark:border-border">
+            <div className="bg-card dark:bg-stone-800/90 backdrop-blur-lg rounded-xl p-4 border border-white dark:border-border">
               <div className="flex items-center gap-3">
                 <HugeiconsIcon icon={ChartBarLineIcon} size={24} className="text-blue-600 dark:text-blue-400" />
                 <div>
@@ -208,7 +208,7 @@ export default function HistoryPage() {
               </div>
             </div>
 
-            <div className="bg-card/50 rounded-xl p-4 border border-white dark:border-border">
+            <div className="bg-card dark:bg-stone-800/90 backdrop-blur-lg rounded-xl p-4 border border-white dark:border-border">
               <div className="flex items-center gap-3">
                 <HugeiconsIcon icon={UserIcon} size={24} className="text-green-600 dark:text-green-400" />
                 <div>
@@ -222,7 +222,7 @@ export default function HistoryPage() {
               </div>
             </div>
 
-            <div className="bg-card/50 rounded-xl p-4 border border-white dark:border-border">
+            <div className="bg-card dark:bg-stone-800/90 backdrop-blur-lg rounded-xl p-4 border border-white dark:border-border">
               <div className="flex items-center gap-3">
                 <HugeiconsIcon icon={BookOpen01Icon} size={24} className="text-purple-600 dark:text-purple-400" />
                 <div>
@@ -258,8 +258,8 @@ export default function HistoryPage() {
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                  showFilters 
-                    ? 'bg-muted text-foreground' 
+                  showFilters
+                    ? 'bg-muted text-foreground'
                     : 'text-muted-foreground hover:bg-muted dark:hover:bg-primary'
                 }`}
               >
@@ -333,7 +333,7 @@ export default function HistoryPage() {
               {searchQuery ? 'هیچ موردی یافت نشد' : 'تاریخچه‌ای وجود ندارد'}
             </h3>
             <p className="text-muted-foreground">
-              {searchQuery 
+              {searchQuery
                 ? 'سعی کنید کلمات کلیدی دیگری جستجو کنید'
                 : 'شعرهای مورد علاقه خود را بازدید کنید تا در اینجا نمایش داده شوند'
               }
@@ -358,7 +358,7 @@ export default function HistoryPage() {
                     </h3>
                   </div>
                 )}
-                
+
                 <div className="divide-y divide-border">
                   {groupItems.map((item) => (
                     <Link

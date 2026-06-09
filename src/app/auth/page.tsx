@@ -61,10 +61,10 @@ export default function AuthPage() {
   if (loading) return null;
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md bg-card/80 dark:bg-warning/10 backdrop-blur-sm rounded-3xl border border-border p-8 shadow-lg shadow-primary/5">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl font-bold text-foreground mb-2 [word-spacing:-0.2rem]">
             ورود به دفتر گنج
           </h1>
           <p className="text-muted-foreground dark:text-secondary-foreground text-sm">
@@ -82,7 +82,7 @@ export default function AuthPage() {
         <button
           onClick={handleGoogleSignIn}
           disabled={googleLoading}
-          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-stone-800 border border-border hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-stone-800 border border-border hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {googleLoading ? (
             <span className="w-5 h-5 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin" />
@@ -110,7 +110,7 @@ export default function AuthPage() {
         </button>
 
         {/* Divider */}
-        <div className="relative my-6">
+        <div className="relative my-12">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-border" />
           </div>

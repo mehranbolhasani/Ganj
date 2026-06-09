@@ -66,14 +66,14 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
 
     // Group items
     const grouped: Record<string, typeof filtered> = {};
-    
+
     if (groupBy === 'date') {
       filtered.forEach(item => {
         const date = new Date(item.timestamp);
         const today = new Date();
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
-        
+
         let groupKey: string;
         if (date.toDateString() === today.toDateString()) {
           groupKey = 'امروز';
@@ -86,7 +86,7 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
         } else {
           groupKey = date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long' });
         }
-        
+
         if (!grouped[groupKey]) {
           grouped[groupKey] = [];
         }
@@ -184,15 +184,15 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-16">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/20 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Dropdown */}
-      <div 
+      <div
         ref={dropdownRef}
-        className={`relative bg-card rounded-lg shadow-xl border border-border w-full mx-4 overflow-hidden ${
+        className={`relative bg-card dark:bg-stone-800/90 backdrop-blur-lg rounded-lg shadow-xl border border-border w-full mx-4 overflow-hidden ${
           showFullHistory ? 'max-w-4xl max-h-[80vh]' : 'max-w-md max-h-96'
         }`}
       >
@@ -253,8 +253,8 @@ export default function ViewHistory({ isOpen, onClose }: ViewHistoryProps) {
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                  showFilters 
-                    ? 'bg-muted text-foreground' 
+                  showFilters
+                    ? 'bg-muted text-foreground'
                     : 'text-muted-foreground hover:bg-muted dark:hover:bg-primary'
                 }`}
               >

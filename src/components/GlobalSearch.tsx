@@ -281,7 +281,7 @@ const GlobalSearch = ({ isOpen, onClose }: GlobalSearchProps) => {
       onClick={handleBackdropClick}
     >
       <div
-        className="relative w-full max-w-2xl bg-card rounded-xl shadow-xl"
+        className="relative w-full max-w-2xl bg-card dark:bg-stone-800/90 backdrop-blur-lg rounded-xl shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}

@@ -55,9 +55,15 @@ export async function upsertProfile(profile: {
 
 export async function updateDisplayName(displayName: string): Promise<boolean> {
   const supabase = createSupabaseBrowserClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.warn('updateDisplayName error: user not authenticated');
+    return false;
+  }
   const { error } = await supabase
     .from('user_profiles')
-    .update({ display_name: displayName });
+    .update({ display_name: displayName })
+    .eq('id', user.id);
 
   if (error) {
     console.warn('updateDisplayName error:', error.message);
@@ -68,8 +74,11 @@ export async function updateDisplayName(displayName: string): Promise<boolean> {
 
 export async function markLocalImportDone(): Promise<void> {
   const supabase = createSupabaseBrowserClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
   await supabase
     .from('user_profiles')
-    .update({ local_import_done: true });
+    .update({ local_import_done: true })
+    .eq('id', user.id);
   // fire-and-forget, same pattern as bot analytics
 }
