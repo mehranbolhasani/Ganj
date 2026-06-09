@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { useViewHistory } from '@/lib/history-manager';
 import { useBookmarks } from '@/lib/bookmarks-manager';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Search01Icon } from '@hugeicons/core-free-icons';
+import { Search01Icon, BotIcon } from '@hugeicons/core-free-icons';
 import AuthAvatar from './AuthAvatar';
 
 // Dynamic imports for heavy modal components
@@ -61,6 +61,16 @@ const Header = () => {
 
 
           <span dir="ltr" className="text-xs font-mono text-primary/50">⌘K</span>
+        </button>
+
+        <button
+          className="flex items-center gap-4 p-2 rounded-md bg-white dark:bg-[#3490EC]/20 text-[#3490EC] hover:bg-[#3490EC] hover:text-white transition-all touch-manipulation dark:hover:dark:bg-[#3490EC]"
+          aria-label="ربات تلگرام"
+        >
+          <Link href="https://t.me/ganjdirectory_bot" className="flex items-center gap-1">
+            <HugeiconsIcon icon={BotIcon} size={20} aria-hidden="true" />
+            <span className="text-sm font-medium">ربات تلگرام</span>
+          </Link>
         </button>
 
         <AuthAvatar
