@@ -11,6 +11,8 @@ import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
 
+export const revalidate = 86400; // revalidate poem pages at most once per day
+
 interface PoemPageProps {
   params: {
     id: string;

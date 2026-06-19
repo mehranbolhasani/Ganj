@@ -10,6 +10,8 @@ import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
 import { toPersianDigits } from '@/lib/persian-digits';
 
+export const revalidate = 3600;
+
 interface ChapterPoemsPageProps {
   params: {
     id: string;

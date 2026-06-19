@@ -11,6 +11,8 @@ import { notFound, redirect } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';
 import { toPersianDigits } from '@/lib/persian-digits';
 
+export const revalidate = 3600; // revalidate category pages at most once per hour
+
 interface CategoryPoemsPageProps {
   params: {
     id: string;

@@ -15,6 +15,8 @@ import { Poet, Category } from "@/lib/types";
 import { BreadcrumbStructuredData, PersonStructuredData } from "@/components/StructuredData";
 import { toPersianDigits } from "@/lib/persian-digits";
 
+export const revalidate = 3600;
+
 // Helper function to get poet image based on slug
 const getPoetImage = (slug: string) => {
   const imageMap: { [key: string]: string } = {
