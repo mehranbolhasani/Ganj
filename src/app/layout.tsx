@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
+import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import ThemeSync from "@/components/ThemeSync";
@@ -130,6 +131,23 @@ export default function RootLayout({
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
+        <Script id="openpanel-init" strategy="afterInteractive">
+          {`
+            window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}} ,has:function(t,r){return"q"===r}}) }();
+            window.op('init', {
+              clientId: '0fe05e1a-ee3e-4451-a3a4-3ac87076d4ea',
+              trackScreenViews: true,
+              trackOutgoingLinks: true,
+              trackAttributes: true,
+            });
+          `}
+        </Script>
+        <Script
+          src="https://openpanel.dev/op1.js"
+          strategy="afterInteractive"
+          defer
+          async
+        />
       </body>
     </html>
   );
