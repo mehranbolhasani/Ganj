@@ -4,7 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import PoemPagination from '@/components/PoemPagination';
 import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { ChapterPageSkeleton } from '@/components/LoadingStates';
-import { hybridApi } from '@/lib/hybrid-api';
+import { hybridApiServer as hybridApi } from '@/lib/hybrid-api-server'; // cached server variant: React cache() + unstable_cache
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';

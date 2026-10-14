@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { hybridApi } from '@/lib/hybrid-api';
+import { hybridApiServer as hybridApi } from '@/lib/hybrid-api-server'; // cached server variant: React cache() + unstable_cache
 
 const BASE_URL = 'https://www.ganj.directory';
 const CONCURRENCY = 5; // max parallel requests to Ganjoor API

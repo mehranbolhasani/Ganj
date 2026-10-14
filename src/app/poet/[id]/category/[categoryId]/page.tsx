@@ -5,7 +5,7 @@ import ChapterList from '@/components/ChapterList';
 import PoemPagination from '@/components/PoemPagination';
 import GanjoorOutageCard from '@/components/GanjoorOutageCard';
 import { CategoryPageSkeleton } from '@/components/LoadingStates';
-import { hybridApi } from '@/lib/hybrid-api';
+import { hybridApiServer as hybridApi } from '@/lib/hybrid-api-server'; // cached server variant: React cache() + unstable_cache
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound, redirect } from 'next/navigation';
 import { Poem, Category } from '@/lib/types';

@@ -8,7 +8,7 @@ import ExpandableDescription from "@/components/ExpandableDescription";
 import PoetSearch from "@/components/PoetSearch";
 import GanjoorOutageCard from "@/components/GanjoorOutageCard";
 import { PoetPageSkeleton } from "@/components/LoadingStates";
-import { hybridApi } from "@/lib/hybrid-api";
+import { hybridApiServer as hybridApi } from "@/lib/hybrid-api-server"; // cached server variant: React cache() + unstable_cache
 import { GanjoorUnavailableError } from "@/lib/ganjoor-api";
 import { notFound } from "next/navigation";
 import { Poet, Category } from "@/lib/types";

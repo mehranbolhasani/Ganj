@@ -6,7 +6,8 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import HistoryTracker from '@/components/HistoryTracker';
 import { BreadcrumbStructuredData, ArticleStructuredData, CreativeWorkStructuredData } from '@/components/StructuredData';
 import GanjoorOutageCard from '@/components/GanjoorOutageCard';
-import { hybridApi, findChapterById } from '@/lib/hybrid-api';
+import { hybridApiServer } from '@/lib/hybrid-api-server'; // cached server variant: React cache() + unstable_cache
+import { findChapterById } from '@/lib/hybrid-api';
 import { GanjoorUnavailableError } from '@/lib/ganjoor-api';
 import { notFound } from 'next/navigation';
 import { Poem } from '@/lib/types';
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: PoemPageProps): Promise<Metad
   }
 
   try {
-    const poem = await hybridApi.getPoem(poemId);
+    const poem = await hybridApiServer.getPoem(poemId);
     const firstVerse = poem.verses && poem.verses.length > 0 ? poem.verses[0] : '';
     const description = firstVerse
       ? `${firstVerse.substring(0, 150)}...`
@@ -93,14 +94,14 @@ export default async function PoemPage({ params }: PoemPageProps) {
   let ganjoorUnavailable = false;
 
   try {
-    poem = await hybridApi.getPoem(poemId);
+    poem = await hybridApiServer.getPoem(poemId);
     poetName = poem.poetName;
     categoryTitle = poem.categoryTitle || 'مجموعه';
 
     // Determine correct category breadcrumb link
     if (poem.categoryId) {
       try {
-        const poetData = await hybridApi.getPoet(poem.poetId);
+        const poetData = await hybridApiServer.getPoet(poem.poetId);
         const chapterInfo = findChapterById(poetData.categories, poem.categoryId);
         if (chapterInfo) {
           categoryHref = `/poet/${poem.poetId}/category/${chapterInfo.containerId}/chapter/${poem.categoryId}`;
@@ -129,7 +130,7 @@ export default async function PoemPage({ params }: PoemPageProps) {
     // Fetch previous/next poems from the same category/chapter for navigation
     if (poem.categoryId) {
       try {
-        const navigation = await hybridApi.getPoemNavigation(poem);
+        const navigation = await hybridApiServer.getPoemNavigation(poem);
         previousPoem = navigation.previousPoem;
         nextPoem = navigation.nextPoem;
       } catch (navError) {
