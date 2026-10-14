@@ -126,34 +126,12 @@ export default async function PoemPage({ params }: PoemPageProps) {
       });
     }
 
-    // Fetch poems from the same category/chapter for navigation
+    // Fetch previous/next poems from the same category/chapter for navigation
     if (poem.categoryId) {
       try {
-        let poems: Poem[] = [];
-
-        // If poem belongs to a chapter, fetch poems from that chapter
-        // Otherwise, fetch from the category
-        if (poem.chapterId) {
-          const chapterData = await hybridApi.getChapter(poem.poetId, poem.categoryId, poem.chapterId);
-          poems = chapterData.poems;
-        } else {
-          poems = await hybridApi.getCategoryPoems(poem.poetId, poem.categoryId);
-        }
-
-        // Find current poem index
-        const currentIndex = poems.findIndex(p => p.id === poemId);
-
-        if (currentIndex !== -1) {
-          // Get previous poem
-          if (currentIndex > 0) {
-            previousPoem = poems[currentIndex - 1];
-          }
-
-          // Get next poem
-          if (currentIndex < poems.length - 1) {
-            nextPoem = poems[currentIndex + 1];
-          }
-        }
+        const navigation = await hybridApi.getPoemNavigation(poem);
+        previousPoem = navigation.previousPoem;
+        nextPoem = navigation.nextPoem;
       } catch (navError) {
         // If navigation fails, just continue without it
         console.warn('Failed to load navigation poems:', navError);

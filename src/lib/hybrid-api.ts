@@ -40,10 +40,26 @@ export async function isMigratedPoet(id: number): Promise<boolean> {
   return migratedSet.has(id);
 }
 
+/** Compute prev/next poems from an id-ordered list (Ganjoor fallback path). */
+export function neighborsFromPoems(
+  poems: Poem[],
+  poemId: number
+): { previousPoem: Poem | null; nextPoem: Poem | null } {
+  const currentIndex = poems.findIndex(p => p.id === poemId);
+  if (currentIndex === -1) {
+    return { previousPoem: null, nextPoem: null };
+  }
+  return {
+    previousPoem: currentIndex > 0 ? poems[currentIndex - 1] : null,
+    nextPoem: currentIndex < poems.length - 1 ? poems[currentIndex + 1] : null,
+  };
+}
+
 /**
  * Hybrid API client with smart fallback
  */
 export const hybridApi = {
+
   /**
    * Get all poets (prefer Supabase, fallback to Ganjoor)
    */
@@ -174,6 +190,57 @@ export const hybridApi = {
       }
     }
     return ganjoorApi.getChapter(poetId, categoryId, chapterId);
+  },
+
+  /**
+   * Resolve prev/next navigation for a poem page.
+   * For poems stored in Supabase, uses targeted neighbor queries (2 tiny rows)
+   * instead of loading the whole category; otherwise falls back to the same
+   * category/chapter lists the poem page used before (Ganjoor API).
+   */
+  async getPoemNavigation(
+    poem: Poem
+  ): Promise<{ previousPoem: Poem | null; nextPoem: Poem | null }> {
+    if (!poem.categoryId) {
+      return { previousPoem: null, nextPoem: null };
+    }
+
+    if (poem.chapterId) {
+      if (isSupabaseAvailable() && await isMigratedPoet(poem.poetId)) {
+        try {
+          return await supabaseApi.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId, poem.chapterId);
+        } catch (error) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn(`Supabase getPoemNeighbors failed, falling back to Ganjoor:`, error);
+          }
+        }
+      }
+      try {
+        const { poems } = await ganjoorApi.getChapter(poem.poetId, poem.categoryId, poem.chapterId);
+        return neighborsFromPoems(poems, poem.id);
+      } catch {
+        return { previousPoem: null, nextPoem: null };
+      }
+    }
+
+    if (isSupabaseAvailable() && await isMigratedPoet(poem.poetId)) {
+      try {
+        return await supabaseApi.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId);
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Supabase getPoemNeighbors failed, falling back to category list:`, error);
+        }
+      }
+    }
+
+    // Poem not migrated (or Supabase lookup failed): list usually comes from
+    // the Ganjoor API, so keep the previous list-based behavior.
+    try {
+      const poems = await hybridApi.getCategoryPoems(poem.poetId, poem.categoryId);
+      return neighborsFromPoems(poems, poem.id);
+    } catch {
+      return { previousPoem: null, nextPoem: null };
+    }
   },
 
   async getMigratedPoetIds(): Promise<number[]> {

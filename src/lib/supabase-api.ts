@@ -540,6 +540,73 @@ export const supabaseApi = {
     }, 30 * 60 * 1000);
   },
 
+  /**
+   * Find the previous and next poem for the poem page navigation, relative to
+   * the given poem (same id ordering as getCategoryPoems / getChapter so the
+   * rendered links stay identical).
+   *
+   * Fetches only id/title (plus poet/category names for the Poem shape),
+   * instead of loading the entire category with full verses_array text.
+   */
+  async getPoemNeighbors(
+    poemId: number,
+    poetId: number,
+    categoryId: number,
+    chapterId?: number
+  ): Promise<{ previousPoem: Poem | null; nextPoem: Poem | null }> {
+    if (!supabase) {
+      throw new SupabaseApiError('Supabase client not initialized');
+    }
+
+    return withCache(`supabase:/poem/${poemId}/neighbors/${chapterId ?? categoryId}`, async () => {
+      // For a chapter the scope is the chapter plus its descendants — same
+      // scope getChapter uses for its poem list.
+      let categoryIds = [categoryId];
+      if (chapterId) {
+        categoryIds = [chapterId, ...(await getDescendantCategoryIds(chapterId))];
+      }
+
+      const scope = () =>
+        supabase!.from('poems')
+          .select('id, title, poet_id, category_id, poets(name), categories(title)')
+          .eq('poet_id', poetId)
+          .in('category_id', categoryIds);
+
+      const [prevResult, nextResult] = await Promise.all([
+        scope().lt('id', poemId).order('id', { ascending: false }).limit(1),
+        scope().gt('id', poemId).order('id', { ascending: true }).limit(1),
+      ]);
+
+      const mapRow = (row: unknown): Poem | null => {
+        const poem = row as {
+          id: number;
+          title: string;
+          poet_id: number;
+          category_id: number | null;
+          poets: unknown;
+          categories: unknown;
+        } | null;
+        if (!poem) return null;
+        const poet = ((Array.isArray(poem.poets) ? poem.poets[0] : poem.poets) ?? null) as { name: string } | null;
+        const category = ((Array.isArray(poem.categories) ? poem.categories[0] : poem.categories) ?? null) as { title: string } | null;
+        return {
+          id: poem.id,
+          title: poem.title,
+          verses: [],
+          poetId: poem.poet_id,
+          poetName: poet?.name || '',
+          categoryId: poem.category_id || undefined,
+          categoryTitle: category?.title || '',
+        };
+      };
+
+      return {
+        previousPoem: mapRow(prevResult.data?.[0]) ?? null,
+        nextPoem: mapRow(nextResult.data?.[0]) ?? null,
+      };
+    }, 30 * 60 * 1000); // Cache for 30 minutes
+  },
+
 };
 
 /**
