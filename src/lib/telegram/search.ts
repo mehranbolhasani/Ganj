@@ -8,6 +8,8 @@ export async function searchPoems(query: string): Promise<Poem[]> {
   }
 
   // Intentionally matches web search behavior: % and _ act as LIKE wildcards.
+  // List is reduced to keyboard labels (title — poet name); full poem text is
+  // fetched separately via getPoemById when the user selects a result.
   const { data: poems, error } = await botSupabase
     .from('poems')
     .select(
@@ -16,7 +18,6 @@ export async function searchPoems(query: string): Promise<Poem[]> {
       poet_id,
       category_id,
       title,
-      verses_array,
       poets (
         id,
         name
@@ -51,7 +52,7 @@ export async function searchPoems(query: string): Promise<Poem[]> {
     return {
       id: poem.id,
       title: poem.title,
-      verses: poem.verses_array || [],
+      verses: [],
       poetId: poem.poet_id,
       poetName: poet?.name || '',
       categoryId: poem.category_id || undefined,

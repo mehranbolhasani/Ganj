@@ -241,13 +241,15 @@ export const supabaseApi = {
     }
 
     return withCache(`supabase:/cat/${categoryId}`, async () => {
-      // Fetch poems with poet and category info in a single query
+      // Fetch poems with poet and category info in a single query.
+      // List UI (PoemPagination, faal summary picker) uses only id/title/poet/
+      // category names — verses_array (full poem text) is deliberately NOT
+      // selected here; full text is fetched per-poem via getPoem.
       const { data, error } = await supabase
         .from('poems')
         .select(`
           id,
           title,
-          verses_array,
           poet_id,
           category_id,
           poets (
@@ -278,7 +280,7 @@ export const supabaseApi = {
         return {
           id: poem.id,
           title: poem.title,
-          verses: poem.verses_array || [],
+          verses: [],
           poetId: poem.poet_id,
           poetName: poet?.name || '',
           categoryId: poem.category_id || undefined,
@@ -488,7 +490,6 @@ export const supabaseApi = {
         .select(`
           id,
           title,
-          verses_array,
           poet_id,
           category_id,
           poets (
@@ -519,7 +520,7 @@ export const supabaseApi = {
         return {
           id: poem.id,
           title: poem.title,
-          verses: poem.verses_array || [],
+          verses: [],
           poetId: poem.poet_id,
           poetName: poet?.name || '',
           categoryId: poem.category_id || undefined,

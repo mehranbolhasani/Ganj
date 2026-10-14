@@ -4,10 +4,10 @@ import { Poem } from '@/lib/types';
 const HAFEZ_GHAZALIAT_CATEGORY_ID = 24; // Hafez's غزلیات; verified in DB
 
 export async function getRandomHafezGhazal(supabase: SupabaseClient): Promise<Poem | null> {
-  // Get total count of ghazals first
+  // Get total count of ghazals first (head:true returns no rows/payload)
   const { count, error: countError } = await supabase
     .from('poems')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .eq('category_id', HAFEZ_GHAZALIAT_CATEGORY_ID);
 
   if (countError || !count || count === 0) {
