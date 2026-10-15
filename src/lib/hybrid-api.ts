@@ -37,13 +37,22 @@ export interface HybridBackend {
   listMigratedPoetIds(): Promise<number[]>;
 }
 
-export function createHybridApi(backend: HybridBackend) {
+export function createHybridApi(
+  backend: HybridBackend,
+  /**
+   * Whether the injected backend should be tried first.
+   * Defaults to the Supabase availability check, preserving the original behaviour.
+   * The server entry point passes a D1-aware check so `CONTENT_BACKEND=d1` works even
+   * when only the D1 env vars are configured.
+   */
+  isBackendAvailable: () => boolean = isSupabaseAvailable
+) {
   let migratedPoetSetCache: Set<number> | null = null;
   let migratedPoetSetCacheExpiresAt = 0;
   const MIGRATED_SET_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   async function getMigratedPoetIdSet(): Promise<Set<number>> {
-    if (!isSupabaseAvailable()) {
+    if (!isBackendAvailable()) {
       return new Set<number>();
     }
 
@@ -59,7 +68,7 @@ export function createHybridApi(backend: HybridBackend) {
   }
 
   async function isMigratedPoet(id: number): Promise<boolean> {
-    if (!isSupabaseAvailable()) {
+    if (!isBackendAvailable()) {
       return false;
     }
     const migratedSet = await getMigratedPoetIdSet();
@@ -71,7 +80,7 @@ export function createHybridApi(backend: HybridBackend) {
      * Get all poets (prefer Supabase, fallback to Ganjoor)
      */
     async getPoets(): Promise<Poet[]> {
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const poets = await backend.getPoets();
           if (poets.length > 0) {
@@ -93,7 +102,7 @@ export function createHybridApi(backend: HybridBackend) {
      * (the poet row itself acts as the existence check).
      */
     async getPoet(id: number): Promise<{ poet: Poet; categories: Category[] }> {
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const data = await backend.getPoet(id);
           // If Supabase has the poet but returns no categories, the data is
@@ -127,7 +136,7 @@ export function createHybridApi(backend: HybridBackend) {
       }
 
       // Try Supabase first for better performance
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const poems = await backend.getCategoryPoems(poetId, categoryId);
 
@@ -158,7 +167,7 @@ export function createHybridApi(backend: HybridBackend) {
      */
     async getPoem(id: number): Promise<Poem> {
       // Try Supabase first for better performance
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const poem = await backend.getPoem(id);
           if (poem.verses && poem.verses.length > 0) {
@@ -183,7 +192,7 @@ export function createHybridApi(backend: HybridBackend) {
      * Try Supabase first (chapters are child categories), fallback to Ganjoor API.
      */
     async getChapter(poetId: number, categoryId: number, chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
-      if (isSupabaseAvailable() && await isMigratedPoet(poetId)) {
+      if (isBackendAvailable() && await isMigratedPoet(poetId)) {
         try {
           const data = await backend.getChapter(poetId, categoryId, chapterId);
           if (data && data.poems.length > 0) {
@@ -213,7 +222,7 @@ export function createHybridApi(backend: HybridBackend) {
       }
 
       if (poem.chapterId) {
-        if (isSupabaseAvailable() && await isMigratedPoet(poem.poetId)) {
+        if (isBackendAvailable() && await isMigratedPoet(poem.poetId)) {
           try {
             return await backend.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId, poem.chapterId);
           } catch (error) {
@@ -230,7 +239,7 @@ export function createHybridApi(backend: HybridBackend) {
         }
       }
 
-      if (isSupabaseAvailable() && await isMigratedPoet(poem.poetId)) {
+      if (isBackendAvailable() && await isMigratedPoet(poem.poetId)) {
         try {
           return await backend.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId);
         } catch (error) {
