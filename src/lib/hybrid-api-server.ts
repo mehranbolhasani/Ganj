@@ -27,5 +27,6 @@ export const hybridApiServer = createHybridApi(
   useD1 ? d1ApiCached : supabaseApiCached,
   // the injected backend is tried first when it is usable; Supabase still counts as
   // usable when it is configured (auth/user tables keep it around during a cutover)
-  () => useD1 || isSupabaseAvailable()
+  () => useD1 || isSupabaseAvailable(),
+  useD1 ? 'd1' : 'supabase'
 );

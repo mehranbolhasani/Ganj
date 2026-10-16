@@ -7,6 +7,25 @@ list of what is left, the order to do it in, and the risks.
 
 Branches: `d1-backend` (this change). The Worker lives in `ganj-d1-worker`.
 
+**Phase 4c status: search is PARTIAL.** `/api/search` serves from the Worker when
+`CONTENT_BACKEND=d1`, with per-IP rate limiting, fallback and cache headers. Poem results
+currently have **empty `verses`** (the Worker's `/search` does not return snippets yet), so
+the UI shows no snippet in D1 mode. Search cutover is blocked on this. See
+`docs/phase4c-report.md`.
+
+---
+
+## 0. Phase 4c: search status
+
+| Item | Status |
+|---|---|
+| Poets search | Done in app: filters the cached poets list with the shared normalization (`src/lib/search/normalize.ts`). No Worker call. |
+| Categories search | Done via Worker `/search` (`type=categories`). |
+| Poems search (word <3 chars, trigram ≥3) | Done via Worker `/search`. Response keys match. **Snippets blank (`verses: []`).** |
+| Rate limit | 30 req / 60 s per IP (Upstash sliding window). Fails open. |
+| Fallback | Worker failure → legacy Supabase path, logged as `[d1-fallback] scope=search`. Disable with `SEARCH_FALLBACK_SUPABASE=false`. |
+| Cache | Success: `public, s-maxage=3600, stale-while-revalidate=3600`. Errors and fallbacks: `no-store`. |
+
 ---
 
 ## 1. Already switchable (`CONTENT_BACKEND=d1`)
@@ -34,13 +53,16 @@ Legend: **runtime** · **needs** = what it reads.
 
 ### 2.1 Server, still on Supabase
 
+S1–S5 are now **partially** on the Worker under `CONTENT_BACKEND=d1` (Phase 4c, see §0). The
+legacy code stays in place as the default path and as the fallback.
+
 | # | File:line | Function / symbol | Runtime | Needs |
 |---|---|---|---|---|
-| S1 | `src/app/api/search/route.ts:63` | poets search in `GET` | server (**service-role**) | `poets` by `name/description ILIKE` |
-| S2 | `src/app/api/search/route.ts:90,117` | categories search | server (service-role) | `categories` + embedded `poets(name)` |
-| S3 | `src/app/api/search/route.ts:140` | `supabaseApi.hasPoet` | server (service-role) | `poets.id` |
-| S4 | `src/app/api/search/route.ts:145,178` | famous-poet poem search | server (service-role) | `poems(title/verses ILIKE)` + `poets`, `categories` |
-| S5 | `src/app/api/search/route.ts:293,325` | global poem search | server (service-role) | `poems(title/verses ILIKE)` + joins |
+| S1 | `src/app/api/search/route.ts` (legacy `legacySearchGET`) | poets search | server (**service-role**) | `poets` by `name/description ILIKE`. D1 mode: cached poets list, no Supabase. |
+| S2 | `src/app/api/search/route.ts` (legacy) | categories search | server (service-role) | D1 mode: Worker `/search?type=categories`. |
+| S3 | `src/app/api/search/route.ts` (legacy) | `supabaseApi.hasPoet` | server (service-role) | D1 mode: `listMigratedPoetIds`. |
+| S4 | `src/app/api/search/route.ts` (legacy) | famous-poet poem search | server (service-role) | D1 mode: Worker `/search?poetId=`, only for migrated poets. |
+| S5 | `src/app/api/search/route.ts` (legacy) | global poem search | server (service-role) | D1 mode: Worker `/search?type=poems`. Snippets missing (see §4). |
 | S6 | `src/lib/faal-core.ts:9,21` | Hafez ghazal random pick | server (Telegram/faal) | `poems` by `category_id` (+ `COUNT`, random offset) |
 | S7 | `src/lib/telegram/search.ts:14,66` | Telegram poem search / fetch | server (Telegram) | `poems(title/verses ILIKE)`, `poems` by id |
 | S8 | `src/lib/telegram/analytics.ts:33` | bot analytics insert | server (Telegram) | *not content* — stays on Supabase |
@@ -66,10 +88,10 @@ Legend: **runtime** · **needs** = what it reads.
 
 Each step is independently revertible via `CONTENT_BACKEND` / route-level flags.
 
-1. **S1–S5 (search route).** Highest traffic and the only service-role content reader.
-   Point `/api/search` at the Worker `/search` endpoint (word FTS for <3 chars, trigram for
-   ≥3). Keep the Ganjoor branch for non-migrated poets. *Needs the Worker search parity work
-   to be verified against production first (Phase 4b).*
+1. **S1–S5 (search route). PARTIAL (Phase 4c).** Implemented behind `CONTENT_BACKEND=d1`.
+   Remaining before the flag is enabled for search: (a) the Worker `/search` must return
+   `verses` for poem results (needs a Worker change and a deploy, awaiting approval); (b) a
+   preview-environment check of the same 20-query comparison with real snippets.
 2. **B1–B3 (browser content).** Add same-origin `/api/content/*` route handlers that call
    `d1ApiCached` server-side (carrying the secret), and repoint the client instance in
    `hybrid-api.ts:276` at those routes. This removes the browser's direct Supabase content
@@ -100,6 +122,8 @@ Each step is independently revertible via `CONTENT_BACKEND` / route-level flags.
 | **Large categories** | Largest category is 9,824 poems / 1.45 MB; dynamic D1 JSON is >10 ms CPU on Workers Free. | Precomputed into KV (>500 poems; 73 keys); the Worker serves KV first and falls back to D1. |
 | **`.in()` / parameter limits** | D1 caps 100 bound parameters and 50-byte LIKE patterns. | Worker chunks IN lists (parameter-aware) and clamps `q`; verified in Phase 4a tests. |
 | **Cache stampede at cutover** | First post-cutover requests cold-fill the Data Cache from the Worker. | Warm `/api/content/*` and `/api/search` for the top poets/categories before flipping the flag; keep the Ganjoor fallback. |
+| **Search snippets (Phase 4c)** | Worker `/search` returns `verses: []` for poems, so the UI snippet (`SearchResults.tsx`, hidden when `verses` is empty) disappears in D1 mode. Supabase returns them populated for all 181 compared poem results. | Add `verses` to the Worker `/search` response, then redeploy (awaiting approval). Do not enable `CONTENT_BACKEND=d1` for search until then. |
+| **Search result order** | Worker orders poems by `rowid DESC` and categories/poets by id. The legacy route has no `ORDER BY`, so the order differs. Membership overlaps (most results are present in both). | Accept for cutover, or agree a fixed order in both paths. |
 | **Regional latency** | D1 is single-primary (WEUR in the probe); Vercel default region is iad1. | Measure cold render at cutover; consider a Vercel region change or D1 read replication (plan §4.7). |
 
 ---

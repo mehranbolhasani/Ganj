@@ -1,0 +1,241 @@
+{
+  "_source": "ganj-d1-worker/src/lib/normalize.js (normalizePersian, clampQuery), generated for phase 4c",
+  "count": 47,
+  "rows": [
+    {
+      "input": "حافظ",
+      "normalized": "حافظ",
+      "clamped": "حافظ"
+    },
+    {
+      "input": "سعدی",
+      "normalized": "سعدی",
+      "clamped": "سعدی"
+    },
+    {
+      "input": "مولوی",
+      "normalized": "مولوی",
+      "clamped": "مولوی"
+    },
+    {
+      "input": "فردوسی",
+      "normalized": "فردوسی",
+      "clamped": "فردوسی"
+    },
+    {
+      "input": "عشق",
+      "normalized": "عشق",
+      "clamped": "عشق"
+    },
+    {
+      "input": "عاشق",
+      "normalized": "عاشق",
+      "clamped": "عاشق"
+    },
+    {
+      "input": "گل",
+      "normalized": "گل",
+      "clamped": "گل"
+    },
+    {
+      "input": "شب",
+      "normalized": "شب",
+      "clamped": "شب"
+    },
+    {
+      "input": "دل",
+      "normalized": "دل",
+      "clamped": "دل"
+    },
+    {
+      "input": "چشم",
+      "normalized": "چشم",
+      "clamped": "چشم"
+    },
+    {
+      "input": "یار",
+      "normalized": "یار",
+      "clamped": "یار"
+    },
+    {
+      "input": "یک",
+      "normalized": "یک",
+      "clamped": "یک"
+    },
+    {
+      "input": "يك",
+      "normalized": "یک",
+      "clamped": "يك"
+    },
+    {
+      "input": "كفر",
+      "normalized": "کفر",
+      "clamped": "كفر"
+    },
+    {
+      "input": "کفر",
+      "normalized": "کفر",
+      "clamped": "کفر"
+    },
+    {
+      "input": "كتاب",
+      "normalized": "کتاب",
+      "clamped": "كتاب"
+    },
+    {
+      "input": "کتاب",
+      "normalized": "کتاب",
+      "clamped": "کتاب"
+    },
+    {
+      "input": "ميرود",
+      "normalized": "میرود",
+      "clamped": "ميرود"
+    },
+    {
+      "input": "میرود",
+      "normalized": "میرود",
+      "clamped": "میرود"
+    },
+    {
+      "input": "می‌رود",
+      "normalized": "میرود",
+      "clamped": "می‌رود"
+    },
+    {
+      "input": "می‌خواهم",
+      "normalized": "میخواهم",
+      "clamped": "می‌خواهم"
+    },
+    {
+      "input": "مِی",
+      "normalized": "می",
+      "clamped": "مِی"
+    },
+    {
+      "input": "مَی",
+      "normalized": "می",
+      "clamped": "مَی"
+    },
+    {
+      "input": "مُی",
+      "normalized": "می",
+      "clamped": "مُی"
+    },
+    {
+      "input": "شَبِ عاشقان",
+      "normalized": "شب عاشقان",
+      "clamped": "شَبِ عاشقان"
+    },
+    {
+      "input": "بِسْمِ",
+      "normalized": "بسم",
+      "clamped": "بِسْمِ"
+    },
+    {
+      "input": "الرَّحْمَن",
+      "normalized": "الرحمن",
+      "clamped": "الرَّحْمَن"
+    },
+    {
+      "input": "ـــ",
+      "normalized": "",
+      "clamped": "ـــ"
+    },
+    {
+      "input": "غـزل",
+      "normalized": "غزل",
+      "clamped": "غـزل"
+    },
+    {
+      "input": "عـــشـــق",
+      "normalized": "عشق",
+      "clamped": "عـــشـــق"
+    },
+    {
+      "input": "ایـ دوست",
+      "normalized": "ای دوست",
+      "clamped": "ایـ دوست"
+    },
+    {
+      "input": "نُٰ",
+      "normalized": "ن",
+      "clamped": "نُٰ"
+    },
+    {
+      "input": "ًٌٍَُِّْٰٕٖٜٟٓٔٗ٘ٙٚٛٝٞ",
+      "normalized": "",
+      "clamped": "ًٌٍَُِّْٰٕٖٜٟٓٔٗ٘ٙٚٛٝٞ"
+    },
+    {
+      "input": "a b c",
+      "normalized": "a b c",
+      "clamped": "a b c"
+    },
+    {
+      "input": "Hafez",
+      "normalized": "Hafez",
+      "clamped": "Hafez"
+    },
+    {
+      "input": "123 ۱۲۳",
+      "normalized": "123 ۱۲۳",
+      "clamped": "123 ۱۲۳"
+    },
+    {
+      "input": "ة ى أ إ آ ؤ ئ",
+      "normalized": "ة ى أ إ آ ؤ ئ",
+      "clamped": "ة ى أ إ آ ؤ ئ"
+    },
+    {
+      "input": "‍ zwj ‍",
+      "normalized": "‍ zwj ‍",
+      "clamped": "‍ zwj ‍"
+    },
+    {
+      "input": "",
+      "normalized": "",
+      "clamped": ""
+    },
+    {
+      "input": "   ",
+      "normalized": "   ",
+      "clamped": ""
+    },
+    {
+      "input": "  حافظ  ",
+      "normalized": "  حافظ  ",
+      "clamped": "حافظ"
+    },
+    {
+      "input": "مرا به خاطر تو هزار حوصله باید",
+      "normalized": "مرا به خاطر تو هزار حوصله باید",
+      "clamped": "مرا به خاطر تو هزار حوصل"
+    },
+    {
+      "input": "شب عاشقان شیرازی و مولانا",
+      "normalized": "شب عاشقان شیرازی و مولانا",
+      "clamped": "شب عاشقان شیرازی و مولان"
+    },
+    {
+      "input": "😀 عشق 😀",
+      "normalized": "😀 عشق 😀",
+      "clamped": "😀 عشق 😀"
+    },
+    {
+      "input": "\"'«» ؟!،؛",
+      "normalized": "\"'«» ؟!،؛",
+      "clamped": "\"'«» ؟!،؛"
+    },
+    {
+      "input": "کـفـر یـک",
+      "normalized": "کفر یک",
+      "clamped": "کـفـر یـک"
+    },
+    {
+      "input": "يَكْ كَفْر",
+      "normalized": "یک کفر",
+      "clamped": "يَكْ كَفْر"
+    }
+  ]
+}

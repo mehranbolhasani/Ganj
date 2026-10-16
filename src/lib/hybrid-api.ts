@@ -17,6 +17,13 @@
 import { Poet, Category, Poem, Chapter } from './types';
 import { supabaseApi, isSupabaseAvailable } from './supabase-api';
 import { ganjoorApi } from './ganjoor-api';
+import { logD1Fallback } from './fallback-log';
+import { reasonOf } from './worker-client';
+
+/** Logs one [d1-fallback] line when a D1 content read falls back to Ganjoor. Supabase is silent. */
+function fallbackLog(label: 'd1' | 'supabase', method: string, error: unknown): void {
+  if (label === 'd1') logD1Fallback('content', reasonOf(error), { method });
+}
 
 /**
  * Subset of the supabaseApi surface the hybrid client needs.
@@ -45,7 +52,8 @@ export function createHybridApi(
    * The server entry point passes a D1-aware check so `CONTENT_BACKEND=d1` works even
    * when only the D1 env vars are configured.
    */
-  isBackendAvailable: () => boolean = isSupabaseAvailable
+  isBackendAvailable: () => boolean = isSupabaseAvailable,
+  backendLabel: 'd1' | 'supabase' = 'supabase'
 ) {
   let migratedPoetSetCache: Set<number> | null = null;
   let migratedPoetSetCacheExpiresAt = 0;
@@ -61,10 +69,17 @@ export function createHybridApi(
       return migratedPoetSetCache;
     }
 
-    const ids = await backend.listMigratedPoetIds();
-    migratedPoetSetCache = new Set(ids);
-    migratedPoetSetCacheExpiresAt = now + MIGRATED_SET_CACHE_TTL_MS;
-    return migratedPoetSetCache;
+    try {
+      const ids = await backend.listMigratedPoetIds();
+      migratedPoetSetCache = new Set(ids);
+      migratedPoetSetCacheExpiresAt = now + MIGRATED_SET_CACHE_TTL_MS;
+      return migratedPoetSetCache;
+    } catch (error) {
+      // A failed lookup is not cached. Treat every poet as not migrated for this call, which
+      // routes reads to the Ganjoor fallback instead of failing the page.
+      fallbackLog(backendLabel, 'listMigratedPoetIds', error);
+      return new Set<number>();
+    }
   }
 
   async function isMigratedPoet(id: number): Promise<boolean> {
@@ -87,6 +102,7 @@ export function createHybridApi(
             return poets;
           }
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoets', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn('Supabase getPoets failed, falling back to Ganjoor API:', error);
           }
@@ -113,6 +129,7 @@ export function createHybridApi(
           }
           console.warn(`Poet ${id} found in Supabase but has no categories, falling back to Ganjoor API`);
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoet', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getPoet(${id}) failed, falling back to Ganjoor API:`, error);
           }
@@ -149,6 +166,7 @@ export function createHybridApi(
             }
           }
         } catch (error) {
+          fallbackLog(backendLabel, 'getCategoryPoems', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getCategoryPoems(${categoryId}) failed, falling back to Ganjoor API:`, error);
           }
@@ -177,6 +195,7 @@ export function createHybridApi(
             console.log(`Poem ${id} has no verses in Supabase, using Ganjoor API`);
           }
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoem', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getPoem(${id}) failed, falling back to Ganjoor API:`, error);
           }
@@ -200,6 +219,7 @@ export function createHybridApi(
           }
           // empty result — fall through to Ganjoor as a safety net
         } catch (error) {
+          fallbackLog(backendLabel, 'getChapter', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getChapter failed, falling back to Ganjoor:`, error);
           }
@@ -226,6 +246,7 @@ export function createHybridApi(
           try {
             return await backend.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId, poem.chapterId);
           } catch (error) {
+            fallbackLog(backendLabel, 'getPoemNeighbors', error);
             if (process.env.NODE_ENV === 'development') {
               console.warn(`Supabase getPoemNeighbors failed, falling back to Ganjoor:`, error);
             }
@@ -243,6 +264,7 @@ export function createHybridApi(
         try {
           return await backend.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId);
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoemNeighbors', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getPoemNeighbors failed, falling back to category list:`, error);
           }
