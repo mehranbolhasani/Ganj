@@ -7,11 +7,10 @@ list of what is left, the order to do it in, and the risks.
 
 Branches: `d1-backend` (this change). The Worker lives in `ganj-d1-worker`.
 
-**Phase 4c status: search is PARTIAL.** `/api/search` serves from the Worker when
-`CONTENT_BACKEND=d1`, with per-IP rate limiting, fallback and cache headers. Poem results
-currently have **empty `verses`** (the Worker's `/search` does not return snippets yet), so
-the UI shows no snippet in D1 mode. Search cutover is blocked on this. See
-`docs/phase4c-report.md`.
+**Phase 4d status: search is DONE behind `SEARCH_BACKEND=d1` (preview testing pending).** `/api/search`
+serves from the Worker when `SEARCH_BACKEND=d1`, with per-IP rate limiting, fallback, cache headers
+and poem excerpts (the Worker returns one couplet per poem). `CONTENT_BACKEND=d1` no longer
+switches search. See `docs/phase4d-report.md`.
 
 ---
 
@@ -21,14 +20,15 @@ the UI shows no snippet in D1 mode. Search cutover is blocked on this. See
 |---|---|
 | Poets search | Done in app: filters the cached poets list with the shared normalization (`src/lib/search/normalize.ts`). No Worker call. |
 | Categories search | Done via Worker `/search` (`type=categories`). |
-| Poems search (word <3 chars, trigram ≥3) | Done via Worker `/search`. Response keys match. **Snippets blank (`verses: []`).** |
+| Poems search (word <3 chars, trigram ≥3) | Done via Worker `/search`. Response keys match. Excerpts in `verses` (Phase 4d). |
+| Flag | `SEARCH_BACKEND=d1` (separate from `CONTENT_BACKEND`). |
 | Rate limit | 30 req / 60 s per IP (Upstash sliding window). Fails open. |
 | Fallback | Worker failure → legacy Supabase path, logged as `[d1-fallback] scope=search`. Disable with `SEARCH_FALLBACK_SUPABASE=false`. |
 | Cache | Success: `public, s-maxage=3600, stale-while-revalidate=3600`. Errors and fallbacks: `no-store`. |
 
 ---
 
-## 1. Already switchable (`CONTENT_BACKEND=d1`)
+## 1. Already switchable (`CONTENT_BACKEND=d1`, content pages only)
 
 These all resolve through `src/lib/hybrid-api-server.ts`, which now injects either
 `supabaseApiCached` or `d1ApiCached` and keeps the React `cache()` + `unstable_cache`
@@ -53,8 +53,8 @@ Legend: **runtime** · **needs** = what it reads.
 
 ### 2.1 Server, still on Supabase
 
-S1–S5 are now **partially** on the Worker under `CONTENT_BACKEND=d1` (Phase 4c, see §0). The
-legacy code stays in place as the default path and as the fallback.
+S1–S5 are on the Worker under `SEARCH_BACKEND=d1` (Phase 4c/4d, see §0). The legacy code stays in
+place as the default path and as the fallback.
 
 | # | File:line | Function / symbol | Runtime | Needs |
 |---|---|---|---|---|
@@ -86,12 +86,11 @@ legacy code stays in place as the default path and as the fallback.
 
 ## 3. Recommended migration order
 
-Each step is independently revertible via `CONTENT_BACKEND` / route-level flags.
+Each step is independently revertible via `CONTENT_BACKEND` (content pages), `SEARCH_BACKEND`
+(search route) and route-level flags.
 
-1. **S1–S5 (search route). PARTIAL (Phase 4c).** Implemented behind `CONTENT_BACKEND=d1`.
-   Remaining before the flag is enabled for search: (a) the Worker `/search` must return
-   `verses` for poem results (needs a Worker change and a deploy, awaiting approval); (b) a
-   preview-environment check of the same 20-query comparison with real snippets.
+1. **S1–S5 (search route). DONE behind `SEARCH_BACKEND=d1` (Phase 4d).** Remaining: a
+   preview-environment check with `SEARCH_BACKEND=d1` (the id-set comparison is in 4d).
 2. **B1–B3 (browser content).** Add same-origin `/api/content/*` route handlers that call
    `d1ApiCached` server-side (carrying the secret), and repoint the client instance in
    `hybrid-api.ts:276` at those routes. This removes the browser's direct Supabase content
@@ -122,7 +121,7 @@ Each step is independently revertible via `CONTENT_BACKEND` / route-level flags.
 | **Large categories** | Largest category is 9,824 poems / 1.45 MB; dynamic D1 JSON is >10 ms CPU on Workers Free. | Precomputed into KV (>500 poems; 73 keys); the Worker serves KV first and falls back to D1. |
 | **`.in()` / parameter limits** | D1 caps 100 bound parameters and 50-byte LIKE patterns. | Worker chunks IN lists (parameter-aware) and clamps `q`; verified in Phase 4a tests. |
 | **Cache stampede at cutover** | First post-cutover requests cold-fill the Data Cache from the Worker. | Warm `/api/content/*` and `/api/search` for the top poets/categories before flipping the flag; keep the Ganjoor fallback. |
-| **Search snippets (Phase 4c)** | Worker `/search` returns `verses: []` for poems, so the UI snippet (`SearchResults.tsx`, hidden when `verses` is empty) disappears in D1 mode. Supabase returns them populated for all 181 compared poem results. | Add `verses` to the Worker `/search` response, then redeploy (awaiting approval). Do not enable `CONTENT_BACKEND=d1` for search until then. |
+| **Search snippets (resolved in Phase 4d)** | Phase 4c: the Worker returned `verses: []`, so the UI snippet disappeared. | Resolved: the Worker returns one excerpt couplet per poem result (ganj-d1-worker `phase4d-search-snippets`). Search is switched by `SEARCH_BACKEND=d1`, not by `CONTENT_BACKEND`. |
 | **Search result order** | Worker orders poems by `rowid DESC` and categories/poets by id. The legacy route has no `ORDER BY`, so the order differs. Membership overlaps (most results are present in both). | Accept for cutover, or agree a fixed order in both paths. |
 | **Regional latency** | D1 is single-primary (WEUR in the probe); Vercel default region is iad1. | Measure cold render at cutover; consider a Vercel region change or D1 read replication (plan §4.7). |
 

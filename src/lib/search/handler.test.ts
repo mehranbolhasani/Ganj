@@ -14,7 +14,7 @@ const POETS: CachedPoet[] = [
 
 const WORKER_CATEGORIES = [{ id: 31, title: 'رباعیات', poetId: 3, poetName: 'خیام نیشابوری', poemCount: 5 }];
 const WORKER_POEMS = [
-  { id: 1119, title: 'رباعی شمارهٔ ۱', verses: [], poetId: 3, poetName: 'خیام نیشابوری', categoryId: 31, categoryTitle: 'رباعیات' },
+  { id: 1119, title: 'رباعی شمارهٔ ۱', verses: ['برخیز بُتا، بیا ز بهر دل ما', 'حل کن به جمال خویشتن مشکل ما'], poetId: 3, poetName: 'خیام نیشابوری', categoryId: 31, categoryTitle: 'رباعیات' },
 ];
 
 /** A fake Worker: answers /search from a behaviour switch and records every request. */
@@ -95,6 +95,13 @@ test('success: 200 from the Worker, identical key shape, cacheable', async () =>
   assert.deepEqual(Object.keys(body).sort(), ['categories', 'poems', 'poets']);
   assert.equal(w.calls.length, 1, 'one Worker call covers categories and poems');
   assert.deepEqual(logs, []);
+});
+
+test('poem excerpts from the Worker pass through unchanged (the UI shows verses[])', async () => {
+  const w = fakeWorker('ok');
+  const res = await run('q=' + encodeURIComponent('رباعی') + '&type=poems', makeDeps({ fetchImpl: w.fetchImpl }));
+  const body = (await res.json()) as { poems: { id: number; verses: string[] }[] };
+  assert.deepEqual(body.poems[0].verses, ['برخیز بُتا، بیا ز بهر دل ما', 'حل کن به جمال خویشتن مشکل ما']);
 });
 
 test('poets row shape matches the legacy Supabase search exactly (snake_case, nulls kept)', async () => {

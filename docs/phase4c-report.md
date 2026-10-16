@@ -1,12 +1,12 @@
 # Phase 4c: D1 search route (branch `d1-backend`)
 
-**Result: partial pass.** The search route works against the deployed Worker in local dev, with rate limiting, cache headers and fallback. **Search cutover is blocked** because D1 poem results have no snippets. Nothing was deployed, pushed or written to Cloudflare, Vercel or Supabase.
+**Result: partial pass.** The search route works against the deployed Worker in local dev, with rate limiting, cache headers and fallback. The blocker (no snippets) is resolved in Phase 4d, see `docs/phase4d-report.md`.
 
 ## Pass / fail per item
 
 | # | Item | Result | Notes |
 |---|---|---|---|
-| 1 | Poem search via Worker `/search` when `CONTENT_BACKEND=d1` | **Pass, with a gap** | Response keys and types match the legacy route. Poem `verses` are empty (see Blocker). |
+| 1 | Poem search via Worker `/search` (Phase 4c: under `CONTENT_BACKEND=d1`; since Phase 4d: `SEARCH_BACKEND=d1`) | **Pass (gap resolved in 4d)** | Response keys and types match the legacy route. Poem `verses` were empty in 4c; fixed in 4d. |
 | 1 | Poets search | **Pass** | Filters the cached poets list in the app with the shared normalization. No Worker call. |
 | 1 | Categories search | **Pass** | Worker `/search?type=categories`. No new endpoint needed. No new Worker endpoint was added, so nothing is awaiting deploy for this. |
 | 2 | Normalization parity, ≥30 strings | **Pass** | 47 golden vectors generated from `ganj-d1-worker/src/lib/normalize.js`. Covers Arabic yeh/kaf, harakat, tatweel, ZWNJ. Unit test checks equality for all 47. |
@@ -21,24 +21,13 @@
 | 5 | `tsc`, `eslint`, `build:verify` | **Pass** | Lint shows only the 2 warnings that were already there (`changelog/page.tsx`). |
 | 6 | Update `docs/d1-cutover-checklist.md` | **Pass** | Search marked partial; remaining Supabase readers and order listed. |
 
-## Blocker: no snippets in D1 search
+## Blocker: no snippets in D1 search (RESOLVED in Phase 4d)
 
-The Worker `/search` returns `verses: []` for every poem. `SearchResults.tsx` hides the snippet when `verses` is empty. Across 181 poem results in the 20-query run, D1 had 181 empty and Supabase had 181 populated. The UI would silently lose the snippet.
+The Worker's `/search` returned `verses: []` for every poem, so the UI snippet disappeared. Phase 4d fixed this in the Worker (`ganj-d1-worker`, branch `phase4d-search-snippets`): each poem result now carries one excerpt, the couplet that contains the normalized query (or the first couplet). See `docs/phase4d-report.md`.
 
-Fixing this needs a Worker change (`verses` in the `/search` response) and a redeploy.
-**Awaiting your approval** before I change or deploy the Worker.
-
-Also note that `CONTENT_BACKEND=d1` switches both the content pages and search. Turning it on in Preview therefore also turns on D1 search with blank snippets. Options:
-- (a) Hold `CONTENT_BACKEND=d1` out of Preview until the Worker returns `verses`.
-- (b) Add a separate `SEARCH_BACKEND=d1` flag so search can be tested on its own.
-
-I recommend (b). This is a decision for you; I have not made the change.
-
-## Awaiting your approval
-
-1. **Worker `/search`: add `verses` to poem results**, then redeploy `ganj-d1-worker` (blocks search cutover).
-2. **Separate `SEARCH_BACKEND` flag** (see above), or hold the shared flag.
-3. **Result order.** The Worker orders poems by `rowid DESC`; the legacy route has no `ORDER BY`. Membership overlaps (most results are in both), but the order differs. Accept, or define a fixed order in both paths.
+Decisions made in Phase 4d:
+- **Separate flag.** `SEARCH_BACKEND=d1` switches `/api/search`. `CONTENT_BACKEND=d1` no longer switches search.
+- **Result order accepted:** poems are ordered newest id first (`rowid DESC`) on the D1 path. The legacy route has no `ORDER BY`, so no fixed order is promised on either path.
 
 ## Rate limit
 
@@ -47,7 +36,9 @@ I recommend (b). This is a decision for you; I have not made the change.
 - Exceeded: HTTP 429 with `Retry-After` (seconds until the window resets).
 - Without Upstash env vars the limiter is off. On Upstash error the request is allowed and `[search-ratelimit] unavailable` is logged (fail open).
 
-## 20-query comparison (D1 vs Supabase path, local dev)
+## 20-query comparison (D1 vs Supabase path, local dev; Phase 4c)
+
+Superseded by the complete id-set comparison in Phase 4d (`docs/phase4d-report.md`).
 
 Both servers ran locally against the same deployed Worker and production Supabase. Queries: `حافظ سعدی مولوی عشق عاشق گل شب دل یار کفر كفر یک يك غزلیات دیوان شاهنامه بزرگ ماه مرگ دوست`, with `type=all&count=true&limit=20`.
 
@@ -68,7 +59,7 @@ Do this in the Vercel dashboard. I have not changed Vercel.
 1. Open the Ganjeh project → Settings → Environment Variables.
 2. Add `D1_WORKER_URL` (Preview scope only, or restrict to branch `d1-backend`). Value: the Worker's `https://…workers.dev` URL, from `ganj-d1-worker`. Keep it out of the chat log.
 3. Add `D1_WORKER_SECRET` (Preview scope, mark **Sensitive**). Value: `GANJ_KEY` from `ganj-d1-worker/.env.phase4b`.
-4. Add `CONTENT_BACKEND=d1` (Preview scope only). **Note:** this also turns on D1 search. Do not do this until the Blocker is resolved, or until the separate flag exists.
+4. Add `CONTENT_BACKEND=d1` (Preview scope only). Since Phase 4d this no longer switches search. Add `SEARCH_BACKEND=d1` separately to test search.
 5. Optional: `SEARCH_FALLBACK_SUPABASE=true` (the default already applies if unset).
 6. Upstash variables already exist for the contact form and Telegram; check they are set for Preview too, or the rate limit is off.
 7. Redeploy the Preview for `d1-backend`. Production variables stay unchanged.

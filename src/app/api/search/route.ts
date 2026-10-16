@@ -12,8 +12,9 @@ import { d1ApiCached } from '@/lib/d1-api-server';
 import { workerConfigFromEnv, workerGet } from '@/lib/worker-client';
 import { handleSearch, type WorkerSearchRaw } from '@/lib/search/handler';
 import { checkSearchRateLimit, clientIp } from '@/lib/search/ratelimit';
+import { searchBackendFromEnv } from '@/lib/search/backend';
 
-/** The existing Supabase/Ganjoor search, unchanged. Used when CONTENT_BACKEND is not d1, and as the fallback. */
+/** The existing Supabase/Ganjoor search, unchanged. Used when SEARCH_BACKEND is not d1, and as the fallback. */
 async function legacySearchGET(request: NextRequest) {
   // Initialize Supabase client with runtime env vars
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -361,12 +362,12 @@ async function legacySearchGET(request: NextRequest) {
 }
 
 /**
- * Entry point. CONTENT_BACKEND=d1 serves poet, category and poem search from the ganj-d1-worker
+ * Entry point. SEARCH_BACKEND=d1 serves poet, category and poem search from the ganj-d1-worker
  * (with per-IP rate limiting, a 3 s timeout and a logged fallback to the legacy path). Any other
- * value runs the legacy route exactly as before.
+ * value runs the legacy route exactly as before. CONTENT_BACKEND does not affect this route.
  */
 export async function GET(request: NextRequest) {
-  if (process.env.CONTENT_BACKEND !== 'd1') {
+  if (searchBackendFromEnv() !== 'd1') {
     return legacySearchGET(request);
   }
   const config = workerConfigFromEnv();

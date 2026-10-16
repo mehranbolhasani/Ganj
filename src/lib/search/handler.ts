@@ -1,5 +1,5 @@
 /**
- * /api/search logic when CONTENT_BACKEND=d1. Dependencies are injected so the route stays a
+ * /api/search logic when SEARCH_BACKEND=d1. Dependencies are injected so the route stays a
  * thin wiring layer and the behaviour is unit-tested with a mocked Worker.
  *
  * Response contract: identical to the legacy Supabase route (keys and types). Only the
