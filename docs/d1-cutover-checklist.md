@@ -102,7 +102,12 @@ Each step is independently revertible via `CONTENT_BACKEND` (content pages), `SE
    (or a service binding). Low volume; can trail the web cutover.
 5. **S9 / drop Supabase content.** Once nothing reads `poems`/`poets`/`categories` from
    Supabase, drop the tables and their indexes (`idx_poems_*`, `idx_poets_name`,
-   `idx_categories_title`) and optionally `pg_trgm`/`unaccent` (plan §7.4).
+   `idx_categories_title`) and optionally `pg_trgm`/`unaccent` (plan §7.4). **Before dropping
+   poems, resolve every dependency found by `docs/supabase-dependency-check.sql`** (read-only,
+   run it in the Supabase SQL editor): foreign keys pointing at the content tables (bookmarks
+   included), views / matviews / functions / triggers / RPCs mentioning them, the RLS policies
+   and role grants to drop with the table, and any pg_cron job. The phase 5 audit and report
+   (docs/phase5-*) list the known readers that must already be off Supabase before this step.
 6. **S8 (bot analytics), auth, `contact_messages`, `ganjoor_cache`, `user_profiles`** stay on
    Supabase Free permanently.
 
