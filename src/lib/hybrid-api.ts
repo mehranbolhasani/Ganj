@@ -15,10 +15,11 @@
  */
 
 import { Poet, Category, Poem, Chapter } from './types';
-import { supabaseApi, isSupabaseAvailable } from './supabase-api';
+import { isSupabaseAvailable } from './supabase-api';
 import { ganjoorApi } from './ganjoor-api';
 import { logD1Fallback } from './fallback-log';
 import { reasonOf } from './worker-client';
+import { contentApiClient } from './content-api-client';
 
 /** Logs one [d1-fallback] line when a D1 content read falls back to Ganjoor. Supabase is silent. */
 function fallbackLog(label: 'd1' | 'supabase', method: string, error: unknown): void {
@@ -42,6 +43,13 @@ export interface HybridBackend {
     chapterId?: number
   ): Promise<{ previousPoem: Poem | null; nextPoem: Poem | null }>;
   listMigratedPoetIds(): Promise<number[]>;
+  /**
+   * Poem metadata (title + names, no text) for a list of ids, used by bookmark
+   * hydration. Returns only rows the backend knows; missing ids are skipped by
+   * the backend, never created or deleted. The factory exposes this unchanged
+   * (no Ganjoor fallback: a backend miss is a legitimate "unknown poem").
+   */
+  getPoemsByIds(ids: number[]): Promise<Poem[]>;
 }
 
 export function createHybridApi(
@@ -285,6 +293,10 @@ export function createHybridApi(
       return backend.listMigratedPoetIds();
     },
 
+    async getPoemsByIds(ids: number[]): Promise<Poem[]> {
+      return backend.getPoemsByIds(ids);
+    },
+
     async isPoetMigrated(id: number): Promise<boolean> {
       return isMigratedPoet(id);
     },
@@ -292,10 +304,13 @@ export function createHybridApi(
 }
 
 /**
- * Default (client-safe) instance over the uncached supabaseApi. Server pages
- * use the identical logic via ./hybrid-api-server instead.
+ * Client instance. Since Phase 5 it talks to the same-origin /api/content/* route
+ * handlers instead of Supabase directly (the handlers honor CONTENT_BACKEND, so the
+ * data source stays Supabase by default). The backend label is 'supabase' so the
+ * shared fallback logic keeps its silent-Supabase behavior in the browser console;
+ * only the D1 server path emits [d1-fallback] lines.
  */
-export const hybridApi = createHybridApi(supabaseApi);
+export const hybridApi = createHybridApi(contentApiClient, () => true, 'supabase');
 
 /** Compatibility helper for callers that only need the migrated check. */
 export async function isMigratedPoet(id: number): Promise<boolean> {

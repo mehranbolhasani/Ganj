@@ -398,24 +398,57 @@ export const supabaseApi = {
   },
 
   /**
-   * Check if a poem exists in Supabase
+   * Fetch poem metadata for a list of ids in one chunked query (at most 100 ids per
+   * statement, the same limit the D1 Worker uses). Returns only the rows that exist,
+   * in the order the backend returns them (callers must not rely on input order; the
+   * bookmark hydration preserves its own ordering). Poem text (`verses_array`) is
+   * deliberately not selected: hydration callers only need title and names.
    */
-  async hasPoem(id: number): Promise<boolean> {
-    if (!supabase) {
-      return false;
+  async getPoemsByIds(ids: number[]): Promise<Poem[]> {
+    if (!supabase || ids.length === 0) {
+      return [];
     }
 
-    try {
+    const rows: Poem[] = [];
+    for (let i = 0; i < ids.length; i += 100) {
+      const part = ids.slice(i, i + 100);
       const { data, error } = await supabase
         .from('poems')
-        .select('id')
-        .eq('id', id)
-        .maybeSingle();
+        .select(`
+          id,
+          title,
+          poet_id,
+          category_id,
+          poets (
+            name
+          ),
+          categories (
+            title
+          )
+        `)
+        .in('id', part);
 
-      return !error && data !== null;
-    } catch {
-      return false;
+      if (error) {
+        throw new SupabaseApiError('Failed to fetch poems by ids from Supabase', error.code, error);
+      }
+
+      for (const poem of data || []) {
+        const poetData = poem.poets as unknown;
+        const categoryData = poem.categories as unknown;
+        const poet = (Array.isArray(poetData) ? poetData[0] : poetData) as { name: string } | null;
+        const category = (Array.isArray(categoryData) ? categoryData[0] : categoryData) as { title: string } | null;
+        rows.push({
+          id: poem.id,
+          title: poem.title,
+          verses: [],
+          poetId: poem.poet_id,
+          poetName: poet?.name || '',
+          categoryId: poem.category_id || undefined,
+          categoryTitle: category?.title || '',
+        });
+      }
     }
+    return rows;
   },
 
   /**
@@ -609,36 +642,3 @@ export const supabaseApi = {
   },
 
 };
-
-/**
- * Get statistics about Supabase data
- */
-export async function getSupabaseStats() {
-  if (!supabase) {
-    return null;
-  }
-
-  try {
-    const [poetsCount, categoriesCount, poemsCount] = await Promise.all([
-      supabase.from('poets').select('id', { count: 'exact', head: true }),
-      supabase.from('categories').select('id', { count: 'exact', head: true }),
-      supabase.from('poems').select('id', { count: 'exact', head: true }),
-    ]);
-
-    return {
-      poets: poetsCount.count || 0,
-      categories: categoriesCount.count || 0,
-      poems: poemsCount.count || 0,
-      available: true,
-    };
-  } catch (error) {
-    console.error('Failed to get Supabase stats:', error);
-    return {
-      poets: 0,
-      categories: 0,
-      poems: 0,
-      available: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-}

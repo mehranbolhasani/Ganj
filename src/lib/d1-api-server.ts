@@ -88,6 +88,13 @@ const listMigratedPoetIdsCached = dataCached<[], number[]>(
   ['d1-content', 'poets']
 );
 
+const getPoemsByIdsCached = dataCached<[ids: number[]], Poem[]>(
+  d1Api.getPoemsByIds.bind(d1Api),
+  ['d1-poems-by-ids'],
+  LIST_REVALIDATE,
+  ['d1-content', 'poems']
+);
+
 /** Same interface as `supabaseApiCached`, backed by the D1 Worker. */
 export const d1ApiCached = {
   getPoets: getPoetsCached,
@@ -97,4 +104,5 @@ export const d1ApiCached = {
   getChapter: getChapterCached,
   getPoemNeighbors: getPoemNeighborsCached,
   listMigratedPoetIds: listMigratedPoetIdsCached,
+  getPoemsByIds: getPoemsByIdsCached,
 };

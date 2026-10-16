@@ -103,10 +103,14 @@ const listMigratedPoetIdsCached = dataCached<[], number[]>(
   ['supabase-content', 'poets']
 );
 
-/**
- * Same interface as `supabaseApi` (the HybridBackend subset), but every
- * fetcher goes through the Data Cache with per-request dedupe.
- */
+const getPoemsByIdsCached = dataCached<[ids: number[]], Poem[]>(
+  supabaseApi.getPoemsByIds.bind(supabaseApi),
+  ['supabase-poems-by-ids'],
+  LIST_REVALIDATE,
+  ['supabase-content', 'poems']
+);
+
+/** Same interface as `supabaseApi` (the HybridBackend subset), but every fetcher goes through the cached wrappers. */
 export const supabaseApiCached = {
   getPoets: getPoetsCached,
   getPoet: getPoetCached,
@@ -115,4 +119,5 @@ export const supabaseApiCached = {
   getChapter: getChapterCached,
   getPoemNeighbors: getPoemNeighborsCached,
   listMigratedPoetIds: listMigratedPoetIdsCached,
+  getPoemsByIds: getPoemsByIdsCached,
 };
