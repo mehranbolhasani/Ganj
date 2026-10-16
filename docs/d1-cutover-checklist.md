@@ -5,6 +5,11 @@ between Supabase and the D1 Worker via `CONTENT_BACKEND`; the default stays `sup
 so production behaviour is unchanged. Nothing below has been migrated yet — this is the
 list of what is left, the order to do it in, and the risks.
 
+**Phase 5 status: DONE on `d1-backend` + `phase5-endpoints` (deploy pending).** Bookmarks
+hydration, the Telegram bot and faal now read through the selectable backend, the browser
+goes through `/api/content/*`, and the Worker has the batch and random endpoints. See
+`docs/phase5-audit.md` and `docs/phase5-report.md`; deploy order in the report.
+
 Branches: `d1-backend` (this change). The Worker lives in `ganj-d1-worker`.
 
 **Phase 4d status: search is DONE behind `SEARCH_BACKEND=d1` (preview testing pending).** `/api/search`
