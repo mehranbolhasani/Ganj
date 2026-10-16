@@ -24,7 +24,7 @@ let circuitOpenedUntil = 0;
 let recentFailureTimestamps: number[] = [];
 let networkFailureCooldownUntil = 0;
 
-class GanjoorApiError extends Error {
+export class GanjoorApiError extends Error {
   constructor(message: string, public status?: number) {
     super(message);
     this.name = 'GanjoorApiError';

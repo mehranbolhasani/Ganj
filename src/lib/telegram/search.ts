@@ -1,7 +1,31 @@
 import { botSupabase } from './supabase-bot-client';
+import { isD1Available } from '../d1-api';
+import { logD1Fallback } from '../fallback-log';
+import { reasonOf, workerConfigFromEnv, workerGet } from '../worker-client';
+import { mapWorkerSearchToPoems } from './worker-poems';
+import type { WorkerSearchRaw } from '../search/handler';
 import { Poem } from '@/lib/types';
 
+/** Same gate as the server content pages: D1 only when both flag and env vars are set. */
+function d1Enabled(): boolean {
+  return process.env.CONTENT_BACKEND === 'd1' && isD1Available();
+}
+
 export async function searchPoems(query: string): Promise<Poem[]> {
+  if (d1Enabled()) {
+    try {
+      const params = new URLSearchParams({ q: query, type: 'poems', limit: '5' });
+      const raw = await workerGet<WorkerSearchRaw>(`/search?${params.toString()}`, {
+        config: workerConfigFromEnv(),
+        cache: 'no-store',
+      });
+      return mapWorkerSearchToPoems(raw);
+    } catch (error) {
+      logD1Fallback('search', reasonOf(error), { method: 'telegram.searchPoems' });
+      // fall through to the Supabase path
+    }
+  }
+
   const cleanQuery = query.trim();
   if (cleanQuery.length < 2) {
     return [];
@@ -62,6 +86,22 @@ export async function searchPoems(query: string): Promise<Poem[]> {
 }
 
 export async function getPoemById(id: number): Promise<Poem | null> {
+  if (d1Enabled()) {
+    try {
+      // Full verses from D1, so formatPoem output stays byte-identical.
+      return await workerGet<Poem>(`/poems/${id}`, {
+        config: workerConfigFromEnv(),
+        cache: 'no-store',
+      });
+    } catch (error) {
+      const reason = reasonOf(error);
+      // A genuinely missing poem answers null in both backends (same bot reply).
+      if (reason === 'not-found') return null;
+      logD1Fallback('content', reason, { method: 'telegram.getPoemById' });
+      // fall through to the Supabase path
+    }
+  }
+
   const { data: poem, error } = await botSupabase
     .from('poems')
     .select(
