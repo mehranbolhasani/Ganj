@@ -7,6 +7,7 @@ import { searchPoems, getPoemById } from './search';
 import { getRandomHafezGhazal } from '@/lib/faal-core';
 import { Poem } from '@/lib/types';
 import * as messages from './messages';
+import { isPermanentSendError, logPermanentSendError } from './send-errors';
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
@@ -20,6 +21,24 @@ if (!token || !webhookSecret || !supabaseUrl || !supabaseKey) {
 }
 
 export const bot = new Bot(token);
+
+// Permanent delivery failures (bot blocked, user deactivated, chat not found)
+// must not fail the webhook: the update can never succeed, so we log one line
+// and let the webhook answer 200 so Telegram drops the update. All other
+// errors are rethrown unchanged so Telegram keeps retrying transient failures.
+// Note: bot.catch only applies to long polling, not webhooks, so this guards
+// the middleware stack with a root-level error boundary instead.
+bot.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    if (isPermanentSendError(err)) {
+      logPermanentSendError(err);
+      return;
+    }
+    throw err;
+  }
+});
 
 // Rate limiter: 20 messages per minute per Telegram user
 const telegramRatelimit =
