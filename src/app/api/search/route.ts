@@ -8,8 +8,14 @@ import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { ganjoorApi } from '@/lib/ganjoor-api';
 import { supabaseApi } from '@/lib/supabase-api';
+import { d1ApiCached } from '@/lib/d1-api-server';
+import { workerConfigFromEnv, workerGet } from '@/lib/worker-client';
+import { handleSearch, type WorkerSearchRaw } from '@/lib/search/handler';
+import { checkSearchRateLimit, clientIp } from '@/lib/search/ratelimit';
+import { searchBackendFromEnv } from '@/lib/search/backend';
 
-export async function GET(request: NextRequest) {
+/** The existing Supabase/Ganjoor search, unchanged. Used when SEARCH_BACKEND is not d1, and as the fallback. */
+async function legacySearchGET(request: NextRequest) {
   // Initialize Supabase client with runtime env vars
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -355,3 +361,28 @@ export async function GET(request: NextRequest) {
   }
 }
 
+/**
+ * Entry point. SEARCH_BACKEND=d1 serves poet, category and poem search from the ganj-d1-worker
+ * (with per-IP rate limiting, a 3 s timeout and a logged fallback to the legacy path). Any other
+ * value runs the legacy route exactly as before. CONTENT_BACKEND does not affect this route.
+ */
+export async function GET(request: NextRequest) {
+  if (searchBackendFromEnv() !== 'd1') {
+    return legacySearchGET(request);
+  }
+  const config = workerConfigFromEnv();
+  return handleSearch(request.nextUrl.searchParams, clientIp(request.headers), {
+    workerSearch: async (p) => {
+      const qs = new URLSearchParams({ q: p.q, type: p.type, limit: String(p.limit), offset: String(p.offset) });
+      if (p.count) qs.set('count', 'true');
+      if (p.poetId !== undefined) qs.set('poetId', String(p.poetId));
+      return workerGet<WorkerSearchRaw>(`/search?${qs.toString()}`, { config, cache: 'no-store' });
+    },
+    getPoets: () => d1ApiCached.getPoets(),
+    isMigratedPoet: async (id) => (await d1ApiCached.listMigratedPoetIds()).includes(id),
+    legacySearch: () => legacySearchGET(request),
+    rateLimit: checkSearchRateLimit,
+    fallbackEnabled: process.env.SEARCH_FALLBACK_SUPABASE !== 'false',
+    log: (line) => console.warn(line),
+  });
+}

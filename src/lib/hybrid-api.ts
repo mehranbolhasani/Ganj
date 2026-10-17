@@ -15,8 +15,16 @@
  */
 
 import { Poet, Category, Poem, Chapter } from './types';
-import { supabaseApi, isSupabaseAvailable } from './supabase-api';
+import { isSupabaseAvailable } from './supabase-api';
 import { ganjoorApi } from './ganjoor-api';
+import { logD1Fallback } from './fallback-log';
+import { reasonOf } from './worker-client';
+import { contentApiClient } from './content-api-client';
+
+/** Logs one [d1-fallback] line when a D1 content read falls back to Ganjoor. Supabase is silent. */
+function fallbackLog(label: 'd1' | 'supabase', method: string, error: unknown): void {
+  if (label === 'd1') logD1Fallback('content', reasonOf(error), { method });
+}
 
 /**
  * Subset of the supabaseApi surface the hybrid client needs.
@@ -35,15 +43,32 @@ export interface HybridBackend {
     chapterId?: number
   ): Promise<{ previousPoem: Poem | null; nextPoem: Poem | null }>;
   listMigratedPoetIds(): Promise<number[]>;
+  /**
+   * Poem metadata (title + names, no text) for a list of ids, used by bookmark
+   * hydration. Returns only rows the backend knows; missing ids are skipped by
+   * the backend, never created or deleted. The factory exposes this unchanged
+   * (no Ganjoor fallback: a backend miss is a legitimate "unknown poem").
+   */
+  getPoemsByIds(ids: number[]): Promise<Poem[]>;
 }
 
-export function createHybridApi(backend: HybridBackend) {
+export function createHybridApi(
+  backend: HybridBackend,
+  /**
+   * Whether the injected backend should be tried first.
+   * Defaults to the Supabase availability check, preserving the original behaviour.
+   * The server entry point passes a D1-aware check so `CONTENT_BACKEND=d1` works even
+   * when only the D1 env vars are configured.
+   */
+  isBackendAvailable: () => boolean = isSupabaseAvailable,
+  backendLabel: 'd1' | 'supabase' = 'supabase'
+) {
   let migratedPoetSetCache: Set<number> | null = null;
   let migratedPoetSetCacheExpiresAt = 0;
   const MIGRATED_SET_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   async function getMigratedPoetIdSet(): Promise<Set<number>> {
-    if (!isSupabaseAvailable()) {
+    if (!isBackendAvailable()) {
       return new Set<number>();
     }
 
@@ -52,14 +77,21 @@ export function createHybridApi(backend: HybridBackend) {
       return migratedPoetSetCache;
     }
 
-    const ids = await backend.listMigratedPoetIds();
-    migratedPoetSetCache = new Set(ids);
-    migratedPoetSetCacheExpiresAt = now + MIGRATED_SET_CACHE_TTL_MS;
-    return migratedPoetSetCache;
+    try {
+      const ids = await backend.listMigratedPoetIds();
+      migratedPoetSetCache = new Set(ids);
+      migratedPoetSetCacheExpiresAt = now + MIGRATED_SET_CACHE_TTL_MS;
+      return migratedPoetSetCache;
+    } catch (error) {
+      // A failed lookup is not cached. Treat every poet as not migrated for this call, which
+      // routes reads to the Ganjoor fallback instead of failing the page.
+      fallbackLog(backendLabel, 'listMigratedPoetIds', error);
+      return new Set<number>();
+    }
   }
 
   async function isMigratedPoet(id: number): Promise<boolean> {
-    if (!isSupabaseAvailable()) {
+    if (!isBackendAvailable()) {
       return false;
     }
     const migratedSet = await getMigratedPoetIdSet();
@@ -71,13 +103,14 @@ export function createHybridApi(backend: HybridBackend) {
      * Get all poets (prefer Supabase, fallback to Ganjoor)
      */
     async getPoets(): Promise<Poet[]> {
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const poets = await backend.getPoets();
           if (poets.length > 0) {
             return poets;
           }
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoets', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn('Supabase getPoets failed, falling back to Ganjoor API:', error);
           }
@@ -93,7 +126,7 @@ export function createHybridApi(backend: HybridBackend) {
      * (the poet row itself acts as the existence check).
      */
     async getPoet(id: number): Promise<{ poet: Poet; categories: Category[] }> {
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const data = await backend.getPoet(id);
           // If Supabase has the poet but returns no categories, the data is
@@ -104,6 +137,7 @@ export function createHybridApi(backend: HybridBackend) {
           }
           console.warn(`Poet ${id} found in Supabase but has no categories, falling back to Ganjoor API`);
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoet', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getPoet(${id}) failed, falling back to Ganjoor API:`, error);
           }
@@ -127,7 +161,7 @@ export function createHybridApi(backend: HybridBackend) {
       }
 
       // Try Supabase first for better performance
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const poems = await backend.getCategoryPoems(poetId, categoryId);
 
@@ -140,6 +174,7 @@ export function createHybridApi(backend: HybridBackend) {
             }
           }
         } catch (error) {
+          fallbackLog(backendLabel, 'getCategoryPoems', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getCategoryPoems(${categoryId}) failed, falling back to Ganjoor API:`, error);
           }
@@ -158,7 +193,7 @@ export function createHybridApi(backend: HybridBackend) {
      */
     async getPoem(id: number): Promise<Poem> {
       // Try Supabase first for better performance
-      if (isSupabaseAvailable()) {
+      if (isBackendAvailable()) {
         try {
           const poem = await backend.getPoem(id);
           if (poem.verses && poem.verses.length > 0) {
@@ -168,6 +203,7 @@ export function createHybridApi(backend: HybridBackend) {
             console.log(`Poem ${id} has no verses in Supabase, using Ganjoor API`);
           }
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoem', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getPoem(${id}) failed, falling back to Ganjoor API:`, error);
           }
@@ -183,7 +219,7 @@ export function createHybridApi(backend: HybridBackend) {
      * Try Supabase first (chapters are child categories), fallback to Ganjoor API.
      */
     async getChapter(poetId: number, categoryId: number, chapterId: number): Promise<{ chapter: Chapter; poems: Poem[] }> {
-      if (isSupabaseAvailable() && await isMigratedPoet(poetId)) {
+      if (isBackendAvailable() && await isMigratedPoet(poetId)) {
         try {
           const data = await backend.getChapter(poetId, categoryId, chapterId);
           if (data && data.poems.length > 0) {
@@ -191,6 +227,7 @@ export function createHybridApi(backend: HybridBackend) {
           }
           // empty result — fall through to Ganjoor as a safety net
         } catch (error) {
+          fallbackLog(backendLabel, 'getChapter', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getChapter failed, falling back to Ganjoor:`, error);
           }
@@ -213,10 +250,11 @@ export function createHybridApi(backend: HybridBackend) {
       }
 
       if (poem.chapterId) {
-        if (isSupabaseAvailable() && await isMigratedPoet(poem.poetId)) {
+        if (isBackendAvailable() && await isMigratedPoet(poem.poetId)) {
           try {
             return await backend.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId, poem.chapterId);
           } catch (error) {
+            fallbackLog(backendLabel, 'getPoemNeighbors', error);
             if (process.env.NODE_ENV === 'development') {
               console.warn(`Supabase getPoemNeighbors failed, falling back to Ganjoor:`, error);
             }
@@ -230,10 +268,11 @@ export function createHybridApi(backend: HybridBackend) {
         }
       }
 
-      if (isSupabaseAvailable() && await isMigratedPoet(poem.poetId)) {
+      if (isBackendAvailable() && await isMigratedPoet(poem.poetId)) {
         try {
           return await backend.getPoemNeighbors(poem.id, poem.poetId, poem.categoryId);
         } catch (error) {
+          fallbackLog(backendLabel, 'getPoemNeighbors', error);
           if (process.env.NODE_ENV === 'development') {
             console.warn(`Supabase getPoemNeighbors failed, falling back to category list:`, error);
           }
@@ -254,6 +293,10 @@ export function createHybridApi(backend: HybridBackend) {
       return backend.listMigratedPoetIds();
     },
 
+    async getPoemsByIds(ids: number[]): Promise<Poem[]> {
+      return backend.getPoemsByIds(ids);
+    },
+
     async isPoetMigrated(id: number): Promise<boolean> {
       return isMigratedPoet(id);
     },
@@ -261,10 +304,13 @@ export function createHybridApi(backend: HybridBackend) {
 }
 
 /**
- * Default (client-safe) instance over the uncached supabaseApi. Server pages
- * use the identical logic via ./hybrid-api-server instead.
+ * Client instance. Since Phase 5 it talks to the same-origin /api/content/* route
+ * handlers instead of Supabase directly (the handlers honor CONTENT_BACKEND, so the
+ * data source stays Supabase by default). The backend label is 'supabase' so the
+ * shared fallback logic keeps its silent-Supabase behavior in the browser console;
+ * only the D1 server path emits [d1-fallback] lines.
  */
-export const hybridApi = createHybridApi(supabaseApi);
+export const hybridApi = createHybridApi(contentApiClient, () => true, 'supabase');
 
 /** Compatibility helper for callers that only need the migrated check. */
 export async function isMigratedPoet(id: number): Promise<boolean> {

@@ -1,58 +1,21 @@
 import { createSupabaseBrowserClient } from './supabase-browser';
+import { hydrateBookmarks, type BookmarkRowLite } from './bookmark-hydration';
 import type { BookmarkItem } from './bookmarks-manager';
 
-// Shape returned by Supabase join query
-interface BookmarkRow {
-  id: string;
-  poem_id: number;
-  created_at: string;
-  poems: {
-    id: number;
-    title: string;
-    poet_id: number;
-    category_id: number | null;
-    poets: {
-      id: number;
-      name: string;
-    };
-    categories: {
-      id: number;
-      title: string;
-    } | null;
-  };
-}
-
-function rowToBookmarkItem(row: BookmarkRow): BookmarkItem {
-  return {
-    id: row.id,
-    poemId: row.poems.id,
-    poetId: row.poems.poet_id,
-    poetName: row.poems.poets.name,
-    title: row.poems.title,
-    categoryId: row.poems.category_id ?? undefined,
-    categoryTitle: row.poems.categories?.title ?? undefined,
-    timestamp: new Date(row.created_at).getTime(),
-    url: `/poem/${row.poems.id}`,
-  };
-}
-
+/**
+ * Phase 5: the bookmark rows and the poem metadata live in two backends, so the
+ * old single embedded join (bookmarks + poems + poets + categories) is split:
+ * step 1 reads only the bookmark rows from Supabase (id, poem_id, created_at),
+ * step 2 hydrates poem metadata in batches of at most 100 ids through the
+ * same-origin /api/content/poems handler (bookmark-hydration.ts). Ordering
+ * (created_at desc) and the BookmarkItem shape are unchanged; rows whose poem
+ * no longer exists are skipped (never deleted).
+ */
 export async function getCloudBookmarks(): Promise<BookmarkItem[]> {
   const supabase = createSupabaseBrowserClient();
   const { data, error } = await supabase
     .from('bookmarks')
-    .select(`
-      id,
-      poem_id,
-      created_at,
-      poems (
-        id,
-        title,
-        poet_id,
-        category_id,
-        poets ( id, name ),
-        categories ( id, title )
-      )
-    `)
+    .select('id, poem_id, created_at')
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -60,7 +23,7 @@ export async function getCloudBookmarks(): Promise<BookmarkItem[]> {
     return [];
   }
 
-  return (data as unknown as BookmarkRow[]).map(rowToBookmarkItem);
+  return hydrateBookmarks(data as unknown as BookmarkRowLite[]);
 }
 
 export async function addCloudBookmark(poemId: number): Promise<boolean> {
