@@ -15,8 +15,14 @@
  * - worst case (both attempts time out) is about 10.2s for content and 6.2s for search,
  *   far below the platform function duration (no maxDuration is configured anywhere, so
  *   the Vercel default of 300s applies);
- * - each retry emits exactly one greppable line, with no secrets and no URLs:
- *   `[d1-retry] key=<cache key> reason=<timeout|network> attempt=2 outcome=<ok|failed>`
+ * - each retry emits exactly one greppable line, with no secrets and no URLs or query
+ *   strings:
+ *   `[d1-retry] key=<cache key> reason=<timeout|network> stage=<connect|headers|body>
+ *   elapsedMs=<ms> attempt=2 outcome=<ok|failed>[ region=<VERCEL_REGION>]`
+ *
+ * Every thrown WorkerError also carries the attempt's failure `stage` (`connect`,
+ * `headers` or `body`) and `elapsedMs`, so the error objects Next prints for failed
+ * revalidations are diagnosable without extra logging.
  */
 
 export type WorkerErrorReason =
@@ -30,14 +36,31 @@ export type WorkerErrorReason =
   | 'bad-json'
   | 'error';
 
+/**
+ * How far a failed attempt got:
+ * - `connect`: the fetch had not resolved (no response headers received);
+ * - `headers`: response headers arrived, the body had not finished;
+ * - `body`: the attempt failed or was aborted while reading the body.
+ */
+export type WorkerErrorStage = 'connect' | 'headers' | 'body';
+
 export class WorkerError extends Error {
   readonly reason: WorkerErrorReason;
   readonly status?: number;
-  constructor(message: string, reason: WorkerErrorReason, status?: number) {
+  readonly stage?: WorkerErrorStage;
+  readonly elapsedMs?: number;
+  constructor(
+    message: string,
+    reason: WorkerErrorReason,
+    status?: number,
+    details?: { stage?: WorkerErrorStage; elapsedMs?: number }
+  ) {
     super(message);
     this.name = 'WorkerError';
     this.reason = reason;
     this.status = status;
+    this.stage = details?.stage;
+    this.elapsedMs = details?.elapsedMs;
   }
 }
 
@@ -91,6 +114,16 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * `region=<VERCEL_REGION>` for the [d1-retry] line when the platform sets it.
+ * Sanitized to alphanumerics and dashes so nothing unexpected can be injected.
+ */
+function regionLabel(): string {
+  const region = process.env.VERCEL_REGION;
+  if (!region) return '';
+  return ` region=${region.replace(/[^A-Za-z0-9-]/g, '_')}`;
+}
+
 /** One fetch attempt with its own abort timer. Errors are classified exactly as before. */
 async function attemptJson<T>(
   path: string,
@@ -102,30 +135,72 @@ async function attemptJson<T>(
   const base = (config.baseUrl as string).replace(/\/$/, '');
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const startedAt = Date.now();
+  const elapsed = () => Date.now() - startedAt;
   try {
-    const res = await fetchImpl(base + path, {
-      headers: { 'X-Ganj-Key': config.secret as string, accept: 'application/json' },
-      signal: controller.signal,
-      ...(cache ? { cache } : {}),
-    });
-    if (res.status === 401) throw new WorkerError('Worker rejected the shared secret (401)', 'http-401', 401);
-    if (res.status === 404) throw new WorkerError(`Worker: not found (${path.split('?')[0]})`, 'not-found', 404);
-    if (res.status >= 500) throw new WorkerError(`Worker responded ${res.status}`, 'http-5xx', res.status);
-    if (!res.ok) throw new WorkerError(`Worker responded ${res.status}`, 'http-other', res.status);
+    let res: Response;
+    try {
+      res = await fetchImpl(base + path, {
+        headers: { 'X-Ganj-Key': config.secret as string, accept: 'application/json' },
+        signal: controller.signal,
+        ...(cache ? { cache } : {}),
+      });
+    } catch (error) {
+      // The fetch itself never resolved: the failure is in the connect stage
+      // (an AbortError here means the per-attempt timer fired before headers).
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new WorkerError(`Worker timed out after ${timeoutMs}ms`, 'timeout', undefined, {
+          stage: 'connect',
+          elapsedMs: elapsed(),
+        });
+      }
+      throw new WorkerError(
+        `Worker request failed: ${error instanceof Error ? error.message : String(error)}`,
+        'network',
+        undefined,
+        { stage: 'connect', elapsedMs: elapsed() }
+      );
+    }
+    if (res.status === 401) {
+      throw new WorkerError('Worker rejected the shared secret (401)', 'http-401', 401, {
+        stage: 'headers',
+        elapsedMs: elapsed(),
+      });
+    }
+    if (res.status === 404) {
+      throw new WorkerError(`Worker: not found (${path.split('?')[0]})`, 'not-found', 404, {
+        stage: 'headers',
+        elapsedMs: elapsed(),
+      });
+    }
+    if (res.status >= 500) {
+      throw new WorkerError(`Worker responded ${res.status}`, 'http-5xx', res.status, {
+        stage: 'headers',
+        elapsedMs: elapsed(),
+      });
+    }
+    if (!res.ok) {
+      throw new WorkerError(`Worker responded ${res.status}`, 'http-other', res.status, {
+        stage: 'headers',
+        elapsedMs: elapsed(),
+      });
+    }
     try {
       return (await res.json()) as T;
-    } catch {
-      throw new WorkerError('Worker returned invalid JSON', 'bad-json', res.status);
+    } catch (error) {
+      // Headers were received; the failure happened while reading the body
+      // (a mid-body abort) or parsing the completed body.
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new WorkerError(`Worker timed out after ${timeoutMs}ms`, 'timeout', res.status, {
+          stage: 'body',
+          elapsedMs: elapsed(),
+        });
+      }
+      throw new WorkerError('Worker returned invalid JSON', 'bad-json', res.status, {
+        stage: 'body',
+        elapsedMs: elapsed(),
+      });
     }
-  } catch (error) {
-    if (error instanceof WorkerError) throw error;
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new WorkerError(`Worker timed out after ${timeoutMs}ms`, 'timeout');
-    }
-    throw new WorkerError(
-      `Worker request failed: ${error instanceof Error ? error.message : String(error)}`,
-      'network'
-    );
   } finally {
     clearTimeout(timer);
   }
@@ -157,13 +232,22 @@ export async function workerGet<T>(
     if (firstError.reason !== 'timeout' && firstError.reason !== 'network') throw firstError;
     const reason: WorkerErrorReason = firstError.reason;
     const key = cacheKeyLabel(path);
+    // Stage and elapsed time belong to the first attempt: they explain what made
+    // the retry happen. A second attempt that also fails propagates its own
+    // WorkerError (with its own stage and elapsedMs) to the fallback layer.
+    const stage = firstError.stage ?? 'connect';
+    const elapsedMs = firstError.elapsedMs ?? -1;
     await delay(RETRY_DELAY_MS);
     try {
       const result = await attemptJson<T>(path, config, fetchImpl, timeoutMs, opts.cache);
-      console.warn(`[d1-retry] key=${key} reason=${reason} attempt=2 outcome=ok`);
+      console.warn(
+        `[d1-retry] key=${key} reason=${reason} stage=${stage} elapsedMs=${elapsedMs} attempt=2 outcome=ok${regionLabel()}`
+      );
       return result;
     } catch (secondError) {
-      console.warn(`[d1-retry] key=${key} reason=${reason} attempt=2 outcome=failed`);
+      console.warn(
+        `[d1-retry] key=${key} reason=${reason} stage=${stage} elapsedMs=${elapsedMs} attempt=2 outcome=failed${regionLabel()}`
+      );
       throw secondError;
     }
   }
