@@ -24,6 +24,25 @@ function hangingFetch(_url: string, init?: RequestInit): Promise<Response> {
   });
 }
 
+/**
+ * A fetch whose headers resolve immediately (200) but whose body read stalls
+ * until the abort signal fires, then rejects with an AbortError. Exercise for
+ * the "body" failure stage: the per-attempt abort lands mid-body-read.
+ */
+function hangingBodyFetch(_url: string, init?: RequestInit): Promise<Response> {
+  const response = {
+    status: 200,
+    ok: true,
+    json: (): Promise<never> =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () =>
+          reject(Object.assign(new Error('aborted'), { name: 'AbortError' }))
+        );
+      }),
+  };
+  return Promise.resolve(response as unknown as Response);
+}
+
 /** Capture console.warn lines while fn runs, restoring it afterwards. */
 async function captureWarn(fn: () => Promise<void>): Promise<string[]> {
   const lines: string[] = [];
@@ -51,6 +70,7 @@ class FakeClock {
   private readonly pending = new Map<number, { at: number; fn: () => void }>();
   private readonly realSetTimeout = globalThis.setTimeout;
   private readonly realClearTimeout = globalThis.clearTimeout;
+  private readonly realDateNow = globalThis.Date.now;
 
   enable(): void {
     globalThis.setTimeout = ((fn: () => void, ms?: number): NodeJS.Timeout => {
@@ -61,11 +81,14 @@ class FakeClock {
     globalThis.clearTimeout = ((id?: NodeJS.Timeout | undefined): void => {
       if (id !== undefined) this.pending.delete(id as unknown as number);
     }) as unknown as typeof clearTimeout;
+    // Date.now follows the fake clock so elapsedMs values are deterministic.
+    globalThis.Date.now = () => this.now;
   }
 
   restore(): void {
     globalThis.setTimeout = this.realSetTimeout;
     globalThis.clearTimeout = this.realClearTimeout;
+    globalThis.Date.now = this.realDateNow;
     this.pending.clear();
   }
 
@@ -148,8 +171,11 @@ test('timeout then success: exactly 2 calls, 5000ms content timeout, retry after
       assert.deepEqual(await pending, { ok: true });
     });
     assert.equal(calls, 2, 'exactly 2 calls: the original and the single retry');
-    assert.deepEqual(warnLines, ['[d1-retry] key=d1-poem-neighbors reason=timeout attempt=2 outcome=ok']);
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-poem-neighbors reason=timeout stage=connect elapsedMs=5000 attempt=2 outcome=ok',
+    ]);
     assert.ok(!warnLines[0].includes('worker.example.test'), 'no URLs in the retry log line');
+    assert.ok(!warnLines[0].includes('poetId='), 'no query strings in the retry log line');
     assert.ok(!warnLines[0].includes('test-secret'), 'no secrets in the retry log line');
   } finally {
     clock.restore();
@@ -172,7 +198,9 @@ test('network failure then success: exactly 2 calls and one outcome=ok line', as
       assert.equal(calls, 2);
       assert.deepEqual(await pending, { ok: true });
     });
-    assert.deepEqual(warnLines, ['[d1-retry] key=d1-poem reason=network attempt=2 outcome=ok']);
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-poem reason=network stage=connect elapsedMs=0 attempt=2 outcome=ok',
+    ]);
   } finally {
     clock.restore();
   }
@@ -195,6 +223,9 @@ test('two timeouts: exactly 2 calls, then the same WorkerError shape as before (
         assert.equal(reasonOf(e), 'timeout');
         assert.equal(e.status, undefined);
         assert.equal(e.message, 'Worker timed out after 5000ms');
+        // The abort fires at exactly 5000ms of the (per-attempt) attempt.
+        assert.equal(e.stage, 'connect');
+        assert.equal(e.elapsedMs, CONTENT_TIMEOUT_MS);
         return true;
       });
       await clock.tick(CONTENT_TIMEOUT_MS); // first attempt aborts
@@ -204,7 +235,9 @@ test('two timeouts: exactly 2 calls, then the same WorkerError shape as before (
       await rejection;
     });
     assert.equal(calls, 2, 'still exactly 2 calls after the final failure');
-    assert.deepEqual(warnLines, ['[d1-retry] key=d1-poem reason=timeout attempt=2 outcome=failed']);
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-poem reason=timeout stage=connect elapsedMs=5000 attempt=2 outcome=failed',
+    ]);
   } finally {
     clock.restore();
   }
@@ -224,16 +257,120 @@ test('network failure twice: throws WorkerError with reason=network after exactl
       const rejection = assert.rejects(() => pending, (e: unknown) => {
         assert.ok(e instanceof WorkerError);
         assert.equal(reasonOf(e), 'network');
+        // A network failure happens while waiting for the fetch to resolve.
+        assert.equal(e.stage, 'connect');
+        assert.equal(e.elapsedMs, 0);
         return true;
       });
       await clock.tick(RETRY_DELAY_MS); // the retry delay is the only timer in this test
       await rejection;
     });
     assert.equal(calls, 2);
-    assert.deepEqual(warnLines, ['[d1-retry] key=d1-poet reason=network attempt=2 outcome=failed']);
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-poet reason=network stage=connect elapsedMs=0 attempt=2 outcome=failed',
+    ]);
   } finally {
     clock.restore();
   }
+});
+
+test('connect timeout vs body timeout: stage is connect before headers, body after', async () => {
+  const clock = new FakeClock();
+  clock.enable();
+  let calls = 0;
+  const stageOfCall: Array<'connect' | 'body'> = [];
+  try {
+    const fetchImpl: FetchLike = (url, init) => {
+      calls += 1;
+      if (calls === 1) {
+        stageOfCall.push('connect');
+        return hangingFetch(url, init);
+      }
+      stageOfCall.push('body');
+      return hangingBodyFetch(url, init);
+    };
+    const pending = workerGet('/poems/1', { config, fetchImpl });
+    const rejection = assert.rejects(() => pending, (e: unknown) => {
+      assert.ok(e instanceof WorkerError);
+      assert.equal(reasonOf(e), 'timeout');
+      assert.equal(e.stage, 'body', 'the second attempt stalls while reading the body');
+      assert.equal(e.elapsedMs, CONTENT_TIMEOUT_MS);
+      assert.equal(e.status, 200, 'headers had arrived, so the status is known');
+      return true;
+    });
+    await clock.tick(CONTENT_TIMEOUT_MS); // first attempt aborts in connect
+    assert.equal(stageOfCall[0], 'connect');
+    await clock.tick(RETRY_DELAY_MS); // retry fires
+    await clock.tick(CONTENT_TIMEOUT_MS); // second attempt aborts mid-body
+    await rejection;
+  } finally {
+    clock.restore();
+  }
+});
+
+test('body-read timeout: the retry line reports the first attempt stage and elapsedMs', async () => {
+  const clock = new FakeClock();
+  clock.enable();
+  let calls = 0;
+  try {
+    const warnLines = await captureWarn(async () => {
+      const fetchImpl: FetchLike = (url, init) => {
+        calls += 1;
+        return calls === 1 ? hangingBodyFetch(url, init) : Promise.resolve(jsonResponse({ ok: true }));
+      };
+      const pending = workerGet<{ ok: boolean }>('/poems/1', { config, fetchImpl });
+      await clock.tick(CONTENT_TIMEOUT_MS); // headers arrived, body stalls, abort fires
+      await clock.tick(RETRY_DELAY_MS); // retry succeeds
+      assert.deepEqual(await pending, { ok: true });
+    });
+    assert.equal(calls, 2);
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-poem reason=timeout stage=body elapsedMs=5000 attempt=2 outcome=ok',
+    ]);
+  } finally {
+    clock.restore();
+  }
+});
+
+test('VERCEL_REGION is appended as a sanitized region field when set', async () => {
+  const clock = new FakeClock();
+  clock.enable();
+  const previousRegion = process.env.VERCEL_REGION;
+  process.env.VERCEL_REGION = 'iad1';
+  let calls = 0;
+  try {
+    const warnLines = await captureWarn(async () => {
+      const fetchImpl: FetchLike = (url, init) => {
+        calls += 1;
+        return calls === 1 ? hangingFetch(url, init) : Promise.resolve(jsonResponse({ ok: true }));
+      };
+      const pending = workerGet<{ ok: boolean }>('/poems/1', { config, fetchImpl });
+      await clock.tick(CONTENT_TIMEOUT_MS);
+      await clock.tick(RETRY_DELAY_MS);
+      assert.deepEqual(await pending, { ok: true });
+    });
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-poem reason=timeout stage=connect elapsedMs=5000 attempt=2 outcome=ok region=iad1',
+    ]);
+  } finally {
+    if (previousRegion === undefined) {
+      delete process.env.VERCEL_REGION;
+    } else {
+      process.env.VERCEL_REGION = previousRegion;
+    }
+    clock.restore();
+  }
+});
+
+test('status responses reach the headers stage and keep their existing classification', async () => {
+  const fetchImpl: FetchLike = async () => jsonResponse({}, 503);
+  await assert.rejects(workerGet('/poems/1', { config, fetchImpl }), (e: unknown) => {
+    assert.ok(e instanceof WorkerError);
+    assert.equal(reasonOf(e), 'http-5xx');
+    assert.equal(e.stage, 'headers', 'a status error is seen after the headers arrived');
+    assert.ok(typeof e.elapsedMs === 'number' && e.elapsedMs >= 0);
+    return true;
+  });
 });
 
 test('4xx and 5xx are never retried (exactly 1 call per status)', async () => {
@@ -283,7 +420,9 @@ test('search: both attempts use the short 3000ms timeout and the WorkerError sti
       await rejection;
     });
     assert.equal(calls, 2);
-    assert.deepEqual(warnLines, ['[d1-retry] key=d1-search reason=timeout attempt=2 outcome=failed']);
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-search reason=timeout stage=connect elapsedMs=3000 attempt=2 outcome=failed',
+    ]);
   } finally {
     clock.restore();
   }
@@ -306,7 +445,9 @@ test('search: success on the second attempt returns the body (fallback only on f
       assert.deepEqual(await pending, { found: true });
     });
     assert.equal(calls, 2);
-    assert.deepEqual(warnLines, ['[d1-retry] key=d1-search reason=timeout attempt=2 outcome=ok']);
+    assert.deepEqual(warnLines, [
+      '[d1-retry] key=d1-search reason=timeout stage=connect elapsedMs=3000 attempt=2 outcome=ok',
+    ]);
   } finally {
     clock.restore();
   }
