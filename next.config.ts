@@ -5,8 +5,13 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['next-themes'],
   },
   compiler: {
-    // Strip all console.* calls from production builds.
-    removeConsole: process.env.NODE_ENV === 'production',
+    // Production builds keep console.warn and console.error so [d1-retry] and
+    // [d1-fallback] diagnostics survive; console.log, console.info and
+    // console.debug are still stripped. Development is unchanged.
+    removeConsole:
+      process.env.NODE_ENV === 'production'
+        ? { exclude: ['warn', 'error'] }
+        : false,
   },
   // Enable React Strict Mode for better development experience
   reactStrictMode: true,

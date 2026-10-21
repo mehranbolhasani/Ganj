@@ -57,7 +57,9 @@ export async function searchPoems(query: string): Promise<Poem[]> {
     .limit(5);
 
   if (error) {
-    console.error('Bot poem search error:', error);
+    // SQLSTATE only: the PostgREST message for a malformed `.or()` filter can
+    // echo the filter text, which embeds the user's search query.
+    console.error('Bot poem search error:', error.code);
     return [];
   }
 
@@ -125,7 +127,8 @@ export async function getPoemById(id: number): Promise<Poem | null> {
     .single();
 
   if (error || !poem) {
-    console.error('Bot poem fetch error:', error);
+    // SQLSTATE only (no user text in an id lookup, but keep the line uniform).
+    console.error('Bot poem fetch error:', error ? error.code : 'no-row');
     return null;
   }
 
