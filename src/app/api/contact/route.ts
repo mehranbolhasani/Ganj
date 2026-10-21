@@ -71,8 +71,9 @@ export async function POST(req: NextRequest) {
         cache: 'no-store',
       });
       if (!insertRes.ok) {
-        const errText = await insertRes.text();
-        console.error('Supabase insert failed:', insertRes.status, errText);
+        // Log the status only. The Supabase error body can echo the submitted
+        // row (name, email, message), which must not end up in logs.
+        console.error('Supabase insert failed:', insertRes.status);
       }
     }
 
@@ -99,11 +100,11 @@ export async function POST(req: NextRequest) {
           }),
         });
         
-        const emailData = await emailRes.json();
-        
         if (!emailRes.ok) {
-          emailError = `Resend failed: ${emailRes.status} - ${JSON.stringify(emailData)}`;
-          console.error('Resend email failed:', emailRes.status, emailData);
+          // Status only: the Resend error body is an API detail and the
+          // notification email embeds the submitter's name, email and message.
+          emailError = `Resend failed: ${emailRes.status}`;
+          console.error('Resend email failed:', emailRes.status);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';

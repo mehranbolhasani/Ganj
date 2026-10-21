@@ -80,7 +80,9 @@ async function legacySearchGET(request: NextRequest) {
       const { data: poets, error: poetsError, count: poetsCount } = await poetsQuery;
       
       if (poetsError) {
-        console.error('Error searching poets:', poetsError);
+        // SQLSTATE only: the PostgREST message can echo the `.or()` filter,
+        // which embeds the user's search text.
+        console.error('Error searching poets:', poetsError.code);
       } else {
         results.poets = poets || [];
         if (getCount && poetsCount !== null) {
@@ -117,7 +119,8 @@ async function legacySearchGET(request: NextRequest) {
       const { data: categories, error: categoriesError, count: categoriesCount } = await categoriesQuery;
       
       if (categoriesError) {
-        console.error('Error searching categories:', categoriesError);
+        // SQLSTATE only: see the poets search above (filter echoes user text).
+        console.error('Error searching categories:', categoriesError.code);
       } else {
         // Transform to match expected format
         results.categories = categories?.map(cat => {
@@ -178,7 +181,8 @@ async function legacySearchGET(request: NextRequest) {
             const { data: poems, error: poemsError, count: poemsCount } = await poemsQuery;
             
             if (poemsError) {
-              console.error('Error searching poems in Supabase:', poemsError);
+              // SQLSTATE only: see the poets search above (filter echoes user text).
+              console.error('Error searching poems in Supabase:', poemsError.code);
             } else {
               // Transform to match expected format
               results.poems = poems?.map(poem => {
@@ -288,7 +292,12 @@ async function legacySearchGET(request: NextRequest) {
                 results.totalPoems = allPoems.length;
               }
             } catch (error) {
-              console.error('Error searching poems from Ganjoor API:', error);
+              // Stable label only: Ganjoor search failures carry the request
+              // URL, which contains the user's search text.
+              console.error(
+                'Error searching poems from Ganjoor API:',
+                error instanceof Error ? error.name : 'error'
+              );
               results.poems = [];
             }
           }
@@ -325,7 +334,8 @@ async function legacySearchGET(request: NextRequest) {
         const { data: poems, error: poemsError, count: poemsCount } = await poemsQuery;
         
         if (poemsError) {
-          console.error('Error searching poems:', poemsError);
+          // SQLSTATE only: see the poets search above (filter echoes user text).
+          console.error('Error searching poems:', poemsError.code);
         } else {
           // Transform to match expected format
           results.poems = poems?.map(poem => {
@@ -353,7 +363,10 @@ async function legacySearchGET(request: NextRequest) {
     return NextResponse.json(results);
     
   } catch (error) {
-    console.error('Search API error:', error);
+    // Stable label only (error.name): the same message is already returned to
+    // the requester in the 500 response, but logs are read more widely, and a
+    // wrapped PostgREST error can echo the user's search text.
+    console.error('Search API error:', error instanceof Error ? error.name : 'error');
     return NextResponse.json(
       { error: 'Internal server error', message: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
