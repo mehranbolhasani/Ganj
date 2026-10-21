@@ -57,7 +57,9 @@ async function checkRateLimit(userId: number): Promise<boolean> {
     const { success } = await telegramRatelimit.limit(userId.toString());
     return success;
   } catch (err) {
-    console.error('Telegram rate limiter error:', err);
+    // Stable label only (error.name): Upstash errors can echo the rate limit
+    // key, which is the Telegram user id.
+    console.error('Telegram rate limiter error:', err instanceof Error ? err.name : 'error');
     // Fail open: do not block legitimate users if rate limiter is down
     return true;
   }
@@ -140,7 +142,9 @@ bot.command('faal', async (ctx) => {
     void recordEvent('faal');
     await ctx.reply(text);
   } catch (err) {
-    console.error('Faal command error:', err);
+    // Stable label only (error.name): a GrammyError carries the request payload
+    // (chat id) and a Supabase error carries the query text. Neither goes to logs.
+    console.error('Faal command error:', err instanceof Error ? err.name : 'error');
     await ctx.reply(messages.FAAL_ERROR);
   }
 });
@@ -222,7 +226,9 @@ bot.on('callback_query:data', async (ctx) => {
     await ctx.reply(text);
     await ctx.answerCallbackQuery();
   } catch (err) {
-    console.error('Callback query error:', err);
+    // Stable label only (error.name): same reasoning as the faal command above
+    // (GrammyError payload contains the chat id).
+    console.error('Callback query error:', err instanceof Error ? err.name : 'error');
     await ctx.answerCallbackQuery({ text: messages.GENERAL_ERROR });
   }
 });

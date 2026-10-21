@@ -33,6 +33,8 @@ export async function recordEvent(
     await botSupabase.from('bot_analytics').insert(payload);
   } catch (err) {
     // Swallow all analytics errors so they can never affect a user reply.
-    console.error('Analytics insert error:', err);
+    // Stable label only (error.name): the recorded payload contains the raw
+    // search query, and an insert error may echo payload-related detail.
+    console.error('Analytics insert error:', err instanceof Error ? err.name : 'error');
   }
 }
